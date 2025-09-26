@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KryptoPesa | Professional Crypto Platform</title>
+    <style>
+        :root {
+            --primary: #0a0f1c;
+            --secondary: #1a2332;
+            --accent: #2563eb;
+            --accent-light: #3b82f6;
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-inverse: #ffffff;
+            --success: #059669;
+            --warning: #d97706;
+            --radius: 12px;
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--surface-alt);
+            color: var(--text-primary);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: #1a237e;
+            color: white;
+            position: relative;
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 6px black;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: none;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            color: #fff;
+        }
+
+        .logo img {
+            height: 80px;
+            width: auto;
+        }
+
+        .user-menu {
+            position: relative;
+        }
+
+        .menu-icon {
+            background: transparent;
+            border: none;
+            color: #fff;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-weight: bold;
+            font-size: 2.6rem;
+        }
+
+        .menu-icon:hover {
+            background: hsla(260, 82%, 46%, 0.842);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            min-width: 180px;
+            z-index: 1000;
+            display: none;
+            margin-top: 8px;
+        }
+
+        .dropdown-menu.active {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .dropdown-item:hover {
+            background:burlywood;
+        }
+
+        .dropdown-item:first-child {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .dropdown-item:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* Navigation */
+        .main-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-list {
+            max-width: 1200px;
+            margin: 0 ;
+            padding: 0 24px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            font-size: 15px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .nav-btn:hover {
+            background: var(--surface-alt);
+            color: var(--text-primary);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: var(--text-inverse);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 32px 24px 120px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Price Grid */
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .price-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+        }
+
+        .price-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .crypto-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .crypto-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .crypto-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-primary);
+        }
+
+        .crypto-symbol {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .price-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .price-change {
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        .price-change.positive {
+            color: var(--success);
+        }
+
+        .price-change.negative {
+            color: #dc2626;
+        }
+
+        /* Form Sections */
+        .form-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow);
+            max-width: 480px;
+        }
+
+        .form-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 24px;
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            background: var(--surface);
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 14px 24px;
+            background: var(--accent);
+            color: var(--text-inverse);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .primary-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-1px);
+        }
+
+        .primary-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Wallet Section */
+        .wallet-address {
+            background: var(--surface-alt);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 14px;
+            color: var(--text-primary);
+            word-break: break-all;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .copy-btn {
+            padding: 6px 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .copy-btn:hover {
+            background: var(--surface-alt);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        /* Success/Error Messages */
+        .result-message {
+            margin-top: 16px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .result-message.success {
+            background: rgb(6 95 70 / 0.1);
+            color: var(--success);
+            border: 1px solid rgb(6 95 70 / 0.2);
+        }
+
+        .result-message.error {
+            background: rgb(239 68 68 / 0.1);
+            color: #dc2626;
+            border: 1px solid rgb(239 68 68 / 0.2);
+        }
+
+        /* Coming Soon */
+        .coming-soon {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--text-secondary);
+        }
+
+        .coming-soon-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 16px;
+            opacity: 0.5;
+        }
+
+        /* Loading states */
+        .loading {
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        /* Status indicator */
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: var(--success);
+        }
+
+        .status-offline {
+            background: #dc2626;
+        }
+
+        /* Icons */
+        .icon {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2;
+        }
+
+        .icon-lg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Fade in animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section.active {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background-color: #1a237e;
+            color: #fff;
+            padding: 10px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 0 16px;
+                height: 64px;
+            }
+
+            .nav-list {
+                padding: 0 16px;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .nav-btn {
+                padding: 12px 16px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+
+            .main-content {
+                padding: 24px 16px 120px;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .form-section {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <img src="logo.jpg" alt="KryptoPesa Logo" />
+                <h1>KryptoPesa</h1>
+            </div>
+            <div class="user-menu">
+                <button class="menu-icon" onclick="toggleDropdown()">
+                    <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+                <div id="dropdownMenu" class="dropdown-menu">
+                    <button class="dropdown-item" onclick="goHome()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
+                        </svg>
+                        Home
+                    </button>
+                    <button class="dropdown-item" onclick="verifyKYC()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+                        </svg>
+                        Verify KYC
+                    </button>
+                    <button class="dropdown-item" onclick="logout()">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="main-nav">
+        <div class="nav-list">
+            <button class="nav-btn active" onclick="showSection('markets')">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+                </svg>
+                Markets
+            </button>
+            <button class="nav-btn" onclick="showSection('swap')">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                </svg>
+                Swap
+            </button>
+            <button class="nav-btn" onclick="showSection('receive')">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+                </svg>
+                Receive
+            </button>
+            <button class="nav-btn" onclick="showSection('deposit')">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8l-4-4-4 4M4 12l4-4 4 4"/>
+                </svg>
+                Deposit
+            </button>
+           
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Markets Section -->
+        <section id="markets" class="section active">
+            <div style="margin-bottom: 24px;">
+                <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Live Market Prices</h2>
+                <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
+                    <span id="connectionStatus" class="status-indicator status-offline"></span>
+                    <span id="connectionText">Connecting to live data...</span>
+                </div>
+            </div>
+            <div id="priceContainer" class="price-grid"></div>
+        </section>
+
+        <!-- Swap Section -->
+        <section id="swap" class="section">
+            <div class="form-section">
+                <h2 class="form-title">Swap to M-Pesa</h2>
+                <div class="form-group">
+                    <label class="form-label">Amount</label>
+                    <input type="number" id="amount" class="form-input" placeholder="0.00" min="0" step="0.01">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cryptocurrency</label>
+                    <select id="cryptoType" class="form-select">
+                        <option value="bitcoin">Bitcoin (BTC)</option>
+                        <option value="ethereum">Ethereum (ETH)</option>
+                        <option value="tether">Tether (USDT)</option>
+                        <option value="solana">Solana (SOL)</option>
+                        <option value="worldcoin-wld">Worldcoin (WLD)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">M-Pesa Number</label>
+                    <input type="text" id="mpesaNumber" class="form-input" placeholder="07123456789" pattern="[0-9]{10}">
+                </div>
+                <button onclick="swapToMpesa()" class="primary-btn">
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+                    </svg>
+                    Swap to M-Pesa
+                </button>
+                <div id="swapResult"></div>
+            </div>
+        </section>
+
+        <!-- Receive Section -->
+        <section id="receive" class="section">
+            <div class="form-section">
+                <h2 class="form-title">Receive Cryptocurrency</h2>
+                <div class="form-group">
+                    <label class="form-label">Your Wallet Address</label>
+                    <div class="wallet-address">
+                        <span>0x742d35Cc6532C0532025C3e0A321e2D2B9aBc</span>
+                        <button class="copy-btn" onclick="copyAddress()">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px;">
+                    Send cryptocurrency to this address to receive it in your KryptoPesa wallet.
+                </p>
+            </div>
+        </section>
+
+        <!-- Deposit Section -->
+        <section id="deposit" class="section">
+            <div class="form-section">
+                <div class="coming-soon">
+                    <svg class="coming-soon-icon icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <h3>M-Pesa Deposit</h3>
+                    <p>Direct M-Pesa deposits are coming soon. Stay tuned for updates.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section id="charts" class="section">
+            <div class="form-section">
+                <h2 class="form-title">Trading Charts</h2>
+                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
+                    <input type="text" id="cryptoSearch" class="form-input" placeholder="Search cryptocurrency..." style="flex: 1;">
+                    <button onclick="searchCrypto()" class="primary-btn" style="width: auto; padding: 12px 24px;">
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                        </svg>
+                        Search
+                    </button>
+                </div>
+                <div id="searchResults"></div>
+                <div id="popularCoins" class="price-grid" style="margin-top:24px;"></div>
+                <div id="tradingview-widget" style="height: 500px; width: 100%; margin-top: 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-alt); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
+                    TradingView widget integration coming soon
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer id="contact">
+        <p>&copy; 2025 KryptoPesa. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Global variables
+        const cryptos = {
+            bitcoin: 'BTC',
+            ethereum: 'ETH',
+            tether: 'USDT',
+            solana: 'SOL',
+            'worldcoin-wld': 'WLD'
+        };
+
+        let ws = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 5;
+
+        // Dropdown menu functionality
+        function toggleDropdown() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('active');
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(event) {
+            const menu = document.getElementById('dropdownMenu');
+            const menuIcon = document.querySelector('.menu-icon');
+            
+            if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });
+
+        // Menu actions
+        function goHome() {
+            showSection('markets');
+            document.getElementById('dropdownMenu').classList.remove('active');
+        }
+
+        function verifyKYC() {
+            // Link to Techcraft KYC verification API
+            window.open('https://api.techcraft.com/kyc/verify', '_blank');
+            document.getElementById('dropdownMenu').classList.remove('active');
+        }
+
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                window.location.href = 'landing.html';
+            }
+            document.getElementById('dropdownMenu').classList.remove('active');
+        }
+
+        // Navigation
+        function showSection(id) {
+            // Remove active class from all sections and nav buttons
+            document.querySelectorAll('main .section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Show selected section and highlight nav button
+            document.getElementById(id).classList.add('active');
+            
+            // Find and activate the corresponding nav button
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                if (btn.onclick && btn.onclick.toString().includes(`'${id}'`)) {
+                    btn.classList.add('active');
+                }
+            });
+        }
+
+        // Copy address functionality
+        function copyAddress() {
+            const address = '0x742d35Cc6532C0532025C3e0A321e2D2B9aBc';
+            navigator.clipboard.writeText(address).then(() => {
+                const btn = event.target.closest('.copy-btn');
+                const originalHTML = btn.innerHTML;
+                btn.innerHTML = '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
+                setTimeout(() => {
+                    btn.innerHTML = originalHTML;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy address:', err);
+            });
+        }
+
+        // Swap functionality
+        function swapToMpesa() {
+            const amount = parseFloat(document.getElementById('amount').value);
+            const number = document.getElementById('mpesaNumber').value;
+            const crypto = document.getElementById('cryptoType').value;
+            const resultDiv = document.getElementById('swapResult');
+            
+            // Validation
+            if (!amount || amount <= 0) {
+                resultDiv.innerHTML = '<div class="result-message error">Please enter a valid amount</div>';
+                return;
+            }
+            
+            if (!number || !/^\d{10}$/.test(number)) {
+                resultDiv.innerHTML = '<div class="result-message error">Please enter a valid M-Pesa number (10 digits)</div>';
+                return;
+            }
+            
+            // Simulate processing
+            resultDiv.innerHTML = '<div class="result-message" style="background: rgb(245 158 11 / 0.1); color: var(--warning); border: 1px solid rgb(245 158 11 / 0.2);">Processing swap...</div>';
+            
+            setTimeout(() => {
+                resultDiv.innerHTML = `<div class="result-message success">Successfully swapped ${amount} ${cryptos[crypto]} to M-Pesa number: ${number}</div>`;
+            }, 2000);
+        }
+
+        // Search functionality
+        function searchCrypto() {
+            const searchTerm = document.getElementById('cryptoSearch').value.toLowerCase();
+            const resultsDiv = document.getElementById('searchResults');
+            
+            if (!searchTerm) {
+                resultsDiv.innerHTML = '';
+                return;
+            }
+
+            resultsDiv.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-secondary);">Searching for "${searchTerm}"...</div>`;
+            
+            // Simulate search results
+            setTimeout(() => {
+                resultsDiv.innerHTML = `
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
+                        <p style="color: var(--text-secondary); font-size: 14px;">Search results for "${searchTerm}" would appear here. Integration with crypto data API coming soon.</p>
+                    </div>
+                `;
+            }, 1000);
+        }
+
+        // WebSocket connection management
+        function connectWebSocket() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                return;
+            }
+
+            try {
+                ws = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
+                
+                ws.onopen = function() {
+                    console.log('WebSocket connected');
+                    updateConnectionStatus(true);
+                    reconnectAttempts = 0;
+                };
+
+                ws.onmessage = function(event) {
+                    try {
+                        const data = JSON.parse(event.data);
+                        updatePrices(data);
+                    } catch (error) {
+                        console.error('Error parsing WebSocket data:', error);
+                    }
+                };
+
+                ws.onclose = function() {
+                    console.log('WebSocket disconnected');
+                    updateConnectionStatus(false);
+                    
+                    // Attempt reconnection
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        setTimeout(() => {
+                            console.log(`Reconnection attempt ${reconnectAttempts}`);
+                            connectWebSocket();
+                        }, 3000 * reconnectAttempts);
+                    }
+                };
+
+                ws.onerror = function(error) {
+                    console.error('WebSocket error:', error);
+                    updateConnectionStatus(false);
+                };
+
+            } catch (error) {
+                console.error('Failed to create WebSocket connection:', error);
+                updateConnectionStatus(false);
+                showOfflinePrices();
+            }
+        }
+
+        function updateConnectionStatus(isOnline) {
+            const statusIndicator = document.getElementById('connectionStatus');
+            const statusText = document.getElementById('connectionText');
+            
+            if (isOnline) {
+                statusIndicator.className = 'status-indicator status-online';
+                statusText.textContent = 'Live data connected';
+            } else {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'Offline - showing cached data';
+            }
+        }
+
+        function updatePrices(data) {
+            const cryptoData = {
+                "BTCUSDT": { name: "Bitcoin", symbol: "BTC" },
+                "ETHUSDT": { name: "Ethereum", symbol: "ETH" },
+                "SOLUSDT": { name: "Solana", symbol: "SOL" },
+                "WLDUSDT": { name: "Worldcoin", symbol: "WLD" }
+            };
+
+            data.forEach(ticker => {
+                if (cryptoData[ticker.s]) {
+                    const priceElement = document.getElementById(`${ticker.s}-price`);
+                    const changeElement = document.getElementById(`${ticker.s}-change`);
+                    
+                    if (priceElement) {
+                        priceElement.classList.remove('loading');
+                        const price = parseFloat(ticker.c);
+                        priceElement.textContent = `${price.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: price > 1 ? 2 : 6
+                        })}`;
+                    }
+                    
+                    if (changeElement) {
+                        const change = parseFloat(ticker.P);
+                        changeElement.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
+                        changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+                    }
+                }
+            });
+        }
+
+        function showOfflinePrices() {
+            const cryptoData = {
+                "BTCUSDT": { name: "Bitcoin", symbol: "BTC", mockPrice: 45000, mockChange: 2.5 },
+                "ETHUSDT": { name: "Ethereum", symbol: "ETH", mockPrice: 2800, mockChange: -1.2 },
+                "SOLUSDT": { name: "Solana", symbol: "SOL", mockPrice: 95, mockChange: 5.8 },
+                "WLDUSDT": { name: "Worldcoin", symbol: "WLD", mockPrice: 3.2, mockChange: -0.5 }
+            };
+
+            Object.keys(cryptoData).forEach(symbol => {
+                const crypto = cryptoData[symbol];
+                const priceElement = document.getElementById(`${symbol}-price`);
+                const changeElement = document.getElementById(`${symbol}-change`);
+                
+                if (priceElement && priceElement.classList.contains('loading')) {
+                    priceElement.classList.remove('loading');
+                    priceElement.textContent = `${crypto.mockPrice.toLocaleString('en-US', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: crypto.mockPrice > 1 ? 2 : 6
+                    })}`;
+                }
+                
+                if (changeElement) {
+                    changeElement.textContent = `${crypto.mockChange >= 0 ? '+' : ''}${crypto.mockChange}%`;
+                    changeElement.className = `price-change ${crypto.mockChange >= 0 ? 'positive' : 'negative'}`;
+                }
+            });
+        }
+
+        // Initialize application - Updated with homepage.js integration
+        document.addEventListener("DOMContentLoaded", () => {
+            const cryptoData = {
+                "BTCUSDT": "Bitcoin",
+                "ETHUSDT": "Ethereum", 
+                "SOLUSDT": "Solana",
+                "WLDUSDT": "Worldcoin"
+            };
+
+            const priceContainer = document.getElementById("priceContainer");
+
+            // Create price cards using the exact structure from homepage.js
+            Object.keys(cryptoData).forEach(symbol => {
+                const div = document.createElement("div");
+                div.className = "price-card";
+                div.innerHTML = `
+                    <div class="crypto-info">
+                        <div class="crypto-icon">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.375-.203-1.875-.659-1.33-1.212-1.33-3.47 0-4.682C10.644 6.203 11.295 6 12 6c.725 0 1.375.203 1.875.659"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="crypto-name">${cryptoData[symbol]}</div>
+                            <div class="crypto-symbol">${symbol.replace('USDT', '')}</div>
+                        </div>
+                    </div>
+                    <div id="${symbol}-price" class="price-value loading">Loading...</div>
+                    <div id="${symbol}-change" class="price-change">--</div>
+                `;
+                priceContainer.appendChild(div);
+            });
+
+            // Initialize WebSocket connection
+            connectWebSocket();
+
+            // Fallback timer for offline mode
+            setTimeout(() => {
+                const loadingElements = document.querySelectorAll('.price-value.loading');
+                if (loadingElements.length > 0) {
+                    console.log('Switching to offline mode');
+                    showOfflinePrices();
+                }
+            }, 5000);
+
+            // Add search functionality to charts input
+            document.getElementById('cryptoSearch').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchCrypto();
+                }
+            });
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (ws) {
+                ws.close();
+            }
+        });
+    </script>
+</body>
+</html>
