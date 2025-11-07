@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KryptoPesa | Professional Crypto Platform</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>KryptoPesa | Professional Crypto Trading Platform</title>
+    <link rel="icon" type="image/x-icon" href="logo.jpg">
     <style>
         :root {
             --primary: #0a0f1c;
@@ -22,476 +23,65 @@
             --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--surface-alt);
-            color: var(--text-primary);
-            line-height: 1.5;
-            overflow-x: hidden;
-        }
-
-        /* Header */
-        header {
-            background-color: #1a237e;
-            color: white;
-            position: relative;
-            padding: 20px 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 2px 6px black;
-        }
-
-        .nav-container {
-            width: 100%;
-            max-width: none;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 72px;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 18px;
-            color: #fff;
-        }
-
-        .logo img {
-            height: 80px;
-            width: auto;
-        }
-
-        .user-menu {
-            position: relative;
-        }
-
-        .menu-icon {
-            background: transparent;
-            border: none;
-            color: #fff;
-            cursor: pointer;
-            padding: 8px;
-            border-radius: 6px;
-            transition: all 0.2s;
-            font-weight: bold;
-            font-size: 2.6rem;
-        }
-
-        .menu-icon:hover {
-            background: hsla(260, 82%, 46%, 0.842);
-        }
-
-        .dropdown-menu {
-            position: absolute;
-            top: 100%;
-            right: 0;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            box-shadow: var(--shadow-lg);
-            min-width: 180px;
-            z-index: 1000;
-            display: none;
-            margin-top: 8px;
-        }
-
-        .dropdown-menu.active {
-            display: block;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        .dropdown-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.2s;
-            border: none;
-            background: none;
-            width: 100%;
-            text-align: left;
-            cursor: pointer;
-        }
-
-        .dropdown-item:hover {
-            background:burlywood;
-        }
-
-        .dropdown-item:first-child {
-            border-radius: 8px 8px 0 0;
-        }
-
-        .dropdown-item:last-child {
-            border-radius: 0 0 8px 8px;
-        }
-
-        /* Navigation */
-        .main-nav {
-            background: var(--surface);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-list {
-            max-width: 1200px;
-            margin: 0 ;
-            padding: 0 24px;
-            display: flex;
-            gap: 8px;
-        }
-
-        .nav-btn {
-            padding: 16px 24px;
-            border: none;
-            background: transparent;
-            color: var(--text-secondary);
-            font-weight: 500;
-            font-size: 15px;
-            cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            position: relative;
-        }
-
-        .nav-btn:hover {
-            background: var(--surface-alt);
-            color: var(--text-primary);
-        }
-
-        .nav-btn.active {
-            background: var(--accent);
-            color: var(--text-inverse);
-        }
-
-        /* Main Content */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 32px 24px 120px;
-        }
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* Price Grid */
-        .price-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-        }
-
-        .price-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            box-shadow: var(--shadow);
-            transition: all 0.2s;
-        }
-
-        .price-card:hover {
-            box-shadow: var(--shadow-lg);
-            transform: translateY(-2px);
-        }
-
-        .crypto-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        .crypto-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .crypto-name {
-            font-weight: 600;
-            font-size: 16px;
-            color: var(--text-primary);
-        }
-
-        .crypto-symbol {
-            font-size: 14px;
-            color: var(--text-secondary);
-        }
-
-        .price-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .price-change {
-            font-size: 14px;
-            font-weight: 500;
-            margin-top: 8px;
-        }
-
-        .price-change.positive {
-            color: var(--success);
-        }
-
-        .price-change.negative {
-            color: #dc2626;
-        }
-
-        /* Form Sections */
-        .form-section {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 32px;
-            box-shadow: var(--shadow);
-            max-width: 480px;
-        }
-
-        .form-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: 24px;
-            color: var(--text-primary);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: var(--text-primary);
-            font-size: 14px;
-        }
-
-        .form-input, .form-select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            font-size: 15px;
-            background: var(--surface);
-            color: var(--text-primary);
-            transition: all 0.2s;
-        }
-
-        .form-input:focus, .form-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgb(37 99 235 / 0.1);
-        }
-
-        .primary-btn {
-            width: 100%;
-            padding: 14px 24px;
-            background: var(--accent);
-            color: var(--text-inverse);
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .primary-btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-1px);
-        }
-
-        .primary-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Wallet Section */
-        .wallet-address {
-            background: var(--surface-alt);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 16px;
-            font-family: 'SF Mono', Monaco, monospace;
-            font-size: 14px;
-            color: var(--text-primary);
-            word-break: break-all;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-        }
-
-        .copy-btn {
-            padding: 6px 8px;
-            background: transparent;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-            flex-shrink: 0;
-        }
-
-        .copy-btn:hover {
-            background: var(--surface-alt);
-            border-color: var(--accent);
-            color: var(--accent);
-        }
-
-        /* Success/Error Messages */
-        .result-message {
-            margin-top: 16px;
-            padding: 12px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .result-message.success {
-            background: rgb(6 95 70 / 0.1);
-            color: var(--success);
-            border: 1px solid rgb(6 95 70 / 0.2);
-        }
-
-        .result-message.error {
-            background: rgb(239 68 68 / 0.1);
-            color: #dc2626;
-            border: 1px solid rgb(239 68 68 / 0.2);
-        }
-
-        /* Coming Soon */
-        .coming-soon {
-            text-align: center;
-            padding: 48px 24px;
-            color: var(--text-secondary);
-        }
-
-        .coming-soon-icon {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 16px;
-            opacity: 0.5;
-        }
-
-        /* Loading states */
-        .loading {
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        /* Status indicator */
-        .status-indicator {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-right: 8px;
-        }
-
-        .status-online {
-            background: var(--success);
-        }
-
-        .status-offline {
-            background: #dc2626;
-        }
-
-        /* Icons */
-        .icon {
-            width: 18px;
-            height: 18px;
-            stroke-width: 2;
-        }
-
-        .icon-lg {
-            width: 24px;
-            height: 24px;
-        }
-
-        /* Fade in animation */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .section.active {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            background-color: #1a237e;
-            color: #fff;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 16px;
-                height: 64px;
-            }
-
-            .nav-list {
-                padding: 0 16px;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-
-            .nav-btn {
-                padding: 12px 16px;
-                font-size: 14px;
-                white-space: nowrap;
-            }
-
-            .main-content {
-                padding: 24px 16px 120px;
-            }
-
-            .price-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-
-            .form-section {
-                padding: 24px;
-            }
-        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--surface-alt);color:var(--text-primary);line-height:1.5;overflow-x:hidden;}
+        header{background-color:#1a237e;color:white;position:relative;padding:20px 40px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 6px rgba(0,0,0,0.3);}
+        .nav-container{width:100%;max-width:none;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:72px;}
+        .logo{display:flex;align-items:center;gap:12px;font-weight:600;font-size:18px;color:#fff;}
+        .logo img{height:80px;width:auto;}
+        .menu-icon{background:transparent;border:none;color:#fff;cursor:pointer;padding:8px;border-radius:6px;transition:all 0.2s;font-weight:bold;font-size:2.6rem;}
+        .menu-icon:hover{background:rgba(37,99,235,0.2);transform:scale(1.05);}
+        .dropdown-menu{position:absolute;top:100%;right:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;box-shadow:var(--shadow-lg);min-width:180px;z-index:1000;display:none;margin-top:8px;}
+        .dropdown-menu.active{display:block;animation:fadeIn 0.2s ease-out;}
+        .dropdown-item{display:flex;align-items:center;gap:12px;padding:12px 16px;text-decoration:none;color:var(--text-primary);transition:all 0.2s;border:none;background:none;width:100%;text-align:left;cursor:pointer;}
+        .dropdown-item:hover{background:var(--surface-alt);color:var(--accent);}
+        .main-nav{background:var(--surface);border-bottom:1px solid var(--border);}
+        .nav-list{max-width:1200px;margin:0;padding:0 24px;display:flex;gap:8px;}
+        .nav-btn{padding:16px 24px;border:none;background:transparent;color:var(--text-secondary);font-weight:500;font-size:15px;cursor:pointer;border-radius:8px;transition:all 0.2s;display:flex;align-items:center;gap:8px;position:relative;}
+        .nav-btn:hover{background:var(--surface-alt);color:var(--text-primary);}
+        .nav-btn.active{background:var(--accent);color:var(--text-inverse);}
+        .main-content{max-width:1200px;margin:0 auto;padding:32px 24px 120px;}
+        .section{display:none;}
+        .section.active{display:block;animation:fadeIn 0.3s ease-out;}
+        .status-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface);border:1px solid var(--border);border-radius:20px;font-size:13px;font-weight:500;}
+        .status-badge.online{background:rgb(6 95 70 / 0.1);border-color:var(--success);color:var(--success);}
+        .status-badge.offline{background:rgb(239 68 68 / 0.1);border-color:#dc2626;color:#dc2626;}
+        .status-indicator{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;}
+        .status-online{background:var(--success);}
+        .status-offline{background:#dc2626;}
+        .price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;}
+        .price-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);transition:all 0.2s;}
+        .price-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px);}
+        .crypto-info{display:flex;align-items:center;gap:12px;margin-bottom:16px;}
+        .crypto-icon{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-light));display:flex;align-items:center;justify-content:center;color:white;}
+        .crypto-name{font-weight:600;font-size:16px;color:var(--text-primary);}
+        .crypto-symbol{font-size:14px;color:var(--text-secondary);}
+        .price-value{font-size:24px;font-weight:700;color:var(--text-primary);}
+        .price-change{font-size:14px;font-weight:500;margin-top:8px;}
+        .price-change.positive{color:var(--success);}
+        .price-change.negative{color:#dc2626;}
+        .form-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;box-shadow:var(--shadow);max-width:480px;}
+        .form-title{font-size:24px;font-weight:600;margin-bottom:24px;color:var(--text-primary);}
+        .form-group{margin-bottom:20px;}
+        .form-label{display:block;margin-bottom:8px;font-weight:500;color:var(--text-primary);font-size:14px;}
+        .form-input,.form-select{width:100%;padding:12px 16px;border:1px solid var(--border);border-radius:8px;font-size:15px;background:var(--surface);color:var(--text-primary);transition:all 0.2s;}
+        .form-input:focus,.form-select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgb(37 99 235 / 0.1);}
+        .primary-btn{width:100%;padding:14px 24px;background:var(--accent);color:var(--text-inverse);border:none;border-radius:8px;font-weight:600;font-size:15px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+        .primary-btn:hover{background:var(--accent-light);transform:translateY(-1px);}
+        .wallet-address{background:var(--surface-alt);border:1px solid var(--border);border-radius:8px;padding:16px;font-family:'SF Mono',Monaco,monospace;font-size:14px;color:var(--text-primary);word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+        .copy-btn{padding:6px 8px;background:transparent;border:1px solid var(--border);border-radius:6px;cursor:pointer;color:var(--text-secondary);transition:all 0.2s;flex-shrink:0;}
+        .copy-btn:hover{background:var(--surface-alt);border-color:var(--accent);color:var(--accent);}
+        .result-message{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:14px;font-weight:500;}
+        .result-message.success{background:rgb(6 95 70 / 0.1);color:var(--success);border:1px solid rgb(6 95 70 / 0.2);}
+        .result-message.error{background:rgb(239 68 68 / 0.1);color:#dc2626;border:1px solid rgb(239 68 68 / 0.2);}
+        .coming-soon{text-align:center;padding:48px 24px;color:var(--text-secondary);}
+        .coming-soon-icon{width:64px;height:64px;margin:0 auto 16px;opacity:0.5;}
+        .icon{width:18px;height:18px;stroke-width:2;}
+        .icon-lg{width:24px;height:24px;}
+        @keyframes fadeIn {from {opacity:0;transform:translateY(10px);} to {opacity:1;transform:translateY(0);}}
+        footer{text-align:center;background-color:#1a237e;color:#fff;padding:10px;position:fixed;bottom:0;width:100%;}
+        footer a{color:#fff;text-decoration:underline;}
+        @media (max-width:768px){.nav-container{padding:0 16px;height:64px;}.nav-list{padding:0 16px;overflow-x:auto;-webkit-overflow-scrolling:touch;}.nav-btn{padding:12px 16px;font-size:14px;white-space:nowrap;}.main-content{padding:24px 16px 120px;}.price-grid{grid-template-columns:1fr;gap:16px;}.form-section{padding:24px;}}
     </style>
 </head>
 <body>
@@ -503,28 +93,18 @@
                 <h1>KryptoPesa</h1>
             </div>
             <div class="user-menu">
-                <button class="menu-icon" onclick="toggleDropdown()">
-                    <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
+                <button class="menu-icon" onclick="toggleDropdown()">☰</button>
                 <div id="dropdownMenu" class="dropdown-menu">
                     <button class="dropdown-item" onclick="goHome()">
-                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                        </svg>
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                         Home
                     </button>
                     <button class="dropdown-item" onclick="verifyKYC()">
-                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-                        </svg>
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
                         Verify KYC
                     </button>
                     <button class="dropdown-item" onclick="logout()">
-                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
-                        </svg>
+                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                         Sign Out
                     </button>
                 </div>
@@ -536,54 +116,48 @@
     <nav class="main-nav">
         <div class="nav-list">
             <button class="nav-btn active" onclick="showSection('markets')">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-                </svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
                 Markets
             </button>
             <button class="nav-btn" onclick="showSection('swap')">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                </svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                 Swap
             </button>
             <button class="nav-btn" onclick="showSection('receive')">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-                </svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
                 Receive
             </button>
             <button class="nav-btn" onclick="showSection('deposit')">
-                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8l-4-4-4 4M4 12l4-4 4 4"/>
-                </svg>
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8l-4-4-4 4M4 12l4-4 4 4"/></svg>
                 Deposit
             </button>
-           
         </div>
     </nav>
 
     <!-- Main Content -->
     <main class="main-content">
-        <!-- Markets Section -->
+        <!-- Markets -->
         <section id="markets" class="section active">
-            <div style="margin-bottom: 24px;">
-                <h2 style="font-size: 24px; font-weight: 600; margin-bottom: 8px;">Live Market Prices</h2>
-                <div style="display: flex; align-items: center; gap: 8px; color: var(--text-secondary);">
-                    <span id="connectionStatus" class="status-indicator status-offline"></span>
-                    <span id="connectionText">Connecting to live data...</span>
+            <div style="margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+                <div>
+                    <h2 style="font-size:24px;font-weight:600;margin-bottom:8px;">Live Market Prices</h2>
+                    <p style="color:var(--text-secondary);font-size:14px;">Real-time cryptocurrency prices updated live</p>
+                </div>
+                <div id="statusBadge" class="status-badge offline">
+                    <span class="status-indicator status-offline"></span>
+                    <span>Connecting...</span>
                 </div>
             </div>
             <div id="priceContainer" class="price-grid"></div>
         </section>
 
-        <!-- Swap Section -->
+        <!-- Swap -->
         <section id="swap" class="section">
             <div class="form-section">
                 <h2 class="form-title">Swap to M-Pesa</h2>
                 <div class="form-group">
                     <label class="form-label">Amount</label>
-                    <input type="number" id="amount" class="form-input" placeholder="0.00" min="0" step="0.01">
+                    <input type="number" id="amount" class="form-input" placeholder="0.00" min="0.0001" step="0.01">
                 </div>
                 <div class="form-group">
                     <label class="form-label">Cryptocurrency</label>
@@ -597,19 +171,17 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label">M-Pesa Number</label>
-                    <input type="text" id="mpesaNumber" class="form-input" placeholder="07123456789" pattern="[0-9]{10}">
+                    <input type="text" id="mpesaNumber" class="form-input" placeholder="0712345678" pattern="[0-9]{10}">
                 </div>
                 <button onclick="swapToMpesa()" class="primary-btn">
-                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
-                    </svg>
+                    <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
                     Swap to M-Pesa
                 </button>
                 <div id="swapResult"></div>
             </div>
         </section>
 
-        <!-- Receive Section -->
+        <!-- Receive -->
         <section id="receive" class="section">
             <div class="form-section">
                 <h2 class="form-title">Receive Cryptocurrency</h2>
@@ -617,60 +189,35 @@
                     <label class="form-label">Your Wallet Address</label>
                     <div class="wallet-address">
                         <span>0x742d35Cc6532C0532025C3e0A321e2D2B9aBc</span>
-                        <button class="copy-btn" onclick="copyAddress()">
-                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                            </svg>
+                        <button class="copy-btn" onclick="copyAddress(event)">
+                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                         </button>
                     </div>
                 </div>
-                <p style="color: var(--text-secondary); font-size: 14px; margin-top: 12px;">
+                <p style="color:var(--text-secondary);font-size:14px;margin-top:12px;">
                     Send cryptocurrency to this address to receive it in your KryptoPesa wallet.
                 </p>
             </div>
         </section>
 
-        <!-- Deposit Section -->
+        <!-- Deposit -->
         <section id="deposit" class="section">
             <div class="form-section">
                 <div class="coming-soon">
-                    <svg class="coming-soon-icon icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                    </svg>
+                    <svg class="coming-soon-icon icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                     <h3>M-Pesa Deposit</h3>
                     <p>Direct M-Pesa deposits are coming soon. Stay tuned for updates.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Charts Section -->
-        <section id="charts" class="section">
-            <div class="form-section">
-                <h2 class="form-title">Trading Charts</h2>
-                <div style="display: flex; gap: 12px; margin-bottom: 20px;">
-                    <input type="text" id="cryptoSearch" class="form-input" placeholder="Search cryptocurrency..." style="flex: 1;">
-                    <button onclick="searchCrypto()" class="primary-btn" style="width: auto; padding: 12px 24px;">
-                        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                        </svg>
-                        Search
-                    </button>
-                </div>
-                <div id="searchResults"></div>
-                <div id="popularCoins" class="price-grid" style="margin-top:24px;"></div>
-                <div id="tradingview-widget" style="height: 500px; width: 100%; margin-top: 32px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface-alt); display: flex; align-items: center; justify-content: center; color: var(--text-secondary);">
-                    TradingView widget integration coming soon
                 </div>
             </div>
         </section>
     </main>
 
     <footer id="contact">
-        <p>&copy; 2025 KryptoPesa. All rights reserved.</p>
+        <p>&copy; 2025 KryptoPesa. Secure Crypto Trading Platform | <a href="mailto:support@kryptopesa.com">Contact Support</a></p>
     </footer>
 
     <script>
-        // Global variables
+        // --- Config & Globals ---
         const cryptos = {
             bitcoin: 'BTC',
             ethereum: 'ETH',
@@ -679,261 +226,87 @@
             'worldcoin-wld': 'WLD'
         };
 
+        // Symbols we want from Binance (uppercase)
+        const WATCH_SYMBOLS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'WLDUSDT'];
+
+        // Cached fallback prices
+        const cachedPrices = {
+            "BTCUSDT": { price: 97234.56, change: 2.34, lastUpdated: "2025-11-03" },
+            "ETHUSDT": { price: 3456.78, change: -1.12, lastUpdated: "2025-11-03" },
+            "SOLUSDT": { price: 189.45, change: 5.67, lastUpdated: "2025-11-03" },
+            "WLDUSDT": { price: 2.84, change: -0.89, lastUpdated: "2025-11-03" }
+        };
+
         let ws = null;
         let reconnectAttempts = 0;
-        const maxReconnectAttempts = 5;
+        const maxReconnectAttempts = 10;
+        let pingIntervalId = null;
 
-        // Dropdown menu functionality
+        // Build the Binance stream URL subscribing only to the tickers we need
+        function buildBinanceURL() {
+            // lowercase stream names required by Binance path
+            const streams = WATCH_SYMBOLS.map(s => s.toLowerCase().replace('usdt','usdt') + '@ticker');
+            return `wss://stream.binance.com:9443/stream?streams=${streams.join('/')}`;
+        }
+
+        // --- UI helpers ---
         function toggleDropdown() {
             const menu = document.getElementById('dropdownMenu');
             menu.classList.toggle('active');
         }
-
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
             const menu = document.getElementById('dropdownMenu');
             const menuIcon = document.querySelector('.menu-icon');
-            
             if (!menu.contains(event.target) && !menuIcon.contains(event.target)) {
                 menu.classList.remove('active');
             }
         });
-
-        // Menu actions
-        function goHome() {
-            showSection('markets');
-            document.getElementById('dropdownMenu').classList.remove('active');
-        }
-
-        function verifyKYC() {
-            // Link to Techcraft KYC verification API
-            window.open('https://api.techcraft.com/kyc/verify', '_blank');
-            document.getElementById('dropdownMenu').classList.remove('active');
-        }
-
-        function logout() {
-            if (confirm('Are you sure you want to sign out?')) {
-                window.location.href = 'landing.html';
-            }
-            document.getElementById('dropdownMenu').classList.remove('active');
-        }
-
-        // Navigation
-        function showSection(id) {
-            // Remove active class from all sections and nav buttons
-            document.querySelectorAll('main .section').forEach(sec => sec.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
-            // Show selected section and highlight nav button
+        function goHome(){ showSection('markets'); document.getElementById('dropdownMenu').classList.remove('active'); }
+        function verifyKYC(){ window.open('https://api.techcraft.com/kyc/verify','_blank'); document.getElementById('dropdownMenu').classList.remove('active'); }
+        function logout(){ if(confirm('Are you sure you want to sign out?')) window.location.href='landing.html'; document.getElementById('dropdownMenu').classList.remove('active'); }
+        function showSection(id){
+            document.querySelectorAll('main .section').forEach(sec=>sec.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn=>btn.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-            
-            // Find and activate the corresponding nav button
-            const navButtons = document.querySelectorAll('.nav-btn');
-            navButtons.forEach(btn => {
-                if (btn.onclick && btn.onclick.toString().includes(`'${id}'`)) {
-                    btn.classList.add('active');
-                }
+            document.querySelectorAll('.nav-btn').forEach(btn=>{
+                if (btn.onclick && btn.onclick.toString().includes(`'${id}'`)) btn.classList.add('active');
             });
         }
 
-        // Copy address functionality
-        function copyAddress() {
+        // copy address - fixed to receive event
+        function copyAddress(e) {
             const address = '0x742d35Cc6532C0532025C3e0A321e2D2B9aBc';
             navigator.clipboard.writeText(address).then(() => {
-                const btn = event.target.closest('.copy-btn');
+                const btn = e.currentTarget;
                 const originalHTML = btn.innerHTML;
                 btn.innerHTML = '<svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>';
-                setTimeout(() => {
-                    btn.innerHTML = originalHTML;
-                }, 2000);
-            }).catch(err => {
-                console.error('Failed to copy address:', err);
-            });
+                setTimeout(()=> btn.innerHTML = originalHTML, 1800);
+            }).catch(err => console.error('Failed to copy address:', err));
         }
 
-        // Swap functionality
-        function swapToMpesa() {
+        // swap
+        function swapToMpesa(){
             const amount = parseFloat(document.getElementById('amount').value);
             const number = document.getElementById('mpesaNumber').value;
             const crypto = document.getElementById('cryptoType').value;
             const resultDiv = document.getElementById('swapResult');
-            
-            // Validation
-            if (!amount || amount <= 0) {
-                resultDiv.innerHTML = '<div class="result-message error">Please enter a valid amount</div>';
-                return;
-            }
-            
-            if (!number || !/^\d{10}$/.test(number)) {
-                resultDiv.innerHTML = '<div class="result-message error">Please enter a valid M-Pesa number (10 digits)</div>';
-                return;
-            }
-            
-            // Simulate processing
-            resultDiv.innerHTML = '<div class="result-message" style="background: rgb(245 158 11 / 0.1); color: var(--warning); border: 1px solid rgb(245 158 11 / 0.2);">Processing swap...</div>';
-            
-            setTimeout(() => {
-                resultDiv.innerHTML = `<div class="result-message success">Successfully swapped ${amount} ${cryptos[crypto]} to M-Pesa number: ${number}</div>`;
-            }, 2000);
+            resultDiv.innerHTML = '';
+            if (!amount || amount <= 0) { resultDiv.innerHTML = '<div class="result-message error">⚠ Please enter a valid amount greater than 0</div>'; return; }
+            if (amount < 1) { resultDiv.innerHTML = '<div class="result-message error">⚠ Minimum swap amount is 1 ' + cryptos[crypto] + '</div>'; return; }
+            if (!number || !/^(07|01)\d{8}$/.test(number)) { resultDiv.innerHTML = '<div class="result-message error">⚠ Please enter a valid Kenyan M-Pesa number (07XX or 01XX format)</div>'; return; }
+            resultDiv.innerHTML = '<div class="result-message" style="background: rgb(245 158 11 / 0.1); color: var(--warning); border: 1px solid rgb(245 158 11 / 0.2);">⏳ Processing swap transaction...</div>';
+            setTimeout(()=> { resultDiv.innerHTML = `<div class="result-message success">✓ Successfully swapped ${amount} ${cryptos[crypto]} to M-Pesa number: ${number}<br><small style="opacity:0.8;font-weight:normal;">Transaction ID: KP${Date.now()}</small></div>`; }, 2500);
         }
 
-        // Search functionality
-        function searchCrypto() {
-            const searchTerm = document.getElementById('cryptoSearch').value.toLowerCase();
-            const resultsDiv = document.getElementById('searchResults');
-            
-            if (!searchTerm) {
-                resultsDiv.innerHTML = '';
-                return;
-            }
-
-            resultsDiv.innerHTML = `<div style="padding: 16px; text-align: center; color: var(--text-secondary);">Searching for "${searchTerm}"...</div>`;
-            
-            // Simulate search results
-            setTimeout(() => {
-                resultsDiv.innerHTML = `
-                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px;">
-                        <p style="color: var(--text-secondary); font-size: 14px;">Search results for "${searchTerm}" would appear here. Integration with crypto data API coming soon.</p>
-                    </div>
-                `;
-            }, 1000);
-        }
-
-        // WebSocket connection management
-        function connectWebSocket() {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                return;
-            }
-
-            try {
-                ws = new WebSocket('wss://stream.binance.com:9443/ws/!ticker@arr');
-                
-                ws.onopen = function() {
-                    console.log('WebSocket connected');
-                    updateConnectionStatus(true);
-                    reconnectAttempts = 0;
-                };
-
-                ws.onmessage = function(event) {
-                    try {
-                        const data = JSON.parse(event.data);
-                        updatePrices(data);
-                    } catch (error) {
-                        console.error('Error parsing WebSocket data:', error);
-                    }
-                };
-
-                ws.onclose = function() {
-                    console.log('WebSocket disconnected');
-                    updateConnectionStatus(false);
-                    
-                    // Attempt reconnection
-                    if (reconnectAttempts < maxReconnectAttempts) {
-                        reconnectAttempts++;
-                        setTimeout(() => {
-                            console.log(`Reconnection attempt ${reconnectAttempts}`);
-                            connectWebSocket();
-                        }, 3000 * reconnectAttempts);
-                    }
-                };
-
-                ws.onerror = function(error) {
-                    console.error('WebSocket error:', error);
-                    updateConnectionStatus(false);
-                };
-
-            } catch (error) {
-                console.error('Failed to create WebSocket connection:', error);
-                updateConnectionStatus(false);
-                showOfflinePrices();
-            }
-        }
-
-        function updateConnectionStatus(isOnline) {
-            const statusIndicator = document.getElementById('connectionStatus');
-            const statusText = document.getElementById('connectionText');
-            
-            if (isOnline) {
-                statusIndicator.className = 'status-indicator status-online';
-                statusText.textContent = 'Live data connected';
-            } else {
-                statusIndicator.className = 'status-indicator status-offline';
-                statusText.textContent = 'Offline - showing cached data';
-            }
-        }
-
-        function updatePrices(data) {
+        // --- Price UI & update helpers ---
+        function createPriceCards() {
             const cryptoData = {
-                "BTCUSDT": { name: "Bitcoin", symbol: "BTC" },
-                "ETHUSDT": { name: "Ethereum", symbol: "ETH" },
-                "SOLUSDT": { name: "Solana", symbol: "SOL" },
-                "WLDUSDT": { name: "Worldcoin", symbol: "WLD" }
+                "BTCUSDT":"Bitcoin","ETHUSDT":"Ethereum","SOLUSDT":"Solana","WLDUSDT":"Worldcoin"
             };
-
-            data.forEach(ticker => {
-                if (cryptoData[ticker.s]) {
-                    const priceElement = document.getElementById(`${ticker.s}-price`);
-                    const changeElement = document.getElementById(`${ticker.s}-change`);
-                    
-                    if (priceElement) {
-                        priceElement.classList.remove('loading');
-                        const price = parseFloat(ticker.c);
-                        priceElement.textContent = `${price.toLocaleString('en-US', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: price > 1 ? 2 : 6
-                        })}`;
-                    }
-                    
-                    if (changeElement) {
-                        const change = parseFloat(ticker.P);
-                        changeElement.textContent = `${change >= 0 ? '+' : ''}${change.toFixed(2)}%`;
-                        changeElement.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
-                    }
-                }
-            });
-        }
-
-        function showOfflinePrices() {
-            const cryptoData = {
-                "BTCUSDT": { name: "Bitcoin", symbol: "BTC", mockPrice: 45000, mockChange: 2.5 },
-                "ETHUSDT": { name: "Ethereum", symbol: "ETH", mockPrice: 2800, mockChange: -1.2 },
-                "SOLUSDT": { name: "Solana", symbol: "SOL", mockPrice: 95, mockChange: 5.8 },
-                "WLDUSDT": { name: "Worldcoin", symbol: "WLD", mockPrice: 3.2, mockChange: -0.5 }
-            };
-
-            Object.keys(cryptoData).forEach(symbol => {
-                const crypto = cryptoData[symbol];
-                const priceElement = document.getElementById(`${symbol}-price`);
-                const changeElement = document.getElementById(`${symbol}-change`);
-                
-                if (priceElement && priceElement.classList.contains('loading')) {
-                    priceElement.classList.remove('loading');
-                    priceElement.textContent = `${crypto.mockPrice.toLocaleString('en-US', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: crypto.mockPrice > 1 ? 2 : 6
-                    })}`;
-                }
-                
-                if (changeElement) {
-                    changeElement.textContent = `${crypto.mockChange >= 0 ? '+' : ''}${crypto.mockChange}%`;
-                    changeElement.className = `price-change ${crypto.mockChange >= 0 ? 'positive' : 'negative'}`;
-                }
-            });
-        }
-
-        // Initialize application - Updated with homepage.js integration
-        document.addEventListener("DOMContentLoaded", () => {
-            const cryptoData = {
-                "BTCUSDT": "Bitcoin",
-                "ETHUSDT": "Ethereum", 
-                "SOLUSDT": "Solana",
-                "WLDUSDT": "Worldcoin"
-            };
-
             const priceContainer = document.getElementById("priceContainer");
-
-            // Create price cards using the exact structure from homepage.js
+            priceContainer.innerHTML = '';
             Object.keys(cryptoData).forEach(symbol => {
+                const cached = cachedPrices[symbol] || { price: 0, change: 0 };
                 const div = document.createElement("div");
                 div.className = "price-card";
                 div.innerHTML = `
@@ -945,40 +318,174 @@
                         </div>
                         <div>
                             <div class="crypto-name">${cryptoData[symbol]}</div>
-                            <div class="crypto-symbol">${symbol.replace('USDT', '')}</div>
+                            <div class="crypto-symbol">${symbol.replace('USDT','')}</div>
                         </div>
                     </div>
-                    <div id="${symbol}-price" class="price-value loading">Loading...</div>
-                    <div id="${symbol}-change" class="price-change">--</div>
+                    <div id="${symbol}-price" class="price-value">${(cached.price).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits: cached.price>1?2:6})}</div>
+                    <div id="${symbol}-change" class="price-change ${cached.change>=0?'positive':'negative'}">${cached.change>=0?'▲':'▼'} ${Math.abs(cached.change).toFixed(2)}%</div>
                 `;
                 priceContainer.appendChild(div);
             });
+        }
 
-            // Initialize WebSocket connection
+        function updateConnectionStatus(isOnline) {
+            const statusBadge = document.getElementById('statusBadge');
+            const statusIndicator = statusBadge.querySelector('.status-indicator');
+            const statusText = statusBadge.querySelector('span:last-child');
+            if (isOnline) {
+                statusBadge.className = 'status-badge online';
+                statusIndicator.className = 'status-indicator status-online';
+                statusText.textContent = 'Live';
+            } else {
+                statusBadge.className = 'status-badge offline';
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'Cached Data';
+            }
+        }
+
+        function showOfflinePrices(){
+            Object.keys(cachedPrices).forEach(symbol => {
+                const cached = cachedPrices[symbol];
+                const priceEl = document.getElementById(`${symbol}-price`);
+                const changeEl = document.getElementById(`${symbol}-change`);
+                if (priceEl) {
+                    priceEl.textContent = `${cached.price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits: cached.price>1?2:6})}`;
+                }
+                if (changeEl) {
+                    changeEl.textContent = `${cached.change>=0?'▲':'▼'} ${Math.abs(cached.change).toFixed(2)}%`;
+                    changeEl.className = `price-change ${cached.change>=0?'positive':'negative'}`;
+                }
+            });
+        }
+
+        // Accepts either a Binance 'ticker' message object or the 'data' property
+        function handleTicker(ticker) {
+            // Binance ticker object fields: s (symbol), c (close), P (priceChangePercent)
+            if (!ticker || !ticker.s) return;
+            const sym = ticker.s.toUpperCase();
+            if (!WATCH_SYMBOLS.includes(sym)) return;
+            const priceEl = document.getElementById(`${sym}-price`);
+            const changeEl = document.getElementById(`${sym}-change`);
+            try {
+                const price = parseFloat(ticker.c);
+                const change = parseFloat(ticker.P);
+                if (priceEl) {
+                    priceEl.textContent = price.toLocaleString('en-US',{
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: price > 1 ? 2 : 6
+                    });
+                }
+                if (changeEl) {
+                    changeEl.textContent = `${change >= 0 ? '▲' : '▼'} ${Math.abs(change).toFixed(2)}%`;
+                    changeEl.className = `price-change ${change >= 0 ? 'positive' : 'negative'}`;
+                }
+                // Update cachedPrices for fallback
+                if (!cachedPrices[sym]) cachedPrices[sym] = {};
+                cachedPrices[sym].price = price;
+                cachedPrices[sym].change = change;
+                cachedPrices[sym].lastUpdated = new Date().toISOString();
+            } catch (err) {
+                console.error('handleTicker parse error:', err);
+            }
+        }
+
+        // --- WebSocket management ---
+        function connectWebSocket() {
+            // Avoid creating multiple WebSockets at once
+            if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+                return;
+            }
+
+            const url = buildBinanceURL();
+            console.log('Connecting to', url);
+
+            try {
+                ws = new WebSocket(url);
+
+                ws.onopen = () => {
+                    console.log('✓ WebSocket connected');
+                    reconnectAttempts = 0;
+                    updateConnectionStatus(true);
+
+                    // Optional heartbeat: send a ping frame every 20s (some servers ignore)
+                    if (pingIntervalId) clearInterval(pingIntervalId);
+                    pingIntervalId = setInterval(() => {
+                        if (ws && ws.readyState === WebSocket.OPEN) {
+                            // Binance doesn't require a JSON ping — send a lightweight ping comment to keep connection lively
+                            try { ws.send(JSON.stringify({ ev: 'ping', time: Date.now() })); } catch(e) { /* ignore */ }
+                        }
+                    }, 20000);
+                };
+
+                ws.onmessage = (evt) => {
+                    // Binance stream wrapper: { stream: "...", data: { ...ticker fields... } }
+                    try {
+                        const payload = JSON.parse(evt.data);
+                        if (payload && payload.data && payload.data.s) {
+                            handleTicker(payload.data);
+                        } else if (Array.isArray(payload)) {
+                            // some responses may be arrays of tickers
+                            payload.forEach(item => {
+                                if (item && item.s) handleTicker(item);
+                                if (item && item.data && item.data.s) handleTicker(item.data);
+                            });
+                        } else if (payload && payload.s) {
+                            handleTicker(payload);
+                        } else {
+                            // ignore unknown
+                        }
+                    } catch (err) {
+                        console.error('WebSocket message parse error:', err);
+                    }
+                };
+
+                ws.onerror = (err) => {
+                    console.error('WebSocket error', err);
+                    updateConnectionStatus(false);
+                };
+
+                ws.onclose = (evt) => {
+                    console.warn('WebSocket closed', evt && (evt.code || evt.reason) ? evt : '');
+                    updateConnectionStatus(false);
+                    if (pingIntervalId) { clearInterval(pingIntervalId); pingIntervalId = null; }
+
+                    // Try to reconnect with exponential backoff
+                    if (reconnectAttempts < maxReconnectAttempts) {
+                        reconnectAttempts++;
+                        const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 30000);
+                        console.log(`⟳ Reconnect attempt ${reconnectAttempts}/${maxReconnectAttempts} in ${delay/1000}s`);
+                        setTimeout(connectWebSocket, delay);
+                    } else {
+                        console.log('⚠ Max reconnection attempts reached. Falling back to cached prices.');
+                        showOfflinePrices();
+                    }
+                };
+
+            } catch (err) {
+                console.error('Failed to create WebSocket', err);
+                updateConnectionStatus(false);
+                showOfflinePrices();
+            }
+        }
+
+        // --- Init & cleanup ---
+        document.addEventListener('DOMContentLoaded', () => {
+            createPriceCards();
             connectWebSocket();
 
-            // Fallback timer for offline mode
+            // after a short timeout, if connection not open, mark as offline (cached)
             setTimeout(() => {
-                const loadingElements = document.querySelectorAll('.price-value.loading');
-                if (loadingElements.length > 0) {
-                    console.log('Switching to offline mode');
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                    console.log('WebSocket not open after wait - using cached prices');
+                    updateConnectionStatus(false);
                     showOfflinePrices();
                 }
             }, 5000);
-
-            // Add search functionality to charts input
-            document.getElementById('cryptoSearch').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    searchCrypto();
-                }
-            });
         });
 
-        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
-            if (ws) {
-                ws.close();
-            }
+            if (ws) ws.close();
+            if (pingIntervalId) clearInterval(pingIntervalId);
         });
     </script>
 </body>
