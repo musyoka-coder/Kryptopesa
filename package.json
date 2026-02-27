@@ -1,0 +1,17 @@
+{
+  "name": "kryptopesa",
+  "version": "2.0.0",
+  "description": "KryptoPesa — Crypto to M-Pesa trading platform",
+  "private": true,
+  "main": "homepage.html",
+  "scripts": {
+    "start": "npx serve . -p 3000",
+    "dev": "npx live-server --port=3000 --open=landing.html"
+  },
+  "devDependencies": {
+    "live-server": "^1.2.2",
+    "serve": "^14.0.0"
+  },
+  "keywords": ["crypto", "mpesa", "kenya", "bitcoin", "fintech"],
+  "license": "UNLICENSED"
+}

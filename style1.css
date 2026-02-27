@@ -1,0 +1,45 @@
+/* style1.css — KryptoPesa Login & Signup Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.top-bar { padding: 16px 24px; display: flex; align-items: center; gap: 10px; }
+.logo-icon {
+  width: 38px; height: 38px; background: #ffd600; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 900; color: #1a237e;
+}
+.brand { color: #fff; font-weight: 700; font-size: 1.2rem; }
+.center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+.container {
+  background: #fff;
+  max-width: 420px;
+  width: 100%;
+  padding: 36px;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3);
+}
+h2 { text-align: center; color: #1a237e; margin-bottom: 6px; font-size: 1.6rem; font-weight: 800; }
+.subtitle { text-align: center; color: #64748b; font-size: .875rem; margin-bottom: 24px; }
+.form-group { margin-bottom: 18px; }
+label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 13px; color: #374151; text-transform: uppercase; letter-spacing: .4px; }
+input {
+  width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0;
+  border-radius: 8px; font-size: 15px; transition: border-color .2s; font-family: inherit;
+}
+input:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,.1); }
+.btn {
+  width: 100%; padding: 13px; background: #1a237e; color: #fff;
+  border: none; border-radius: 8px; font-weight: 700; font-size: 15px;
+  cursor: pointer; transition: all .2s; font-family: inherit;
+}
+.btn:hover { background: #0d47a1; transform: translateY(-1px); }
+.btn:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+.link-row { text-align: center; margin-top: 18px; font-size: .9rem; color: #64748b; }
+.link-row a { color: #1a237e; font-weight: 700; text-decoration: none; }
+.link-row a:hover { text-decoration: underline; }
+footer { text-align: center; padding: 16px; color: rgba(255,255,255,.7); font-size: .8rem; background: transparent; }

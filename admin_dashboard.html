@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KryptoPesa Admin Dashboard</title>
+    <style>
+        :root {
+            --primary: #1a237e;
+            --accent: #ffd600;
+            --success: #059669;
+            --danger: #dc2626;
+            --warning: #d97706;
+            --surface: #ffffff;
+            --surface-alt: #f8fafc;
+            --border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: var(--surface-alt);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary) 0%, #0d47a1 100%);
+            padding: 20px;
+        }
+        .login-box {
+            background: var(--surface);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 420px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .login-header h1 {
+            color: var(--primary);
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .login-header p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 14px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 35, 126, 0.1);
+        }
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-primary:hover {
+            background: #0d47a1;
+            transform: translateY(-1px);
+        }
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .alert-error {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+        }
+        .alert-success {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(5, 150, 105, 0.2);
+        }
+        .dashboard {
+            display: none;
+        }
+        .dashboard.active {
+            display: block;
+        }
+        .dashboard-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-logo {
+            display: flex;
+            align-items: center;
+        }
+        .dashboard-logo img {
+            height: 40px;
+            width: auto;
+        }
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .logout-btn {
+            padding: 8px 16px;
+            background: var(--accent);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .logout-btn:hover {
+            background: hsla(76, 100%, 65%, 0.651);
+        }
+        .dashboard-nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 40px;
+        }
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            list-style: none;
+        }
+        .nav-tab {
+            padding: 16px 24px;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav-tab:hover {
+            color: var(--text-primary);
+            background: var(--surface-alt);
+        }
+        .nav-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .dashboard-content {
+            padding: 32px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .data-table {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .table-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .table-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .search-box {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            width: 250px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 16px 24px;
+            text-align: left;
+        }
+        th {
+            background: var(--surface-alt);
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        td {
+            border-bottom: 1px solid var(--border);
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        tr:hover {
+            background: var(--surface-alt);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-active {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+        }
+        .status-suspended {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+        }
+        .status-pending {
+            background: rgba(217, 119, 6, 0.1);
+            color: var(--warning);
+        }
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-sm {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-suspend {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--danger);
+        }
+        .btn-suspend:hover {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-activate {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--success);
+        }
+        .btn-activate:hover {
+            background: var(--success);
+            color: white;
+        }
+        .btn-delete {
+            background: rgba(220, 38, 38, 0.2);
+            color: var(--danger);
+        }
+        .btn-delete:hover {
+            background: var(--danger);
+            color: white;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: var(--surface);
+            border-radius: 12px;
+            padding: 32px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn-cancel {
+            flex: 1;
+            padding: 12px;
+            background: var(--surface-alt);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-confirm {
+            flex: 1;
+            padding: 12px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+        @media (max-width: 768px) {
+            .dashboard-header, .dashboard-nav, .dashboard-content {
+                padding: 16px 20px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .table-header {
+                flex-direction: column;
+                gap: 16px;
+                align-items: stretch;
+            }
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="login-box">
+            <div class="login-header">
+                <h1> Admin pannel</h1>
+                <p>KryptoPesa System Administration</p>
+            </div>
+            <div id="loginAlert"></div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">Admin Username</label>
+                    <input type="text" id="adminUsername" class="form-input" required autocomplete="username">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="adminPassword" class="form-input" required autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn-primary">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard">
+        <header class="dashboard-header">
+            <div class="dashboard-logo"><img src="logo.jpg" alt="KryptoPesa">   KryptoPesa</div>
+            <div class="admin-info">
+                <span id="adminName">Admin User</span>
+                <button class="logout-btn" onclick="logout()">Sign Out</button>
+            </div>
+        </header>
+
+        <nav class="dashboard-nav">
+            <ul class="nav-tabs">
+                <li><button class="nav-tab active" onclick="showTab('overview')">Overview</button></li>
+                <li><button class="nav-tab" onclick="showTab('users')">Users</button></li>
+                <li><button class="nav-tab" onclick="showTab('kyc')"> KYC Approvals</button></li>
+                <li><button class="nav-tab" onclick="showTab('transactions')">Transactions</button></li>
+                <li><button class="nav-tab" onclick="showTab('database')">Database</button></li>
+            </ul>
+        </nav>
+
+        <main class="dashboard-content">
+            <!-- Overview Tab -->
+            <div id="overviewTab" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Users</div>
+                        <div class="stat-value" id="activeUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Transactions</div>
+                        <div class="stat-value" id="totalTransactions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">System Status</div>
+                        <div class="stat-value" style="font-size: 24px; color: var(--success);">✓ Online</div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2 class="table-title">Recent Activity</h2>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event</th>
+                                <th>User</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="activityLog">
+                            <tr>
+                                <td colspan="4" class="empty-state">No recent activity</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Tab -->
+            <div id="usersTab" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2 class="table-title">User Management</h2>
+                        <input type="text" class="search-box" placeholder="Search users..." id="userSearch" oninput="filterUsers()">
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>KYC</th>
+                                <th>Joined</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- KYC Tab -->
+            <div id="kycTab" class="tab-content">
+                <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:14px;">
+                    <span style="font-size:28px;"></span>
+                    <div>
+                        <div style="font-weight:700;font-size:15px;color:#92400e;">KYC Approval Centre</div>
+                        <div style="font-size:13px;color:#b45309;margin-top:2px;">Approve users below to unlock the <strong>Receive Crypto</strong> section on their dashboard.</div>
+                    </div>
+                </div>
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2 class="table-title">Users Awaiting KYC Approval</h2>
+                        <button onclick="loadKYC()" style="padding:8px 16px;background:#1a237e;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;">🔄 Refresh</button>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Joined</th>
+                                <th>KYC Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kycTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Transactions Tab -->
+            <div id="transactionsTab" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2 class="table-title">Transaction History</h2>
+                        <input type="text" class="search-box" placeholder="Search transactions..." id="txSearch" oninput="filterTransactions()">
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>TX ID</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Database Tab -->
+            <div id="databaseTab" class="tab-content">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Users Records</div>
+                        <div class="stat-value" id="dbUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Transaction Records</div>
+                        <div class="stat-value" id="dbTransactions">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Database Size</div>
+                        <div class="stat-value" style="font-size: 24px;">~250KB</div>
+                    </div>
+                </div>
+
+                <div class="data-table">
+                    <div class="table-header">
+                        <h2 class="table-title">Database Management</h2>
+                    </div>
+                    <div style="padding: 24px;">
+                        <button onclick="exportDatabase()" class="btn-primary" style="width: auto; margin-right: 12px;">Export Database</button>
+                        <button onclick="clearOldData()" class="btn-primary" style="width: auto; background: var(--warning);">Clear Old Records</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modalTitle">Confirm Action</div>
+            <p id="modalMessage">Are you sure you want to proceed?</p>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal()">Cancel</button>
+                <button class="btn-confirm" id="confirmBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple password hashing (SHA-256)
+        async function hashPassword(password) {
+            const msgBuffer = new TextEncoder().encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Initialize admin account
+        async function initializeAdmin() {
+            const adminData = {
+                username: 'musyoka',
+                passwordHash: await hashPassword('Admin@2025'),
+                email: 'admin@kryptopesa.com',
+                role: 'superadmin'
+            };
+            
+            if (!JSON.parse(localStorage.getItem('kryptopesa_admin') || 'null')) {
+                localStorage.setItem('kryptopesa_admin', JSON.stringify(adminData));
+            }
+        }
+
+        // Initialize databases
+        function initializeDatabases() {
+            if (!localStorage.getItem('kryptopesa_users_db')) {
+                localStorage.setItem('kryptopesa_users_db', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('kryptopesa_transactions_db')) {
+                localStorage.setItem('kryptopesa_transactions_db', JSON.stringify([]));
+            }
+            if (!localStorage.getItem('kryptopesa_activity_log')) {
+                localStorage.setItem('kryptopesa_activity_log', JSON.stringify([]));
+            }
+        }
+
+        // Login handling
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+            const alertDiv = document.getElementById('loginAlert');
+
+            const admin = JSON.parse(localStorage.getItem('kryptopesa_admin'));
+            const passwordHash = await hashPassword(password);
+
+            if (admin && username === admin.username && passwordHash === admin.passwordHash) {
+                alertDiv.innerHTML = '<div class="alert alert-success">✓ Login successful</div>';
+                logActivity('Admin Login', username, 'success');
+                setTimeout(() => {
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('dashboard').classList.add('active');
+                    document.getElementById('adminName').textContent = username;
+                    loadDashboardData();
+                }, 500);
+            } else {
+                alertDiv.innerHTML = '<div class="alert alert-error">✗ Invalid credentials</div>';
+            }
+        });
+
+        // Tab navigation
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'users') loadUsers();
+            if (tabName === 'kyc') loadKYC();
+            if (tabName === 'transactions') loadTransactions();
+            if (tabName === 'database') updateDatabaseStats();
+        }
+
+        function loadKYC() {
+            const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const tbody = document.getElementById('kycTable');
+
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No users registered yet.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                const kycVerified = user.kycVerified === true;
+                const kycPending = localStorage.getItem(`kyc_sub_${user.username}`) === 'submitted' || localStorage.getItem(`kyc_submitted_${user.username}`) === 'submitted';
+
+                let statusBadge, actionBtn;
+                if (kycVerified) {
+                    statusBadge = '<span class="status-badge status-active">Verified</span>';
+                    actionBtn = `<button class="btn-sm btn-suspend" onclick="revokeKYC('${user.username}')">Revoke KYC</button>`;
+                } else if (kycPending) {
+                    statusBadge = '<span class="status-badge status-pending">Pending Review</span>';
+                    actionBtn = `<button class="btn-sm" style="background:#ffd600;color:#1a237e;font-weight:800;font-size:13px;padding:8px 16px;" onclick="approveKYC('${user.username}')"> Approve KYC</button>`;
+                } else {
+                    statusBadge = '<span class="status-badge" style="background:rgba(100,116,139,0.1);color:#64748b;">Not Submitted</span>';
+                    actionBtn = `<button class="btn-sm" style="background:#1a237e;color:#fff;font-weight:700;" onclick="approveKYC('${user.username}')"> Force Approve</button>`;
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${user.username}</strong></td>
+                        <td>${new Date(user.joinedDate).toLocaleDateString()}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actionBtn}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Load dashboard data
+        function loadDashboardData() {
+            const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const transactions = JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]');
+            const activityLog = JSON.parse(localStorage.getItem('kryptopesa_activity_log') || '[]');
+
+            document.getElementById('totalUsers').textContent = users.length;
+            document.getElementById('activeUsers').textContent = users.filter(u => u.status === 'active').length;
+            document.getElementById('totalTransactions').textContent = transactions.length;
+
+            // Load recent activity
+            const tbody = document.getElementById('activityLog');
+            if (activityLog.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">No recent activity</td></tr>';
+            } else {
+                tbody.innerHTML = activityLog.slice(-10).reverse().map(log => `
+                    <tr>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                        <td>${log.event}</td>
+                        <td>${log.user}</td>
+                        <td><span class="status-badge status-${log.status}">${log.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function loadUsers() {
+            const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const tbody = document.getElementById('usersTable');
+            
+            if (users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No users registered yet</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = users.map(user => {
+                // Check both possible KYC key formats for compatibility
+                const kycSubmitted = localStorage.getItem(`kyc_sub_${user.username}`) === 'submitted' || localStorage.getItem(`kyc_submitted_${user.username}`) === 'submitted';
+                const kycVerified = user.kycVerified === true;
+                let kycBadge = '';
+                if (kycVerified) {
+                    kycBadge = '<span class="status-badge status-active">Verified</span>';
+                } else if (kycSubmitted) {
+                    kycBadge = '<span class="status-badge status-pending"> Pending</span>';
+                } else {
+                    kycBadge = '<span class="status-badge" style="background:rgba(100,116,139,0.1);color:#64748b;">—</span>';
+                }
+
+                const kycBtn = kycVerified
+                    ? `<button class="btn-sm" style="background:rgba(5,150,105,0.15);color:#059669;cursor:default;" disabled>✅ Verified</button>`
+                    : `<button class="btn-sm" style="background:#ffd600;color:#1a237e;font-weight:700;border:1px solid #e6c200;" onclick="approveKYC('${user.username}')"> Approve KYC</button>`;
+
+                return `
+                <tr>
+                    <td><strong>${user.username}</strong></td>
+                    <td>${user.email || 'N/A'}</td>
+                    <td><span class="status-badge status-${user.status}">${user.status}</span></td>
+                    <td>${kycBadge}</td>
+                    <td>${new Date(user.joinedDate).toLocaleDateString()}</td>
+                    <td>
+                        <div class="action-btns">
+                            ${kycBtn}
+                            ${user.status === 'active' ? 
+                                `<button class="btn-sm btn-suspend" onclick="suspendUser('${user.username}')">Suspend</button>` :
+                                `<button class="btn-sm btn-activate" onclick="activateUser('${user.username}')">Activate</button>`
+                            }
+                            <button class="btn-sm btn-delete" onclick="deleteUser('${user.username}')">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `}).join('');
+        }
+
+        // Load transactions
+        function loadTransactions() {
+            const transactions = JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]');
+            const tbody = document.getElementById('transactionsTable');
+            
+            if (transactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" class="empty-state">No transactions recorded</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = transactions.map(tx => `
+                <tr>
+                    <td>${tx.txId}</td>
+                    <td>${tx.username}</td>
+                    <td>${tx.type}</td>
+                    <td>${tx.amount} ${tx.crypto}</td>
+                    <td><span class="status-badge status-${tx.status}">${tx.status}</span></td>
+                    <td>${new Date(tx.timestamp).toLocaleString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        // User management functions
+        function suspendUser(username) {
+            showConfirmModal(
+                'Suspend User',
+                `Are you sure you want to suspend ${username}?`,
+                () => {
+                    const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+                    const userIndex = users.findIndex(u => u.username === username);
+                    if (userIndex !== -1) {
+                        users[userIndex].status = 'suspended';
+                        localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+                        logActivity('User Suspended', username, 'warning');
+                        loadUsers();
+                        loadDashboardData();
+                    }
+                }
+            );
+        }
+
+        function activateUser(username) {
+            const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const userIndex = users.findIndex(u => u.username === username);
+            if (userIndex !== -1) {
+                users[userIndex].status = 'active';
+                localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+                logActivity('User Activated', username, 'success');
+                loadUsers();
+                loadDashboardData();
+            }
+        }
+
+        function approveKYC(username) {
+            showConfirmModal(
+                ' Approve KYC Verification',
+                `Grant KYC verification to "${username}"? They will immediately gain access to receive crypto addresses.`,
+                () => {
+                    // Update users DB
+                    const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+                    const idx = users.findIndex(u => u.username === username);
+                    if (idx !== -1) {
+                        users[idx].kycVerified = true;
+                        users[idx].kycApprovedAt = new Date().toISOString();
+                        localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+                    }
+                    // Set the correct key that homepage.html reads
+                    localStorage.setItem(`kyc_sub_${username}`, 'submitted');
+                    // Also set legacy key for compatibility
+                    localStorage.setItem(`kyc_submitted_${username}`, 'submitted');
+
+                    logActivity('KYC Approved', username, 'success');
+                    loadUsers();
+                    loadDashboardData();
+
+                    // Show success inline
+                    const alertDiv = document.createElement('div');
+                    alertDiv.innerHTML = `<div style="position:fixed;top:20px;right:20px;background:#059669;color:white;padding:14px 20px;border-radius:10px;font-weight:600;font-size:14px;z-index:9999;box-shadow:0 8px 24px rgba(0,0,0,.2);">✅ KYC approved for ${username}!</div>`;
+                    document.body.appendChild(alertDiv);
+                    setTimeout(() => alertDiv.remove(), 3000);
+                }
+            );
+        }
+
+        function revokeKYC(username) {
+            showConfirmModal(
+                'Revoke KYC',
+                `Remove KYC verification from "${username}"?`,
+                () => {
+                    const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+                    const idx = users.findIndex(u => u.username === username);
+                    if (idx !== -1) {
+                        users[idx].kycVerified = false;
+                        delete users[idx].kycApprovedAt;
+                        localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+                    }
+                    localStorage.removeItem(`kyc_sub_${username}`);
+                    localStorage.removeItem(`kyc_submitted_${username}`);
+                    logActivity('KYC Revoked', username, 'pending');
+                    loadUsers();
+                    loadDashboardData();
+                }
+            );
+        }
+
+        function deleteUser(username) {
+            showConfirmModal(
+                'Delete User',
+                `Are you sure you want to permanently delete ${username}? This action cannot be undone.`,
+                () => {
+                    let users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+                    users = users.filter(u => u.username !== username);
+                    localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+                    logActivity('User Deleted', username, 'pending');
+                    loadUsers();
+                    loadDashboardData();
+                }
+            );
+        }
+
+        // Search filters
+        function filterUsers() {
+            const search = document.getElementById('userSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#usersTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        function filterTransactions() {
+            const search = document.getElementById('txSearch').value.toLowerCase();
+            const rows = document.querySelectorAll('#transactionsTable tr');
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(search) ? '' : 'none';
+            });
+        }
+
+        // Database management
+        function updateDatabaseStats() {
+            const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const transactions = JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]');
+            document.getElementById('dbUsers').textContent = users.length;
+            document.getElementById('dbTransactions').textContent = transactions.length;
+        }
+
+        function exportDatabase() {
+            const data = {
+                users: JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]'),
+                transactions: JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]'),
+                activityLog: JSON.parse(localStorage.getItem('kryptopesa_activity_log') || '[]'),
+                exportDate: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `kryptopesa_backup_${Date.now()}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            logActivity('Database Export', 'Admin', 'success');
+        }
+
+        function clearOldData() {
+            showConfirmModal(
+                'Clear Old Records',
+                'This will remove transaction records older than 90 days. Continue?',
+                () => {
+                    const transactions = JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]');
+                    const cutoffDate = Date.now() - (90 * 24 * 60 * 60 * 1000);
+                    const filtered = transactions.filter(tx => new Date(tx.timestamp).getTime() > cutoffDate);
+                    localStorage.setItem('kryptopesa_transactions_db', JSON.stringify(filtered));
+                    logActivity('Old Data Cleared', 'Admin', 'success');
+                    loadTransactions();
+                    updateDatabaseStats();
+                }
+            );
+        }
+
+        // Activity logging
+        function logActivity(event, user, status) {
+            const activityLog = JSON.parse(localStorage.getItem('kryptopesa_activity_log') || '[]');
+            activityLog.push({
+                event,
+                user,
+                status,
+                timestamp: new Date().toISOString()
+            });
+            // Keep only last 100 entries
+            if (activityLog.length > 100) {
+                activityLog.splice(0, activityLog.length - 100);
+            }
+            localStorage.setItem('kryptopesa_activity_log', JSON.stringify(activityLog));
+        }
+
+        // Modal functions
+        function showConfirmModal(title, message, onConfirm) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalMessage').textContent = message;
+            document.getElementById('confirmModal').classList.add('active');
+            
+            const confirmBtn = document.getElementById('confirmBtn');
+            confirmBtn.onclick = () => {
+                onConfirm();
+                closeModal();
+            };
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').classList.remove('active');
+        }
+
+        // Logout
+        function logout() {
+            if (confirm('Are you sure you want to sign out?')) {
+                logActivity('Admin Logout', document.getElementById('adminName').textContent, 'success');
+                document.getElementById('dashboard').classList.remove('active');
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('loginForm').reset();
+            }
+        }
+
+        // Add some demo data for testing
+        function addDemoData() {
+            // Add demo users
+            const demoUsers = [
+                { username: 'musyoka', email: 'musyoka25@example.com', status: 'active', joinedDate: new Date('2025-01-15').toISOString() },
+                { username: 'shiku', email: 'kiaritha@gmail.com', status: 'active', joinedDate: new Date('2025-02-10').toISOString() },
+                { username: 'Jared_mayieka', email: 'jaredmaranga@gmail.com', status: 'suspended', joinedDate: new Date('2025-03-05').toISOString() }
+            ];
+            
+            // Add demo transactions
+            const demoTxs = [
+                { txId: 'KP' + Date.now(), username: 'nicholus', type: 'Swap', amount: '0.05', crypto: 'BTC', status: 'active', timestamp: new Date().toISOString() },
+                { txId: 'KP' + (Date.now() - 1000), username: 'musili', type: 'Deposit', amount: '1.5', crypto: 'ETH', status: 'pending', timestamp: new Date(Date.now() - 3600000).toISOString() },
+                { txId: 'KP' + (Date.now() - 2000), username: 'samuel_muia', type: 'Swap', amount: '100', crypto: 'USDT', status: 'active', timestamp: new Date(Date.now() - 7200000).toISOString() }
+            ];
+
+            const existingUsers = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+            const existingTxs = JSON.parse(localStorage.getItem('kryptopesa_transactions_db') || '[]');
+
+            if (existingUsers.length === 0) {
+                localStorage.setItem('kryptopesa_users_db', JSON.stringify(demoUsers));
+            }
+            if (existingTxs.length === 0) {
+                localStorage.setItem('kryptopesa_transactions_db', JSON.stringify(demoTxs));
+            }
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initializeAdmin();
+            initializeDatabases();
+            addDemoData(); // Remove this line in production
+        });
+    </script>
+</body>
+</html>

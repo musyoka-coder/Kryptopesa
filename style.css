@@ -1,0 +1,68 @@
+/* style.css — KryptoPesa Landing Page Styles */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f5f5;
+  color: #212121;
+}
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1a237e;
+  padding: 1rem 2rem;
+}
+.logo { display: flex; align-items: center; color: #fff; gap: 12px; text-decoration: none; }
+.logo img { height: 40px; border-radius: 8px; }
+.logo h1 { font-size: 1.4rem; font-weight: 700; color: #fff; }
+.nav-links { list-style: none; display: flex; gap: 20px; align-items: center; }
+.nav-links li a { text-decoration: none; color: #fff; transition: color .3s; font-weight: 500; }
+.nav-links li a:hover { color: #ffd600; }
+.btn {
+  background: #ffd600;
+  color: #000;
+  padding: .55rem 1.2rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: all .2s;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn:hover { background: #e6c200; transform: translateY(-1px); }
+.hero {
+  background: linear-gradient(135deg, #1a237e 0%, #0d47a1 100%);
+  color: #fff;
+  text-align: center;
+  padding: 5rem 2rem;
+}
+.hero h2 { font-size: 2.8rem; margin-bottom: 1rem; font-weight: 800; }
+.hero p { font-size: 1.2rem; margin-bottom: 2rem; opacity: .9; }
+.features, .how-it-works { padding: 3.5rem 2rem; text-align: center; }
+.features h3, .how-it-works h3 { font-size: 1.8rem; font-weight: 700; margin-bottom: 2rem; color: #1a237e; }
+.feature-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.5rem; }
+.feature {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.1);
+  padding: 2rem;
+  max-width: 260px;
+  flex: 1;
+  min-width: 200px;
+  transition: transform .2s;
+}
+.feature:hover { transform: translateY(-4px); }
+.how-it-works { background: #fff; }
+footer {
+  text-align: center;
+  background: #1a237e;
+  color: #fff;
+  padding: 1.5rem;
+}
+footer a { color: #ffd600; text-decoration: none; }
+@media (max-width: 600px) {
+  .hero h2 { font-size: 1.8rem; }
+  .navbar { flex-direction: column; gap: 12px; }
+  .nav-links { flex-wrap: wrap; justify-content: center; }
+}

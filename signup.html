@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KryptoPesa — Sign Up</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);min-height:100vh;display:flex;flex-direction:column;}
+    .top-bar{padding:16px 24px;display:flex;align-items:center;gap:10px;}
+    .logo-icon{width:38px;height:38px;background:#ffd600;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#1a237e;}
+    .brand{color:#fff;font-weight:700;font-size:1.2rem;}
+    .center{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .container{background:#fff;max-width:420px;width:100%;padding:36px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+    h2{text-align:center;color:#1a237e;margin-bottom:6px;font-size:1.6rem;font-weight:800;}
+    .subtitle{text-align:center;color:#64748b;font-size:.875rem;margin-bottom:24px;}
+    .form-group{margin-bottom:18px;}
+    label{display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#374151;text-transform:uppercase;letter-spacing:.4px;}
+    input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:15px;transition:border-color .2s;font-family:inherit;}
+    input:focus{outline:none;border-color:#1a237e;box-shadow:0 0 0 3px rgba(26,35,126,.1);}
+    .strength-bar{height:4px;border-radius:2px;background:#e2e8f0;margin-top:6px;overflow:hidden;}
+    .strength-fill{height:100%;border-radius:2px;transition:all .3s;width:0;}
+    .strength-label{font-size:11px;margin-top:4px;font-weight:600;}
+    .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none;}
+    .btn{width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .btn:hover{background:#0d47a1;transform:translateY(-1px);}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+    .link-row{text-align:center;margin-top:18px;font-size:.9rem;color:#64748b;}
+    .link-row a{color:#1a237e;font-weight:700;text-decoration:none;}
+    .link-row a:hover{text-decoration:underline;}
+    .terms{font-size:12px;color:#94a3b8;text-align:center;margin-top:12px;}
+    footer{text-align:center;padding:16px;color:rgba(255,255,255,.7);font-size:.8rem;}
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <img src="logo.jpg" alt="KryptoPesa Logo" class="logo-icon">
+    <span class="brand">KryptoPesa</span>
+  </div>
+  <div class="center">
+    
+    <div class="container">
+      <h2>Create Account</h2>
+      <p class="subtitle">Join KryptoPesa and start trading crypto</p>
+      <div class="error-msg" id="errorMsg"></div>
+      <form id="signupForm">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="signupUsername" placeholder="At least 3 characters" minlength="3" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="signupPassword" placeholder="At least 6 characters" minlength="6" required oninput="checkStrength(this.value)" />
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+          <div class="strength-label" id="strengthLabel"></div>
+        </div>
+        <div class="form-group">
+          <label>Confirm Password</label>
+          <input type="password" id="confirmPassword" placeholder="Re-enter your password" required />
+        </div>
+        <button type="submit" class="btn" id="signupBtn">Create Account</button>
+      </form>
+      <div class="link-row">Already have an account? <a href="login.html">Log In</a></div>
+      <div class="link-row" style="margin-top:10px;"><a href="forgot_password.html">Forgot Password?</a></div>
+      <p class="terms">By signing up, you agree to our Terms of Service and Privacy Policy.</p>
+    </div>
+  </div>
+  <footer>© 2025 KryptoPesa. All rights reserved.</footer>
+
+  <script>
+    function checkStrength(pw) {
+      const fill = document.getElementById('strengthFill');
+      const label = document.getElementById('strengthLabel');
+      let score = 0;
+      if (pw.length >= 6) score++;
+      if (pw.length >= 10) score++;
+      if (/[A-Z]/.test(pw)) score++;
+      if (/[0-9]/.test(pw)) score++;
+      if (/[^A-Za-z0-9]/.test(pw)) score++;
+      const levels = [
+        {pct:'20%',color:'#dc2626',text:'Very Weak'},
+        {pct:'40%',color:'#ea580c',text:'Weak'},
+        {pct:'60%',color:'#d97706',text:'Fair'},
+        {pct:'80%',color:'#65a30d',text:'Strong'},
+        {pct:'100%',color:'#059669',text:'Very Strong'}
+      ];
+      const lvl = levels[Math.min(score-1,4)] || {pct:'0%',color:'#e2e8f0',text:''};
+      fill.style.width = pw ? lvl.pct : '0%';
+      fill.style.background = lvl.color;
+      label.textContent = pw ? lvl.text : '';
+      label.style.color = lvl.color;
+    }
+
+    async function hashPassword(pw) {
+      const buf = new TextEncoder().encode(pw);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg; el.style.display = 'block';
+    }
+
+    function generateWallet() {
+      return '0x' + Array.from(crypto.getRandomValues(new Uint8Array(20))).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      document.getElementById('errorMsg').style.display = 'none';
+      const username = document.getElementById('signupUsername').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      const confirm = document.getElementById('confirmPassword').value;
+      const btn = document.getElementById('signupBtn');
+
+      if (username.length < 3) { showError('Username must be at least 3 characters.'); return; }
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) { showError('Username can only contain letters, numbers and underscores.'); return; }
+      if (password.length < 6) { showError('Password must be at least 6 characters.'); return; }
+      if (password !== confirm) { showError('Passwords do not match.'); return; }
+
+      btn.disabled = true; btn.textContent = 'Creating Account…';
+
+      if (localStorage.getItem('kryptopesaUser_' + username)) {
+        showError('Username already taken. Please choose another.');
+        btn.disabled = false; btn.textContent = 'Create Account';
+        return;
+      }
+
+      const hash = await hashPassword(password);
+      localStorage.setItem('kryptopesaUser_' + username, JSON.stringify({
+        username, passwordHash: hash, createdAt: new Date().toISOString()
+      }));
+
+      const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+      users.push({
+        username,
+        email: `${username}@kryptopesa.com`,
+        status: 'active',
+        kycVerified: false,
+        joinedDate: new Date().toISOString(),
+        walletAddress: generateWallet()
+      });
+      localStorage.setItem('kryptopesa_users_db', JSON.stringify(users));
+
+      const log = JSON.parse(localStorage.getItem('kryptopesa_activity_log') || '[]');
+      log.push({ event:'User Registration', user:username, status:'success', timestamp:new Date().toISOString() });
+      localStorage.setItem('kryptopesa_activity_log', JSON.stringify(log));
+
+      btn.textContent = '✅ Account Created!';
+      setTimeout(() => window.location.href = 'login.html', 1200);
+    });
+  </script>
+</body>
+</html>

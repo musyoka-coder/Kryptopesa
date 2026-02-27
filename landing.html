@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KryptoPesa | Crypto. M-Pesa. Simplified.</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;color:#212121;}
+    .navbar{display:flex;justify-content:space-between;align-items:center;background:#1a237e;padding:1rem 2rem;}
+    .logo{display:flex;align-items:center;color:#fff;gap:12px;text-decoration:none;}
+    .logo-icon{width:44px;height:44px;background:#ffd600;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#1a237e;}
+    .logo h1{font-size:1.4rem;font-weight:700;color:#fff;}
+    .nav-links{list-style:none;display:flex;gap:20px;align-items:center;}
+    .nav-links li a{text-decoration:none;color:#fff;transition:color .3s;font-weight:500;}
+    .nav-links li a:hover{color:#ffd600;}
+    .btn{background:#ffd600;color:#000;padding:.55rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;font-size:14px;}
+    .btn:hover{background:#e6c200;transform:translateY(-1px);}
+    .hero{background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);color:#fff;text-align:center;padding:5rem 2rem;}
+    .hero h2{font-size:2.8rem;margin-bottom:1rem;font-weight:800;}
+    .hero p{font-size:1.2rem;margin-bottom:2rem;opacity:.9;}
+    .features,.how-it-works{padding:3.5rem 2rem;text-align:center;}
+    .features h3,.how-it-works h3{font-size:1.8rem;font-weight:700;margin-bottom:2rem;color:#1a237e;}
+    .feature-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;}
+    .feature{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:2rem;max-width:260px;flex:1;min-width:200px;transition:transform .2s;}
+    .feature:hover{transform:translateY(-4px);}
+    .feature-icon{font-size:2.5rem;margin-bottom:1rem;}
+    .feature h4{font-size:1.1rem;font-weight:700;color:#1a237e;margin-bottom:.5rem;}
+    .feature p{font-size:.9rem;color:#555;line-height:1.6;}
+    .how-it-works{background:#fff;}
+    .steps{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-top:1rem;}
+    .step{text-align:center;max-width:220px;}
+    .step-num{width:52px;height:52px;border-radius:50%;background:#11044e;color:#ffd600;font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+    .step p{font-size:.95rem;color:#444;font-weight:500;}
+    footer{text-align:center;background:#1a237e;color:#fff;padding:1.5rem;}
+    footer a{color:#ffd600;text-decoration:none;}
+    @media(max-width:600px){.hero h2{font-size:1.8rem;}.navbar{flex-direction:column;gap:12px;}}
+  </style>
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <a href="landing.html" class="logo">
+        <img src="logo.jpg" alt="KryptoPesa Logo" class="logo-icon">
+        <h1>KryptoPesa</h1>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="login.html" class="btn">Login</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <h2>Your Crypto to Cash Bridge</h2>
+    <p>Convert crypto to cash instantly. Direct to your M-Pesa.</p>
+    <a href="signup.html" class="btn" style="font-size:1rem;padding:.75rem 2rem;">Get Started Free →</a>
+  </section>
+
+  <section id="features" class="features">
+    <h3>Why KryptoPesa?</h3>
+    <div class="feature-grid">
+      <div class="feature">
+        <div class="feature-icon"></div>
+        <h4>Instant Transfers</h4>
+        <p>Fast crypto-to-M-Pesa payouts in seconds, not hours.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"></div>
+        <h4>Secure Platform</h4>
+        <p>Backed by blockchain technology and KYC identity verification.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"></div>
+        <h4>User Rewards</h4>
+        <p>Get rewards in Kutata Tokens  early users only!</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"></div>
+        <h4>User Friendly</h4>
+        <p>Clean interface  no crypto experience needed.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="how-it-works">
+    <h3>How It Works</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <p>Sign up &amp; verify your identity with KYC</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p>Send crypto to your KryptoPesa wallet</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p>Withdraw to M-Pesa instantly</p>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <p>© 2025 KryptoPesa. All rights reserved.</p>
+    <p></p> <br>
+    <p>Designed by <a href="https://www.techcraftlimited.tech" style="text-decoration: none;">techcraftlimited</a></p>
+  </footer>
+
+  <script>
+    document.querySelectorAll('.btn').forEach(btn=>{
+      btn.addEventListener('mouseover',()=>btn.style.transform='scale(1.04)');
+      btn.addEventListener('mouseout',()=>btn.style.transform='scale(1)');
+    });
+  </script>
+</body>
+</html>

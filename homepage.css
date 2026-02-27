@@ -1,0 +1,54 @@
+/* homepage.css — KryptoPesa Dashboard Styles (used by homepage.html if external) */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f4f8;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+header {
+  background: #1a237e;
+  color: #fff;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: 0 2px 10px rgba(0,0,0,.3);
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo img { height: 44px; border-radius: 9px; }
+nav { background: #fff; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
+nav button {
+  padding: 14px 20px; border: none; background: transparent; color: #64748b;
+  font-weight: 600; font-size: 14px; cursor: pointer; border-bottom: 3px solid transparent;
+  white-space: nowrap; font-family: inherit; transition: all .2s;
+}
+nav button.active { color: #1a237e; border-bottom-color: #1a237e; }
+main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 90px; }
+section { display: none; }
+section.active { display: block; }
+.price-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.price-card {
+  background: #fff; border: 1.5px solid #e2e8f0; border-radius: 14px;
+  padding: 22px; box-shadow: 0 1px 4px rgba(0,0,0,.06); transition: all .2s;
+}
+.price-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+.shadow-box {
+  background: #fff; border-radius: 12px; padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1); text-align: center;
+}
+footer {
+  position: fixed; bottom: 0; width: 100%; background: #1a237e;
+  color: #fff; text-align: center; padding: 10px; font-size: 13px;
+}
+footer a { color: #ffd600; text-decoration: none; }
+input, select {
+  width: 100%; padding: 12px 14px; border: 1.5px solid #e2e8f0;
+  border-radius: 8px; font-size: 15px; font-family: inherit; background: #fff;
+}
+input:focus, select:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,.1); }
+button { cursor: pointer; }

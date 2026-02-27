@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KryptoPesa — Log In</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);min-height:100vh;display:flex;flex-direction:column;}
+    .top-bar{padding:16px 24px;display:flex;align-items:center;gap:10px;}
+    .logo-icon{width:38px;height:38px;background:#ffd600;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#1a237e;}
+    .brand{color:#fff;font-weight:700;font-size:1.2rem;}
+    .center{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .container{background:#fff;max-width:400px;width:100%;padding:36px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
+    h2{text-align:center;color:#1a237e;margin-bottom:6px;font-size:1.6rem;font-weight:800;}
+    .subtitle{text-align:center;color:#64748b;font-size:.875rem;margin-bottom:24px;}
+    .form-group{margin-bottom:18px;}
+    label{display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#374151;text-transform:uppercase;letter-spacing:.4px;}
+    input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:15px;transition:border-color .2s;font-family:inherit;}
+    input:focus{outline:none;border-color:#1a237e;box-shadow:0 0 0 3px rgba(26,35,126,.1);}
+    .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none;}
+    .btn{width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;}
+    .btn:hover{background:#0d47a1;transform:translateY(-1px);}
+    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+    .link-row{text-align:center;margin-top:18px;font-size:.9rem;color:#64748b;}
+    .link-row a{color:#1a237e;font-weight:700;text-decoration:none;}
+    .link-row a:hover{text-decoration:underline;}
+    .attempts-bar{height:4px;border-radius:2px;background:#e2e8f0;margin-top:6px;overflow:hidden;}
+    .attempts-fill{height:100%;background:#dc2626;transition:width .3s;}
+    footer{text-align:center;padding:16px;color:rgba(255,255,255,.7);font-size:.8rem;}
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    
+    <img src="logo.jpg" alt="KryptoPesa Logo" class="logo-icon">
+    <span class="brand">KryptoPesa</span>
+  </div>
+  <div class="center">
+    <div class="container">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Log in to your KryptoPesa account</p>
+      <div class="error-msg" id="errorMsg"></div>
+      <form id="loginForm">
+        <div class="form-group">
+          <label>Username</label>
+          <input type="text" id="loginUsername" placeholder="Enter username" autocomplete="username" required />
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password" required />
+        </div>
+        <button type="submit" class="btn" id="loginBtn">Log In</button>
+      </form>
+      <div class="link-row">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </div>
+    </div>
+  </div>
+  <footer>© 2025 KryptoPesa. All rights reserved.</footer>
+
+  <script>
+    const MAX_ATTEMPTS = 5;
+    const LOCKOUT_MS = 15 * 60 * 1000;
+
+    async function hashPassword(password) {
+      const buf = new TextEncoder().encode(password);
+      const hash = await crypto.subtle.digest('SHA-256', buf);
+      return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    }
+
+    function showError(msg) {
+      const el = document.getElementById('errorMsg');
+      el.textContent = msg;
+      el.style.display = 'block';
+    }
+
+    function checkLockout(username) {
+      const data = JSON.parse(localStorage.getItem(`kp_attempts_${username}`) || '{"count":0,"last":0}');
+      if (data.count >= MAX_ATTEMPTS && (Date.now() - data.last) < LOCKOUT_MS) {
+        const mins = Math.ceil((LOCKOUT_MS - (Date.now() - data.last)) / 60000);
+        return `Account locked. Try again in ${mins} min.`;
+      }
+      if (data.count >= MAX_ATTEMPTS && (Date.now() - data.last) >= LOCKOUT_MS) {
+        localStorage.removeItem(`kp_attempts_${username}`);
+      }
+      return null;
+    }
+
+    function recordFail(username) {
+      const data = JSON.parse(localStorage.getItem(`kp_attempts_${username}`) || '{"count":0,"last":0}');
+      data.count = (data.count || 0) + 1;
+      data.last = Date.now();
+      localStorage.setItem(`kp_attempts_${username}`, JSON.stringify(data));
+      return data.count;
+    }
+
+    function logActivity(event, user, status) {
+      const log = JSON.parse(localStorage.getItem('kryptopesa_activity_log') || '[]');
+      log.push({ event, user, status, timestamp: new Date().toISOString() });
+      if (log.length > 100) log.splice(0, 50);
+      localStorage.setItem('kryptopesa_activity_log', JSON.stringify(log));
+    }
+
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      document.getElementById('errorMsg').style.display = 'none';
+      const username = document.getElementById('loginUsername').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const btn = document.getElementById('loginBtn');
+
+      if (!username || !password) { showError('Please fill in all fields.'); return; }
+
+      const lockMsg = checkLockout(username);
+      if (lockMsg) { showError(lockMsg); return; }
+
+      btn.disabled = true;
+      btn.textContent = 'Verifying…';
+
+      // Check suspension
+      const users = JSON.parse(localStorage.getItem('kryptopesa_users_db') || '[]');
+      const dbUser = users.find(u => u.username === username);
+      if (dbUser && dbUser.status === 'suspended') {
+        showError('Account suspended. Contact support@kryptopesa.com');
+        btn.disabled = false; btn.textContent = 'Log In';
+        logActivity('Login Attempt - Suspended', username, 'pending');
+        return;
+      }
+
+      const hash = await hashPassword(password);
+      const stored = JSON.parse(localStorage.getItem('kryptopesaUser_' + username) || 'null');
+
+      if (stored && stored.passwordHash === hash) {
+        localStorage.removeItem(`kp_attempts_${username}`);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', username);
+        // Session token
+        const token = Array.from(crypto.getRandomValues(new Uint8Array(24))).map(b=>b.toString(16).padStart(2,'0')).join('');
+        sessionStorage.setItem('kp_session_token', token);
+        sessionStorage.setItem('kp_session_user', username);
+        logActivity('User Login', username, 'success');
+        window.location.href = 'homepage.html';
+      } else {
+        const count = recordFail(username);
+        const remaining = MAX_ATTEMPTS - count;
+        showError(remaining > 0
+          ? `Invalid credentials. ${remaining} attempt(s) left.`
+          : 'Too many failed attempts. Account locked for 15 minutes.');
+        logActivity('Failed Login', username, 'pending');
+        btn.disabled = false; btn.textContent = 'Log In';
+      }
+    });
+  </script>
+</body>
+</html>
