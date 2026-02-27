@@ -1,4 +1,4 @@
-/* homepage.css — KryptoPesa Dashboard Styles (used by homepage.html if external) */
+/* homepage.css — KryptoPesa Dashboard Styles with Mobile Responsiveness */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -20,7 +20,7 @@ header {
   box-shadow: 0 2px 10px rgba(0,0,0,.3);
 }
 .logo { display: flex; align-items: center; gap: 10px; }
-.logo img { height: 44px; border-radius: 9px; }
+.logo img { height: 44px; border-radius: 9px; max-width: 100%; height: auto; }
 nav { background: #fff; border-bottom: 1px solid #e2e8f0; overflow-x: auto; }
 nav button {
   padding: 14px 20px; border: none; background: transparent; color: #64748b;
@@ -52,3 +52,61 @@ input, select {
 }
 input:focus, select:focus { outline: none; border-color: #1a237e; box-shadow: 0 0 0 3px rgba(26,35,126,.1); }
 button { cursor: pointer; }
+
+/* RESPONSIVE DESIGN - TABLET SCREENS */
+@media (max-width: 900px) {
+  header { padding: 0 16px; }
+  main { padding: 20px 16px 90px; }
+  .price-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 14px; }
+  nav button { padding: 12px 16px; font-size: 13px; }
+}
+
+/* RESPONSIVE DESIGN - MOBILE SCREENS */
+@media (max-width: 600px) {
+  header { 
+    height: 56px; 
+    padding: 0 12px;
+    flex-wrap: wrap;
+  }
+  .logo img { height: 32px; }
+  .logo { gap: 8px; }
+  nav { 
+    overflow-x: auto; 
+    scrollbar-width: thin;
+  }
+  nav button { 
+    padding: 10px 12px; 
+    font-size: 12px; 
+    min-width: auto;
+  }
+  main { 
+    padding: 12px 8px 80px;
+    max-width: 100%;
+  }
+  .price-grid { 
+    grid-template-columns: 1fr; 
+    gap: 12px; 
+  }
+  .price-card {
+    padding: 16px;
+    border-radius: 10px;
+  }
+  .shadow-box { padding: 0.75rem; }
+  input, select {
+    padding: 10px 12px;
+    font-size: 16px; /* Prevents zoom on focus on iOS */
+  }
+  footer { 
+    padding: 8px; 
+    font-size: 11px;
+  }
+}
+
+/* RESPONSIVE DESIGN - VERY SMALL SCREENS */
+@media (max-width: 375px) {
+  header { height: 52px; }
+  .logo img { height: 28px; }
+  nav button { padding: 8px 10px; font-size: 11px; }
+  main { padding: 10px 6px 70px; }
+  .price-grid { gap: 10px; }
+}
