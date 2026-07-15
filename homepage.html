@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KryptoPesa | Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f4f8;color:#1a1a2e;min-height:100vh;}
@@ -115,7 +117,7 @@
         <button class="dd-item" onclick="showSection('markets');closeMenu()"> Markets</button>
         <button class="dd-item" onclick="handleKYCClick()"> Verify KYC</button>
         <hr class="dd-sep">
-       <button class="dd-item red" onclick="window.location.href='index.html'">Sign Out</button>
+       <button class="dd-item red" onclick="doLogout()">Sign Out</button>
       </div>
     </div>
   </div>
@@ -231,31 +233,43 @@ const prices={BTC:87000,ETH:3100,SOL:155,USDT:1,WLD:1.80};
 const WS_SYMBOLS=['BTCUSDT','ETHUSDT','SOLUSDT','WLDUSDT'];
 let kesRate=130, ws=null, reconnects=0;
 
+// currentUser = the Supabase auth user object; currentProfile = row from public.profiles
+let currentUser=null, currentProfile=null;
+
 // ── AUTH ──
-function checkAuth(){
-  if(!localStorage.getItem('isLoggedIn')||!localStorage.getItem('currentUser')){window.location.replace('login.html');return false;}
-  const users=JSON.parse(localStorage.getItem('kryptopesa_users_db')||'[]');
-  const u=users.find(x=>x.username===localStorage.getItem('currentUser'));
-  if(u&&u.status==='suspended'){alert('Account suspended. Contact support@kryptopesa.com');doLogout(true);return false;}
+async function checkAuth(){
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  if(!session){ window.location.replace('login.html'); return false; }
+
+  currentUser = session.user;
+
+  const { data: profile } = await supabaseClient
+    .from('profiles')
+    .select('*')
+    .eq('id', session.user.id)
+    .single();
+
+  currentProfile = profile;
+
+  if(profile && profile.account_status === 'suspended'){
+    alert('Account suspended. Contact support@kryptopesa.com');
+    await doLogout(true);
+    return false;
+  }
   return true;
 }
-function doLogout(skip){
-  if(!skip&&!confirm('Sign out of KryptoPesa?'))return;
-  logAct('User Logout',localStorage.getItem('currentUser')||'?','success');
-  localStorage.removeItem('isLoggedIn');localStorage.removeItem('currentUser');sessionStorage.clear();
-  if(ws)ws.close();
+async function doLogout(skip){
+  if(!skip && !confirm('Sign out of KryptoPesa?')) return;
+  await logAct('User Logout','success');
+  await supabaseClient.auth.signOut();
+  if(ws) ws.close();
   window.location.replace('login.html');
 }
 function esc(s){return String(s).replace(/[<>"'&]/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));}
 
-// ── KYC ──
+// ── KYC ── (backed by profiles.kyc_status: 'unverified' | 'pending' | 'verified' | 'rejected')
 function getKYC(){
-  const user=localStorage.getItem('currentUser');
-  const users=JSON.parse(localStorage.getItem('kryptopesa_users_db')||'[]');
-  const rec=users.find(u=>u.username===user);
-  if(rec&&rec.kycVerified)return'verified';
-  if(localStorage.getItem('kyc_sub_'+user)==='submitted')return'pending';
-  return'unverified';
+  return currentProfile?.kyc_status || 'unverified';
 }
 function refreshKYCBadge(){
   const s=getKYC(),b=document.getElementById('kycBadge');
@@ -269,9 +283,17 @@ function handleKYCClick(){
   window.open('https://usesmileid.com/products/smartselfie','_blank');
   onKYCLink();
 }
-function onKYCLink(){
-  const user=localStorage.getItem('currentUser');
-  if(getKYC()!=='verified'){localStorage.setItem('kyc_sub_'+user,'submitted');logAct('KYC Submitted',user,'pending');refreshKYCBadge();}
+async function onKYCLink(){
+  if(getKYC()==='verified') return;
+  const { error } = await supabaseClient
+    .from('profiles')
+    .update({ kyc_status: 'pending' })
+    .eq('id', currentUser.id);
+  if(!error){
+    currentProfile.kyc_status = 'pending';
+    await logAct('KYC Submitted','pending');
+    refreshKYCBadge();
+  }
 }
 
 // ── RECEIVE ──
@@ -350,8 +372,8 @@ function calcConv(){
   else{lbl.textContent='✅ Within allowed range';lbl.className='climit ok';}
   box.style.display='block';
 }
-function doSwap(){
-  if(!checkAuth())return;
+async function doSwap(){
+  if(!(await checkAuth()))return;
   const sym=document.getElementById('swapCrypto').value;
   const amt=parseFloat(document.getElementById('swapAmt').value);
   const num=document.getElementById('mpesaNum').value.trim();
@@ -363,20 +385,31 @@ function doSwap(){
   const kes=amt*(prices[sym]||1)*kesRate;
   if(kes<MIN_KES){res.innerHTML='<div class="result err">⚠️ Minimum swap is KSH '+MIN_KES+'. Your amount = KSH '+kes.toFixed(2)+'.</div>';return;}
   if(kes>MAX_KES){res.innerHTML='<div class="result err">⚠️ Maximum swap is KSH '+MAX_KES.toLocaleString()+'. Your amount = KSH '+kes.toLocaleString('en-KE',{maximumFractionDigits:0})+'.</div>';return;}
+
   btn.disabled=true;
-  res.innerHTML='<div class="result warn">⏳ Processing swap…</div>';
-  setTimeout(()=>{
-    const user=localStorage.getItem('currentUser');
-    const txId='KP'+Date.now().toString(36).toUpperCase();
-    const txs=JSON.parse(localStorage.getItem('kryptopesa_transactions_db')||'[]');
-    txs.push({txId,username:user,type:'Swap',crypto:sym,amount:amt.toString(),kesAmount:kes.toFixed(2),mpesaNumber:num,status:'active',timestamp:new Date().toISOString()});
-    if(txs.length>500)txs.splice(0,txs.length-500);
-    localStorage.setItem('kryptopesa_transactions_db',JSON.stringify(txs));
-    logAct('Swap Transaction',user,'success');
-    res.innerHTML=`<div class="result ok"> Swap initiated!<br><strong>${amt} ${esc(sym)}</strong> → <strong>KSH ${kes.toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><br>Sending to: <strong>${esc(num)}</strong><br><small style="opacity:.8;">TX: ${txId}</small></div>`;
-    document.getElementById('swapAmt').value='';document.getElementById('mpesaNum').value='';
-    document.getElementById('convBox').style.display='none';btn.disabled=false;
-  },2500);
+  res.innerHTML='<div class="result warn">⏳ Sending STK push to your phone…</div>';
+
+  const { data, error } = await supabaseClient.functions.invoke('daraja-stkpush', {
+    body: {
+      user_id: currentUser.id,
+      phone: num,
+      kes_amount: kes,
+      crypto_amount: amt,
+      asset: sym
+    }
+  });
+
+  btn.disabled=false;
+
+  if(error){
+    res.innerHTML='<div class="result err">⚠️ Swap failed. Please try again.</div>';
+    return;
+  }
+
+  await logAct('Swap Initiated','success');
+  res.innerHTML=`<div class="result ok"> ${esc(data.message)}<br><strong>${amt} ${esc(sym)}</strong> → <strong>KSH ${kes.toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><br>Sending to: <strong>${esc(num)}</strong></div>`;
+  document.getElementById('swapAmt').value='';document.getElementById('mpesaNum').value='';
+  document.getElementById('convBox').style.display='none';
 }
 
 // ── PRICE CARDS ──
@@ -427,18 +460,19 @@ function toggleMenu(){document.getElementById('dd').classList.toggle('open');}
 function closeMenu(){document.getElementById('dd').classList.remove('open');}
 document.addEventListener('click',e=>{const dd=document.getElementById('dd');const mb=document.querySelector('.menu-btn');if(!dd?.contains(e.target)&&!mb?.contains(e.target))closeMenu();});
 
-function logAct(ev,user,st){
-  const log=JSON.parse(localStorage.getItem('kryptopesa_activity_log')||'[]');
-  log.push({event:ev,user,status:st,timestamp:new Date().toISOString()});
-  if(log.length>100)log.splice(0,50);
-  localStorage.setItem('kryptopesa_activity_log',JSON.stringify(log));
+async function logAct(ev,st){
+  if(!currentUser) return;
+  await supabaseClient.from('activity_log').insert({
+    user_id: currentUser.id,
+    event: ev,
+    status: st
+  });
 }
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',async()=>{
-  if(!checkAuth())return;
-  const user=localStorage.getItem('currentUser');
-  document.getElementById('userName').textContent=user;
+  if(!(await checkAuth()))return;
+  document.getElementById('userName').textContent = currentProfile?.username || currentUser.email;
   refreshKYCBadge();
   buildCards();
   connectWS();
