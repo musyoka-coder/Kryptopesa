@@ -3,48 +3,156 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KryptoPesa | Crypto. M-Pesa. Simplified.</title>
+
+  <title>KryptoPesa — Convert Crypto to M-Pesa Instantly in Kenya</title>
+  <meta name="description" content="KryptoPesa lets you convert Bitcoin, Ethereum, USDT, Solana and Worldcoin to Kenyan Shillings, sent directly to your M-Pesa. Fast, secure, KYC-verified crypto-to-cash for Kenya." />
+  <meta name="keywords" content="crypto to mpesa, sell bitcoin kenya, buy bitcoin kenya, crypto to cash kenya, USDT to mpesa, ethereum to mpesa, kryptopesa, crypto exchange kenya" />
+  <meta name="robots" content="index, follow" />
+  <meta name="author" content="KryptoPesa" />
+  <link rel="canonical" href="https://kryptopesa.app/" />
+
+  <!-- Kenya / language targeting for local relevance -->
+  <meta name="geo.region" content="KE" />
+  <meta name="geo.placename" content="Kenya" />
+  <meta http-equiv="content-language" content="en-KE" />
+
+  <!-- Open Graph (Facebook, WhatsApp, LinkedIn link previews) -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="KryptoPesa — Convert Crypto to M-Pesa Instantly" />
+  <meta property="og:description" content="Convert Bitcoin, Ethereum, USDT and more to Kenyan Shillings, sent directly to your M-Pesa. Fast, secure, and built for Kenya." />
+  <meta property="og:image" content="https://kryptopesa.app/logo.jpg" />
+  <meta property="og:url" content="https://kryptopesa.app/" />
+  <meta property="og:locale" content="en_KE" />
+  <meta property="og:site_name" content="KryptoPesa" />
+
+  <!-- Twitter/X card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="KryptoPesa — Convert Crypto to M-Pesa Instantly" />
+  <meta name="twitter:description" content="Convert Bitcoin, Ethereum, USDT and more to Kenyan Shillings, sent directly to your M-Pesa." />
+  <meta name="twitter:image" content="https://kryptopesa.app/logo.jpg" />
+
+  <link rel="icon" type="image/jpeg" href="logo.jpg" />
+  <link rel="apple-touch-icon" href="logo.jpg" />
+  <meta name="theme-color" content="#1a237e" />
+
+  <!-- Structured data: identifies KryptoPesa as a financial service operating in Kenya.
+       No street address included since this is a national service, not a physical
+       storefront — adding a fabricated address would hurt more than help. If you
+       have a real registered office address, tell me and I'll add it here properly. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FinancialService",
+    "name": "KryptoPesa",
+    "description": "Crypto-to-M-Pesa exchange service allowing users in Kenya to convert cryptocurrency to Kenyan Shillings instantly.",
+    "url": "https://kryptopesa.app/",
+    "logo": "https://kryptopesa.app/logo.jpg",
+    "areaServed": {
+      "@type": "Country",
+      "name": "Kenya"
+    },
+    "availableLanguage": ["en"]
+  }
+  </script>
+
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;color:#212121;}
-    .navbar{display:flex;justify-content:space-between;align-items:center;background:#1a237e;padding:1rem 2rem;}
+
+    .navbar{display:flex;justify-content:space-between;align-items:center;background:#1a237e;padding:1rem 2rem;position:relative;}
     .logo{display:flex;align-items:center;color:#fff;gap:12px;text-decoration:none;}
-    .logo-icon{width:44px;height:44px;background:#ffd600;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#1a237e;}
+    .logo-icon{width:44px;height:44px;background:#ffd600;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#1a237e;flex-shrink:0;}
     .logo h1{font-size:1.4rem;font-weight:700;color:#fff;}
+
     .nav-links{list-style:none;display:flex;gap:20px;align-items:center;}
     .nav-links li a{text-decoration:none;color:#fff;transition:color .3s;font-weight:500;}
     .nav-links li a:hover{color:#ffd600;}
-    .btn{background:#ffd600;color:#000;padding:.55rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;font-size:14px;}
+
+    .btn{background:#ffd600;color:#000;padding:.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;font-size:14px;display:inline-block;min-height:40px;line-height:1;display:inline-flex;align-items:center;}
     .btn:hover{background:#e6c200;transform:translateY(-1px);}
+
+    .menu-toggle{display:none;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
+
     .hero{background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);color:#fff;text-align:center;padding:5rem 2rem;}
-    .hero h2{font-size:2.8rem;margin-bottom:1rem;font-weight:800;}
+    .hero h2{font-size:2.8rem;margin-bottom:1rem;font-weight:800;line-height:1.15;}
     .hero p{font-size:1.2rem;margin-bottom:2rem;opacity:.9;}
+
     .features,.how-it-works{padding:3.5rem 2rem;text-align:center;}
     .features h3,.how-it-works h3{font-size:1.8rem;font-weight:700;margin-bottom:2rem;color:#1a237e;}
     .feature-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;}
-    .feature{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:2rem;max-width:260px;flex:1;min-width:200px;transition:transform .2s;}
+    .feature{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:2rem;max-width:260px;flex:1;min-width:220px;transition:transform .2s;}
     .feature:hover{transform:translateY(-4px);}
     .feature-icon{font-size:2.5rem;margin-bottom:1rem;}
     .feature h4{font-size:1.1rem;font-weight:700;color:#1a237e;margin-bottom:.5rem;}
     .feature p{font-size:.9rem;color:#555;line-height:1.6;}
+
     .how-it-works{background:#fff;}
     .steps{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-top:1rem;}
     .step{text-align:center;max-width:220px;}
     .step-num{width:52px;height:52px;border-radius:50%;background:#11044e;color:#ffd600;font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
     .step p{font-size:.95rem;color:#444;font-weight:500;}
+
     footer{text-align:center;background:#1a237e;color:#fff;padding:1.5rem;}
     footer a{color:#ffd600;text-decoration:none;}
-    @media(max-width:600px){.hero h2{font-size:1.8rem;}.navbar{flex-direction:column;gap:12px;}}
+
+    /* ── Tablet ── */
+    @media(max-width:768px){
+      .hero{padding:3.5rem 1.5rem;}
+      .hero h2{font-size:2.2rem;}
+      .features,.how-it-works{padding:2.5rem 1.5rem;}
+    }
+
+    /* ── Mobile: collapsible nav ── */
+    @media(max-width:600px){
+      .navbar{padding:.85rem 1.25rem;}
+      .logo h1{font-size:1.2rem;}
+      .logo-icon{width:38px;height:38px;font-size:18px;}
+
+      .menu-toggle{display:block;}
+
+      .nav-links{
+        display:none;
+        flex-direction:column;
+        align-items:stretch;
+        gap:0;
+        position:absolute;
+        top:100%;
+        left:0;
+        right:0;
+        background:#1a237e;
+        box-shadow:0 8px 20px rgba(0,0,0,.25);
+        z-index:100;
+      }
+      .nav-links.open{display:flex;}
+      .nav-links li{width:100%;border-top:1px solid rgba(255,255,255,.12);}
+      .nav-links li a{display:block;padding:14px 1.25rem;}
+      .nav-links li:last-child{padding:12px 1.25rem;}
+      .nav-links li:last-child a.btn{width:100%;justify-content:center;}
+
+      .hero{padding:3rem 1.25rem;}
+      .hero h2{font-size:1.7rem;}
+      .hero p{font-size:1rem;}
+      .hero .btn{width:100%;justify-content:center;font-size:1rem;padding:.85rem 1.5rem;}
+
+      .features h3,.how-it-works h3{font-size:1.4rem;}
+      .feature{min-width:100%;padding:1.5rem;}
+      .step{max-width:100%;width:100%;}
+    }
+
+    @media(max-width:380px){
+      .hero h2{font-size:1.5rem;}
+    }
   </style>
 </head>
 <body>
   <header>
     <nav class="navbar">
-      <a href="landing.html" class="logo">
-        <img src="logo.jpg" alt="KryptoPesa Logo" class="logo-icon">
+      <a href="index.html" class="logo">
+        <img src="logo.jpg" alt="KryptoPesa — crypto to M-Pesa exchange logo" class="logo-icon">
         <h1>KryptoPesa</h1>
       </a>
-      <ul class="nav-links">
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
+      <ul class="nav-links" id="navLinks">
         <li><a href="#features">Features</a></li>
         <li><a href="#how">How It Works</a></li>
         <li><a href="#contact">Contact</a></li>
@@ -75,12 +183,12 @@
       <div class="feature">
         <div class="feature-icon"></div>
         <h4>User Rewards</h4>
-        <p>Get rewards in Kutata Tokens  early users only!</p>
+        <p>Get rewards in Kutata Tokens — early users only!</p>
       </div>
       <div class="feature">
         <div class="feature-icon"></div>
         <h4>User Friendly</h4>
-        <p>Clean interface  no crypto experience needed.</p>
+        <p>Clean interface — no crypto experience needed.</p>
       </div>
     </div>
   </section>
@@ -105,14 +213,36 @@
 
   <footer id="contact">
     <p>© 2025 KryptoPesa. All rights reserved.</p>
-    <p></p> <br>
-    <p>Designed by <a href="https://www.techcraftlimited.tech" style="text-decoration: none;">techcraftlimited</a></p>
+    <p>Designed by <a href="https://www.techcraftlimited.tech">techcraftlimited</a></p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-client.js"></script>
   <script>
     document.querySelectorAll('.btn').forEach(btn=>{
       btn.addEventListener('mouseover',()=>btn.style.transform='scale(1.04)');
       btn.addEventListener('mouseout',()=>btn.style.transform='scale(1)');
+    });
+
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', isOpen);
+      menuToggle.textContent = isOpen ? '✕' : '☰';
+    });
+    // Close mobile menu after tapping a link
+    navLinks.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.textContent = '☰';
+      });
+    });
+
+    // If already logged in, skip straight to the dashboard
+    supabaseClient.auth.getSession().then(({ data: { session } }) => {
+      if (session) window.location.href = 'homepage.html';
     });
   </script>
 </body>
