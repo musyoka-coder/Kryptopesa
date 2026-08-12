@@ -6,7 +6,7 @@
   "main": "homepage.html",
   "scripts": {
     "start": "npx serve . -p 3000",
-    "dev": "npx live-server --port=3000 --open=landing.html"
+    "dev": "npx live-server --port=3000 --open=index.html"
   },
   "devDependencies": {
     "live-server": "^1.2.2",
