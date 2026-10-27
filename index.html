@@ -35,10 +35,6 @@
   <link rel="apple-touch-icon" href="logo.jpg" />
   <meta name="theme-color" content="#1a237e" />
 
-  <!-- Structured data: identifies KryptoPesa as a financial service operating in Kenya.
-       No street address included since this is a national service, not a physical
-       storefront — adding a fabricated address would hurt more than help. If you
-       have a real registered office address, tell me and I'll add it here properly. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -71,7 +67,7 @@
     .btn{background:#ffd600;color:#000;padding:.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;font-size:14px;display:inline-block;}
     .btn:hover{background:#e6c200;transform:translateY(-1px);}
 
-    .menu-toggle{display:none;background:none;border:none;color:#fff;font-size:28px;cursor:pointer;padding:4px 8px;line-height:1;}
+    .menu-toggle{display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;padding:10px 12px;line-height:1; border-radius:6px;}
 
     .hero{background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);color:#fff;text-align:center;padding:5rem 2rem;}
     .hero h2{font-size:2.8rem;margin-bottom:1rem;font-weight:800;line-height:1.15;}
@@ -82,27 +78,25 @@
     .feature-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;}
     .feature{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:2rem;max-width:260px;flex:1;min-width:220px;transition:transform .2s;}
     .feature:hover{transform:translateY(-4px);}
-    .feature-icon{font-size:2.5rem;margin-bottom:1rem;}
+    .feature-icon{font-size:1.1rem;margin-bottom:1rem; font-weight:800; color:#1a237e; background:#eef2ff; width:54px; height:54px; line-height:54px; border-radius:12px; margin-left:auto; margin-right:auto;}
     .feature h4{font-size:1.1rem;font-weight:700;color:#1a237e;margin-bottom:.5rem;}
     .feature p{font-size:.9rem;color:#555;line-height:1.6;}
 
     .how-it-works{background:#fff;}
     .steps{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-top:1rem;}
     .step{text-align:center;max-width:220px;}
-    .step-num{width:52px;height:52px;border-radius:50%;background:#11044e;color:#ffd600;font-size:1.4rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
+    .step-num{width:52px;height:52px;border-radius:50%;background:#11044e;color:#ffd600;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
     .step p{font-size:.95rem;color:#444;font-weight:500;}
 
     footer{text-align:center;background:#1a237e;color:#fff;padding:1.5rem;}
     footer a{color:#ffd600;text-decoration:none;}
 
-    /* ── Tablet ── */
     @media(max-width:768px){
       .hero{padding:3.5rem 1.5rem;}
       .hero h2{font-size:2.2rem;}
       .features,.how-it-works{padding:2.5rem 1.5rem;}
     }
 
-    /* ── Mobile: collapsible nav ── */
     @media(max-width:600px){
       .navbar{padding:.85rem 1.25rem;}
       .logo h1{font-size:1.2rem;}
@@ -151,7 +145,7 @@
         <img src="logo.jpg" alt="KryptoPesa — crypto to M-Pesa exchange logo" class="logo-icon">
         <h1>KryptoPesa</h1>
       </a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">Menu</button>
       <ul class="nav-links" id="navLinks">
         <li><a href="#features">Features</a></li>
         <li><a href="#how">How It Works</a></li>
@@ -164,29 +158,29 @@
   <section class="hero">
     <h2>Your Crypto to Cash Bridge</h2>
     <p>Convert crypto to cash instantly. Direct to your M-Pesa.</p>
-    <a href="signup.html" class="btn" style="font-size:1rem;padding:.75rem 2rem;">Get Started Free →</a>
+    <a href="signup.html" class="btn" style="font-size:1rem;padding:.75rem 2rem;">Get Started Free</a>
   </section>
 
   <section id="features" class="features">
     <h3>Why KryptoPesa?</h3>
     <div class="feature-grid">
       <div class="feature">
-        <div class="feature-icon">⚡</div>
+        <div class="feature-icon">FAST</div>
         <h4>Instant Transfers</h4>
         <p>Fast crypto-to-M-Pesa payouts in seconds, not hours.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">🔒</div>
+        <div class="feature-icon">SAFE</div>
         <h4>Secure Platform</h4>
         <p>Backed by blockchain technology and KYC identity verification.</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">🎁</div>
+        <div class="feature-icon">REWARDS</div>
         <h4>User Rewards</h4>
         <p>Get rewards in Kutata Tokens — early users only!</p>
       </div>
       <div class="feature">
-        <div class="feature-icon">💡</div>
+        <div class="feature-icon">SMART</div>
         <h4>User Friendly</h4>
         <p>Clean interface — no crypto experience needed.</p>
       </div>
@@ -229,18 +223,17 @@
     menuToggle.addEventListener('click', () => {
       const isOpen = navLinks.classList.toggle('open');
       menuToggle.setAttribute('aria-expanded', isOpen);
-      menuToggle.textContent = isOpen ? '✕' : '☰';
+      menuToggle.textContent = isOpen ? 'Close' : 'Menu';
     });
-    // Close mobile menu after tapping a link
+
     navLinks.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('open');
         menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.textContent = '☰';
+        menuToggle.textContent = 'Menu';
       });
     });
 
-    // If already logged in, skip straight to the dashboard
     supabaseClient.auth.getSession().then(({ data: { session } }) => {
       if (session) window.location.href = 'homepage.html';
     });
