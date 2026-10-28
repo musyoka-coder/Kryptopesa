@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KryptoPesa Admin</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; base-uri 'self'; form-action 'self'; object-src 'none'; frame-ancestors 'none'" />
+  <meta name="theme-color" content="#07152f" />
+  <link rel="icon" type="image/jpeg" href="logo.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --navy-950: #050d1d; --navy-900: #07152f; --navy-800: #0b2045; --navy-700: #12366d;
+      --blue: #1769ff; --blue-soft: #eef4ff; --gold: #ffd21f; --gold-dark: #b38f00;
+      --bg: #f4f6fb; --surface: #ffffff; --text: #0b1830; --text-soft: #56657f; --border: #e3e9f2;
+      --green: #12875a; --green-soft: #e4f6ee; --red: #c93232; --red-soft: #fdecec;
+      --amber: #9a6a00; --amber-soft: #fff4d6; --gray-soft: #eef1f6;
+      --shadow: 0 8px 28px rgba(11, 24, 48, 0.07); --radius: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
+    button, input, select, textarea { font: inherit; color: inherit; }
+    a { color: var(--blue); }
+    .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    :focus-visible { outline: 3px solid rgba(23, 105, 255, 0.55); outline-offset: 2px; }
+
+    /* ===== layout ===== */
+    .shell { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+    .sidebar { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 6px; padding: 22px 16px; background: linear-gradient(180deg, var(--navy-950), var(--navy-900)); color: #fff; }
+    .brand { display: flex; align-items: center; gap: 10px; padding: 4px 8px 18px; text-decoration: none; color: #fff; }
+    .brand img { width: 38px; height: 38px; border-radius: 10px; object-fit: cover; }
+    .brand strong { font-family: "Manrope", sans-serif; font-size: 1.05rem; letter-spacing: -0.02em; }
+    .brand strong span { color: var(--gold); }
+    .brand small { display: block; color: rgba(255,255,255,.6); font-size: .7rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+    .nav { display: flex; flex-direction: column; gap: 4px; }
+    .nav button { display: flex; align-items: center; gap: 11px; width: 100%; min-height: 44px; padding: 0 14px; border: 0; border-radius: 12px; background: transparent; color: rgba(255,255,255,.78); font-weight: 600; font-size: .92rem; text-align: left; cursor: pointer; transition: background .15s, color .15s; }
+    .nav button:hover { background: rgba(255,255,255,.07); color: #fff; }
+    .nav button[aria-current="page"] { background: var(--gold); color: var(--navy-950); }
+    .nav .ico { width: 20px; text-align: center; font-size: 1rem; }
+    .nav .count { margin-left: auto; min-width: 22px; padding: 1px 7px; border-radius: 999px; background: var(--red); color: #fff; font-size: .72rem; font-weight: 700; text-align: center; }
+    .nav button[aria-current="page"] .count { background: var(--navy-950); }
+    .side-foot { margin-top: auto; padding: 14px 10px 0; border-top: 1px solid rgba(255,255,255,.1); font-size: .8rem; color: rgba(255,255,255,.7); }
+    .side-foot strong { display: block; color: #fff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .side-foot .row { display: flex; gap: 8px; margin-top: 10px; }
+
+    .main { padding: 28px clamp(16px, 3vw, 40px) 60px; min-width: 0; }
+    .page-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 22px; }
+    .page-head h1 { font-family: "Manrope", sans-serif; font-size: clamp(1.5rem, 2.4vw, 2rem); letter-spacing: -0.03em; }
+    .page-head p { color: var(--text-soft); font-size: .9rem; }
+    .tools { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+    /* ===== controls ===== */
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 40px; padding: 0 16px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface); font-weight: 700; font-size: .86rem; cursor: pointer; transition: background .15s, border-color .15s, transform .15s; }
+    .btn:hover { background: var(--gray-soft); }
+    .btn.primary { background: var(--navy-900); color: #fff; border-color: var(--navy-900); }
+    .btn.primary:hover { background: var(--navy-700); }
+    .btn.danger { background: var(--red); color: #fff; border-color: var(--red); }
+    .btn.danger:hover { background: #a82727; }
+    .btn.ok { background: var(--green); color: #fff; border-color: var(--green); }
+    .btn.ok:hover { background: #0e6d49; }
+    .btn.small { min-height: 32px; padding: 0 11px; font-size: .78rem; border-radius: 9px; }
+    .btn[disabled] { opacity: .55; cursor: not-allowed; }
+    .field { display: grid; gap: 5px; }
+    .field label { font-size: .76rem; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: .05em; }
+    input[type="text"], input[type="search"], input[type="number"], select, textarea {
+      min-height: 40px; padding: 8px 12px; border: 1px solid var(--border); border-radius: 11px; background: #fff; width: 100%; }
+    textarea { min-height: 90px; resize: vertical; }
+    .filters { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 16px; }
+    .filters .field { min-width: 150px; }
+    .filters .field.grow { flex: 1 1 240px; }
+
+    /* ===== cards ===== */
+    .grid-kpi { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; margin-bottom: 18px; }
+    .kpi { padding: 18px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    .kpi .label { color: var(--text-soft); font-size: .76rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
+    .kpi .value { margin-top: 6px; font-family: "Manrope", sans-serif; font-size: 1.7rem; font-weight: 800; letter-spacing: -0.03em; }
+    .kpi .sub { color: var(--text-soft); font-size: .8rem; }
+    .kpi.warn .value { color: var(--red); }
+    .kpi.good .value { color: var(--green); }
+    .grid-charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 430px), 1fr)); gap: 16px; margin-bottom: 18px; }
+    .card { padding: 20px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); min-width: 0; }
+    .card h2 { font-family: "Manrope", sans-serif; font-size: 1rem; letter-spacing: -0.02em; margin-bottom: 4px; }
+    .card .hint { color: var(--text-soft); font-size: .8rem; margin-bottom: 12px; }
+    .chart svg { width: 100%; height: auto; display: block; }
+    .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 10px; font-size: .8rem; color: var(--text-soft); }
+    .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+    .donut-wrap { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+    .donut-wrap svg { width: 150px; flex: 0 0 150px; }
+    .donut-wrap .legend { flex-direction: column; margin: 0; gap: 7px; }
+    .empty { padding: 34px 12px; text-align: center; color: var(--text-soft); font-size: .9rem; }
+    .attn { list-style: none; display: grid; gap: 8px; }
+    .attn li button { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 10px; min-height: 44px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; cursor: pointer; text-align: left; font-weight: 600; }
+    .attn li button:hover { background: var(--gray-soft); }
+    .pill-n { min-width: 28px; padding: 2px 9px; border-radius: 999px; background: var(--gray-soft); font-weight: 800; font-size: .8rem; text-align: center; }
+    .pill-n.bad { background: var(--red-soft); color: var(--red); }
+    .pill-n.good { background: var(--green-soft); color: var(--green); }
+
+    /* ===== tables ===== */
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+    table { width: 100%; border-collapse: collapse; font-size: .86rem; }
+    th { position: sticky; top: 0; padding: 12px 14px; background: #f8fafd; color: var(--text-soft); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; text-align: left; white-space: nowrap; border-bottom: 1px solid var(--border); }
+    td { padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    tbody tr:hover { background: #fafbfe; }
+    tr.row-failed td:first-child { box-shadow: inset 3px 0 0 var(--red); }
+    td .sub { display: block; color: var(--text-soft); font-size: .76rem; }
+    td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; word-break: break-all; }
+    .linkbtn { padding: 0; border: 0; background: none; color: var(--blue); font-weight: 700; cursor: pointer; text-align: left; }
+    .linkbtn:hover { text-decoration: underline; }
+    .detail-row td { background: #f8fafd; }
+    .detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px 24px; }
+    .detail-grid dt { color: var(--text-soft); font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; }
+    .detail-grid dd { word-break: break-word; }
+    .pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 12px 4px 0; color: var(--text-soft); font-size: .84rem; }
+    .pager .btns { display: flex; gap: 8px; }
+
+    .badge { display: inline-flex; align-items: center; gap: 5px; padding: 2px 10px; border-radius: 999px; background: var(--gray-soft); color: var(--text-soft); font-size: .74rem; font-weight: 700; white-space: nowrap; }
+    .badge.green { background: var(--green-soft); color: var(--green); }
+    .badge.red { background: var(--red-soft); color: var(--red); }
+    .badge.amber { background: var(--amber-soft); color: var(--amber); }
+    .badge.blue { background: var(--blue-soft); color: var(--blue); }
+
+    /* ===== dialogs ===== */
+    dialog { border: 0; padding: 0; color: var(--text); }
+    dialog::backdrop { background: rgba(5, 13, 29, .55); backdrop-filter: blur(2px); }
+    dialog.modal { width: min(94vw, 460px); border-radius: 18px; background: #fff; box-shadow: 0 30px 80px rgba(5,13,29,.35); margin: auto; }
+    .modal-form { display: grid; gap: 14px; padding: 24px; }
+    .modal-form h2 { font-family: "Manrope", sans-serif; font-size: 1.15rem; }
+    .modal-form p.intro { color: var(--text-soft); font-size: .88rem; }
+    .form-error { color: var(--red); font-size: .84rem; font-weight: 600; min-height: 1.2em; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 10px; }
+    .check { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+    .check input { width: 20px; height: 20px; }
+    dialog.drawer { width: min(100vw, 760px); height: 100vh; max-height: 100vh; margin: 0 0 0 auto; background: var(--bg); box-shadow: -20px 0 60px rgba(5,13,29,.3); }
+    .drawer-inner { display: flex; flex-direction: column; height: 100%; }
+    .drawer-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 22px 24px 16px; background: #fff; border-bottom: 1px solid var(--border); }
+    .drawer-head h2 { font-family: "Manrope", sans-serif; font-size: 1.25rem; letter-spacing: -0.02em; word-break: break-word; }
+    .drawer-body { flex: 1; overflow-y: auto; padding: 20px 24px 40px; display: grid; gap: 16px; align-content: start; }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tabs button { min-height: 34px; padding: 0 13px; border: 1px solid var(--border); border-radius: 999px; background: #fff; font-weight: 700; font-size: .78rem; cursor: pointer; }
+    .tabs button[aria-selected="true"] { background: var(--navy-900); border-color: var(--navy-900); color: #fff; }
+
+    /* ===== states ===== */
+    .gate { min-height: 100vh; display: grid; place-items: center; padding: 24px; text-align: center; background: linear-gradient(135deg, var(--navy-950), var(--navy-900)); color: #fff; }
+    .gate .box { max-width: 440px; }
+    .gate h1 { font-family: "Manrope", sans-serif; font-size: 1.6rem; margin-bottom: 8px; }
+    .gate p { color: rgba(255,255,255,.75); margin-bottom: 20px; }
+    .spinner { width: 34px; height: 34px; margin: 0 auto 14px; border: 4px solid rgba(255,255,255,.25); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+    .loading { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 60px 0; color: var(--text-soft); }
+    .loading .spinner { margin: 0; border-color: var(--border); border-top-color: var(--blue); width: 26px; height: 26px; border-width: 3px; }
+    .errorbox { padding: 24px; border: 1px solid #f3c2c2; border-radius: var(--radius); background: var(--red-soft); color: var(--red); display: grid; gap: 12px; justify-items: start; }
+    .toasts { position: fixed; right: 16px; bottom: 16px; z-index: 5000; display: grid; gap: 8px; }
+    .toast { padding: 12px 16px; border-radius: 12px; background: var(--navy-900); color: #fff; font-weight: 600; font-size: .88rem; box-shadow: 0 12px 30px rgba(0,0,0,.25); max-width: 340px; }
+    .toast.err { background: var(--red); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 900px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: sticky; z-index: 50; height: auto; flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; overflow-x: auto; }
+      .brand { padding: 0 6px 0 0; } .brand small, .side-foot { display: none; }
+      .nav { flex-direction: row; } .nav button { white-space: nowrap; min-height: 40px; padding: 0 12px; }
+      .nav .count { margin-left: 4px; }
+      .sidebar .mobile-out { display: inline-flex; margin-left: auto; }
+    }
+    @media (min-width: 901px) { .sidebar .mobile-out { display: none; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+
+  <div id="gate" class="gate" role="status">
+    <div class="box"><div class="spinner" aria-hidden="true"></div><p>Checking your access…</p></div>
+  </div>
+
+  <div id="app" class="shell" hidden>
+    <aside class="sidebar">
+      <a class="brand" href="index.html" aria-label="KryptoPesa home">
+        <img src="logo.jpg" alt="" width="38" height="38" />
+        <div><strong>Krypto<span>Pesa</span></strong><small>Admin</small></div>
+      </a>
+      <nav class="nav" id="nav" aria-label="Admin sections"></nav>
+      <button class="btn small mobile-out" id="signOutMobile" type="button">Sign out</button>
+      <div class="side-foot">
+        <strong id="meName">Admin</strong>
+        <span id="meEmail"></span>
+        <div class="row">
+          <button class="btn small" id="signOut" type="button">Sign out</button>
+        </div>
+      </div>
+    </aside>
+    <main class="main" id="main" tabindex="-1"></main>
+  </div>
+
+  <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+  <script src="supabase-client.js"></script>
+  <script>
+  "use strict";
+  (function () {
+
+    /* =====================================================
+       Helpers
+       Every value from the database is inserted with
+       textContent / createTextNode — never as HTML.
+    ===================================================== */
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+
+    function h(tag, attrs) {
+      var el = document.createElement(tag);
+      attrs = attrs || {};
+      Object.keys(attrs).forEach(function (k) {
+        var v = attrs[k];
+        if (v === null || v === undefined || v === false) return;
+        if (k === "class") el.className = v;
+        else if (k.slice(0, 2) === "on" && typeof v === "function") el.addEventListener(k.slice(2), v);
+        else el.setAttribute(k, v === true ? "" : String(v));
+      });
+      for (var i = 2; i < arguments.length; i++) append(el, arguments[i]);
+      return el;
+    }
+    function append(el, kid) {
+      if (kid === null || kid === undefined || kid === false) return;
+      if (Array.isArray(kid)) { kid.forEach(function (k) { append(el, k); }); return; }
+      el.append(kid.nodeType ? kid : document.createTextNode(String(kid)));
+    }
+
+    var KES = new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES", maximumFractionDigits: 0 });
+    var DT = new Intl.DateTimeFormat("en-KE", { timeZone: "Africa/Nairobi", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+    function fmtDate(v) { if (!v) return "—"; var d = new Date(v); return isNaN(d.getTime()) ? "—" : DT.format(d); }
+    function ago(v) {
+      if (!v) return "never";
+      var s = Math.round((Date.now() - new Date(v).getTime()) / 1000);
+      if (isNaN(s)) return "—";
+      if (s < 60) return "just now";
+      if (s < 3600) return Math.floor(s / 60) + " min ago";
+      if (s < 86400) return Math.floor(s / 3600) + " h ago";
+      return Math.floor(s / 86400) + " d ago";
+    }
+    function money(v) { var n = Number(v); return isFinite(n) ? KES.format(n) : "—"; }
+    function cryptoAmt(v) { var n = Number(v); return isFinite(n) ? n.toLocaleString("en-US", { maximumFractionDigits: 8 }) : "—"; }
+    function num(v) { var n = Number(v); return isFinite(n) ? n.toLocaleString("en-KE") : "0"; }
+    function device(ua) {
+      if (!ua) return "—";
+      var b = /Edg\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /Chrome\//.test(ua) ? "Chrome" : /Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : "Browser";
+      var o = /Android/.test(ua) ? "Android" : /iPhone|iPad/.test(ua) ? "iOS" : /Windows/.test(ua) ? "Windows" : /Mac OS X/.test(ua) ? "macOS" : /Linux/.test(ua) ? "Linux" : "Unknown";
+      return b + " · " + o;
+    }
+
+    var TONE = {
+      active: "green", verified: "green", completed: "green", accepted: "blue",
+      pending: "amber", processing: "blue", unverified: "", rejected: "red",
+      failed: "red", timeout: "red", suspended: "red", deactivated: "red"
+    };
+    function badge(text) { return h("span", { class: "badge " + (TONE[text] || "") }, text || "—"); }
+
+    function toast(msg, isErr) {
+      var t = h("div", { class: "toast" + (isErr ? " err" : "") }, msg);
+      $("#toasts").append(t);
+      setTimeout(function () { t.remove(); }, isErr ? 6500 : 3500);
+    }
+
+    /* ---------- block explorer links (fixed domains, validated hash) ---------- */
+    var HASH_RE = /^[A-Za-z0-9]{16,128}$/;
+    var EXPLORERS = {
+      bitcoin: "https://mempool.space/tx/", btc: "https://mempool.space/tx/",
+      ethereum: "https://etherscan.io/tx/", eth: "https://etherscan.io/tx/", erc20: "https://etherscan.io/tx/",
+      tron: "https://tronscan.org/#/transaction/", trc20: "https://tronscan.org/#/transaction/",
+      solana: "https://solscan.io/tx/", sol: "https://solscan.io/tx/",
+      worldchain: "https://worldscan.org/tx/", world: "https://worldscan.org/tx/", wld: "https://worldscan.org/tx/",
+      bsc: "https://bscscan.com/tx/", bep20: "https://bscscan.com/tx/",
+      polygon: "https://polygonscan.com/tx/"
+    };
+    function explorerUrl(network, asset, hash) {
+      if (!hash || !HASH_RE.test(hash)) return null;
+      var n = String(network || "").toLowerCase();
+      if (!n) {
+        var a = String(asset || "").toUpperCase();
+        if (a === "BTC") n = "bitcoin";
+        else if (a === "ETH") n = "ethereum";
+        else if (a === "SOL") n = "solana";
+        else if (a === "WLD") n = "worldchain";
+        else if (a === "USDT") n = /^0x[0-9a-fA-F]{64}$/.test(hash) ? "ethereum" : /^[0-9a-fA-F]{64}$/.test(hash) ? "tron" : "";
+      }
+      var base = EXPLORERS[n];
+      return base ? base + encodeURIComponent(hash) : null;
+    }
+    function chainCell(network, asset, hash) {
+      if (!hash) return h("span", { class: "sub" }, "no hash yet");
+      var url = explorerUrl(network, asset, hash);
+      var short = hash.length > 16 ? hash.slice(0, 8) + "…" + hash.slice(-6) : hash;
+      return h("span", null,
+        h("span", { class: "mono", title: hash }, short),
+        url ? h("a", { href: url, target: "_blank", rel: "noopener noreferrer", class: "sub" }, "View on explorer ↗")
+            : h("span", { class: "sub" }, "network unknown"));
+    }
+
+    /* =====================================================
+       Supabase access (all data comes from admin_* RPCs,
+       which re-check admin rights on the server)
+    ===================================================== */
+    var sb = null;
+    function denied(msg) {
+      $("#app").hidden = true;
+      var g = $("#gate");
+      g.hidden = false;
+      g.replaceChildren(h("div", { class: "box" },
+        h("h1", null, msg || "Access denied"),
+        h("p", null, "This area is only for KryptoPesa administrators."),
+        h("a", { class: "btn primary", href: "index.html" }, "Back to home")));
+    }
+    function rpc(name, args) {
+      return sb.rpc(name, args || {}).then(function (res) {
+        if (res.error) {
+          var e = res.error;
+          if (e.code === "42501" || /forbidden|permission denied/i.test(e.message || "")) denied();
+          if (/JWT|expired/i.test(e.message || "")) { location.replace("login.html"); }
+          throw e;
+        }
+        return res.data;
+      });
+    }
+    function nz(v) { return v === "" || v === undefined ? null : v; }
+
+    /* =====================================================
+       Charts (plain SVG, no libraries)
+    ===================================================== */
+    var NS = "http://www.w3.org/2000/svg";
+    function s(name, attrs) {
+      var e = document.createElementNS(NS, name);
+      Object.keys(attrs || {}).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+      for (var i = 2; i < arguments.length; i++) { var k2 = arguments[i]; if (k2) e.append(k2); }
+      return e;
+    }
+    function niceMax(v) {
+      if (v <= 5) return 5;
+      var p = Math.pow(10, Math.floor(Math.log10(v)));
+      var f = v / p;
+      return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+    }
+    function legend(items) {
+      return h("div", { class: "legend" }, items.map(function (i) { return h("span", null, h("i", { style: "background:" + i.color }), i.label); }));
+    }
+    function allZero(arrs) { return arrs.every(function (a) { return a.every(function (v) { return !Number(v); }); }); }
+
+    function lineChart(labels, series, aria) {
+      if (!labels.length || allZero(series.map(function (x) { return x.values; }))) return h("div", { class: "empty" }, "No activity in this period yet.");
+      var W = 640, H = 250, L = 46, R = 12, T = 12, B = 28;
+      var max = niceMax(Math.max.apply(null, [].concat.apply([], series.map(function (x) { return x.values.map(Number); }))));
+      var svg = s("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": aria });
+      var iw = W - L - R, ih = H - T - B;
+      var X = function (i) { return L + (labels.length === 1 ? iw / 2 : (i * iw) / (labels.length - 1)); };
+      var Y = function (v) { return T + ih - (Number(v) / max) * ih; };
+      for (var g = 0; g <= 4; g++) {
+        var gy = T + (ih * g) / 4;
+        svg.append(s("line", { x1: L, x2: W - R, y1: gy, y2: gy, stroke: "#e3e9f2" }));
+        var tx = s("text", { x: L - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#56657f" });
+        tx.textContent = num(Math.round(max - (max * g) / 4));
+        svg.append(tx);
+      }
+      var step = Math.max(1, Math.ceil(labels.length / 6));
+      labels.forEach(function (lb, i) {
+        if (i % step !== 0 && i !== labels.length - 1) return;
+        var t = s("text", { x: X(i), y: H - 8, "text-anchor": "middle", "font-size": 11, fill: "#56657f" });
+        t.textContent = lb.slice(5);
+        svg.append(t);
+      });
+      series.forEach(function (sr) {
+        var pts = sr.values.map(function (v, i) { return X(i).toFixed(1) + "," + Y(v).toFixed(1); });
+        svg.append(s("polyline", { points: pts.join(" "), fill: "none", stroke: sr.color, "stroke-width": 2.5, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+        sr.values.forEach(function (v, i) {
+          var c = s("circle", { cx: X(i), cy: Y(v), r: labels.length > 45 ? 0 : 3.5, fill: "#fff", stroke: sr.color, "stroke-width": 2 });
+          var tt = s("title"); tt.textContent = labels[i] + " — " + sr.name + ": " + num(v);
+          c.append(tt); svg.append(c);
+        });
+      });
+      return h("div", null, svg, legend(series.map(function (x) { return { color: x.color, label: x.name }; })));
+    }
+
+    function barChart(labels, values, color, name, fmt, aria) {
+      if (!labels.length || allZero([values])) return h("div", { class: "empty" }, "Nothing to show yet.");
+      var W = 640, H = 230, L = 52, R = 12, T = 12, B = 30;
+      var max = niceMax(Math.max.apply(null, values.map(Number)));
+      var svg = s("svg", { viewBox: "0 0 " + W + " " + H, role: "img", "aria-label": aria });
+      var iw = W - L - R, ih = H - T - B, bw = iw / labels.length;
+      for (var g = 0; g <= 4; g++) {
+        var gy = T + (ih * g) / 4;
+        svg.append(s("line", { x1: L, x2: W - R, y1: gy, y2: gy, stroke: "#e3e9f2" }));
+        var tx = s("text", { x: L - 8, y: gy + 4, "text-anchor": "end", "font-size": 11, fill: "#56657f" });
+        tx.textContent = fmt(max - (max * g) / 4);
+        svg.append(tx);
+      }
+      var step = Math.max(1, Math.ceil(labels.length / 7));
+      values.forEach(function (v, i) {
+        var bh = (Number(v) / max) * ih;
+        var r = s("rect", { x: L + i * bw + bw * 0.15, y: T + ih - bh, width: Math.max(1, bw * 0.7), height: Math.max(0, bh), rx: 3, fill: color });
+        var tt = s("title"); tt.textContent = labels[i] + " — " + name + ": " + fmt(v);
+        r.append(tt); svg.append(r);
+        if (i % step === 0) {
+          var t = s("text", { x: L + i * bw + bw / 2, y: H - 9, "text-anchor": "middle", "font-size": 11, fill: "#56657f" });
+          t.textContent = labels[i].length > 10 ? labels[i].slice(5) : labels[i];
+          svg.append(t);
+        }
+      });
+      return h("div", null, svg);
+    }
+
+    function donut(items, aria) {
+      var total = items.reduce(function (a, b) { return a + Number(b.value || 0); }, 0);
+      if (!total) return h("div", { class: "empty" }, "No data yet.");
+      var C = 2 * Math.PI * 52, off = 0;
+      var svg = s("svg", { viewBox: "0 0 150 150", role: "img", "aria-label": aria });
+      svg.append(s("circle", { cx: 75, cy: 75, r: 52, fill: "none", stroke: "#eef1f6", "stroke-width": 20 }));
+      items.forEach(function (it) {
+        var v = Number(it.value || 0);
+        if (!v) return;
+        var len = (v / total) * C;
+        var c = s("circle", { cx: 75, cy: 75, r: 52, fill: "none", stroke: it.color, "stroke-width": 20,
+          "stroke-dasharray": len.toFixed(2) + " " + (C - len).toFixed(2), "stroke-dashoffset": (-off).toFixed(2), transform: "rotate(-90 75 75)" });
+        var tt = s("title"); tt.textContent = it.label + ": " + num(v);
+        c.append(tt); svg.append(c); off += len;
+      });
+      var t1 = s("text", { x: 75, y: 78, "text-anchor": "middle", "font-size": 22, "font-weight": 800, fill: "#0b1830" }); t1.textContent = num(total);
+      var t2 = s("text", { x: 75, y: 95, "text-anchor": "middle", "font-size": 10, fill: "#56657f" }); t2.textContent = "total";
+      svg.append(t1, t2);
+      return h("div", { class: "donut-wrap" }, svg,
+        h("div", { class: "legend" }, items.map(function (i) {
+          return h("span", null, h("i", { style: "background:" + i.color }), i.label + " · " + num(i.value));
+        })));
+    }
+
+    /* =====================================================
+       Reusable UI: tables, pager, modals
+    ===================================================== */
+    function table(cols, rows, opts) {
+      opts = opts || {};
+      if (!rows.length) return h("div", { class: "table-wrap" }, h("div", { class: "empty" }, opts.empty || "Nothing here yet."));
+      var thead = h("thead", null, h("tr", null, cols.map(function (c) { return h("th", { class: c.num ? "num" : "", scope: "col" }, c.label); })));
+      var tbody = h("tbody");
+      rows.forEach(function (r) {
+        var tr = h("tr", { class: opts.rowClass ? opts.rowClass(r) : "" });
+        cols.forEach(function (c) { tr.append(h("td", { class: c.num ? "num" : "" }, c.render(r, tr))); });
+        tbody.append(tr);
+      });
+      return h("div", { class: "table-wrap" }, h("table", null, h("caption", { class: "sr-only" }, opts.caption || "Data table"), thead, tbody));
+    }
+    function pager(total, st, reload) {
+      var from = total ? st.offset + 1 : 0, to = Math.min(st.offset + st.limit, total);
+      return h("div", { class: "pager" },
+        h("span", null, "Showing " + num(from) + "–" + num(to) + " of " + num(total)),
+        h("div", { class: "btns" },
+          h("button", { class: "btn small", type: "button", disabled: st.offset <= 0, onclick: function () { st.offset = Math.max(0, st.offset - st.limit); reload(); } }, "← Previous"),
+          h("button", { class: "btn small", type: "button", disabled: st.offset + st.limit >= total, onclick: function () { st.offset += st.limit; reload(); } }, "Next →")));
+    }
+    function userLink(id, name, email) {
+      return h("span", null,
+        h("button", { class: "linkbtn", type: "button", onclick: function () { openUser(id); } }, name || email || "user"),
+        email && name ? h("span", { class: "sub" }, email) : null);
+    }
+
+    function ask(cfg) {
+      return new Promise(function (resolve) {
+        var dlg = h("dialog", { class: "modal", "aria-labelledby": "mTitle" });
+        var err = h("p", { class: "form-error", role: "alert" });
+        var refs = {};
+        var form = h("form", { class: "modal-form", method: "dialog", novalidate: true },
+          h("h2", { id: "mTitle" }, cfg.title),
+          cfg.intro ? h("p", { class: "intro" }, cfg.intro) : null,
+          (cfg.fields || []).map(function (f, i) {
+            var id = "mf" + i, ctl;
+            if (f.type === "select") {
+              ctl = h("select", { id: id }, f.options.map(function (o) { return h("option", { value: o.value }, o.label); }));
+              ctl.value = f.value === undefined ? f.options[0].value : f.value;
+            } else if (f.type === "textarea") {
+              ctl = h("textarea", { id: id, maxlength: f.max || 500, placeholder: f.placeholder || "" }); ctl.value = f.value || "";
+            } else if (f.type === "number") {
+              ctl = h("input", { id: id, type: "number", min: f.min, max: f.max, step: 1, placeholder: f.placeholder || "" }); ctl.value = f.value === null || f.value === undefined ? "" : f.value;
+            } else if (f.type === "checkbox") {
+              ctl = h("input", { id: id, type: "checkbox" }); ctl.checked = !!f.value;
+              refs[f.name] = ctl;
+              return h("div", { class: "check" }, ctl, h("label", { for: id }, f.label));
+            }
+            refs[f.name] = ctl;
+            return h("div", { class: "field" }, h("label", { for: id }, f.label), ctl);
+          }),
+          err,
+          h("div", { class: "modal-actions" },
+            h("button", { class: "btn", type: "button", onclick: function () { dlg.close(); } }, "Cancel"),
+            h("button", { class: "btn " + (cfg.danger ? "danger" : "primary"), type: "submit" }, cfg.confirm || "Confirm")));
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var vals = {};
+          for (var i = 0; i < (cfg.fields || []).length; i++) {
+            var f = cfg.fields[i], c = refs[f.name];
+            var v = f.type === "checkbox" ? c.checked : c.value.trim();
+            if (f.required && !v) { err.textContent = f.label + " is required."; c.focus(); return; }
+            if (f.minLen && v.length < f.minLen) { err.textContent = f.label + " must be at least " + f.minLen + " characters."; c.focus(); return; }
+            if (f.type === "number" && v !== "") {
+              var n = Number(v);
+              if (!Number.isInteger(n) || n < (f.min || 0) || n > (f.max || 10000)) { err.textContent = f.label + " must be a whole number between " + (f.min || 0) + " and " + (f.max || 10000) + "."; c.focus(); return; }
+              v = n;
+            }
+            vals[f.name] = v;
+          }
+          resolve(vals); dlg.close();
+        });
+        dlg.addEventListener("close", function () { dlg.remove(); resolve(null); });
+        dlg.append(form); document.body.append(dlg); dlg.showModal();
+        var first = dlg.querySelector("textarea, input, select"); if (first) first.focus();
+      });
+    }
+
+    /* =====================================================
+       Views
+    ===================================================== */
+    var main, seq = 0;
+    var VIEWS = [
+      { id: "overview", label: "Overview", ico: "◧" },
+      { id: "users", label: "Users", ico: "☺" },
+      { id: "transactions", label: "Transactions", ico: "⇄" },
+      { id: "payouts", label: "M-Pesa payouts", ico: "☎" },
+      { id: "logins", label: "Sign-ins", ico: "→" },
+      { id: "attempts", label: "Failed attempts", ico: "⚠" },
+      { id: "audit", label: "Audit log", ico: "☰" }
+    ];
+    var st = {
+      view: "overview", days: 30, badges: {},
+      users: { q: "", status: "", kyc: "", offset: 0, limit: 25 },
+      tx: { q: "", status: "", type: "", offset: 0, limit: 25 },
+      payouts: { status: "", offset: 0, limit: 25 },
+      logins: { q: "", offset: 0, limit: 50 },
+      attempts: { all: false, kind: "", offset: 0, limit: 50 },
+      audit: { offset: 0, limit: 50 }
+    };
+
+    function head(title, sub, tools) {
+      return h("div", { class: "page-head" }, h("div", null, h("h1", null, title), sub ? h("p", null, sub) : null),
+        h("div", { class: "tools" }, tools, h("button", { class: "btn", type: "button", onclick: function () { show(st.view); } }, "↻ Refresh")));
+    }
+    function loading() { main.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner", "aria-hidden": "true" }), "Loading…")); }
+    function failed(my, e) {
+      if (my !== seq) return;
+      main.replaceChildren(h("div", { class: "errorbox", role: "alert" },
+        h("strong", null, "Could not load this page."),
+        h("span", null, "Check your connection and try again. If it keeps happening, sign out and back in."),
+        h("button", { class: "btn", type: "button", onclick: function () { show(st.view); } }, "Try again")));
+      if (window.console) console.error("Admin load failed:", e && e.message);
+    }
+    function field(label, ctl, cls) { return h("div", { class: "field " + (cls || "") }, h("label", null, label), ctl); }
+    function debounce(fn, ms) { var t; return function () { var a = arguments; clearTimeout(t); t = setTimeout(function () { fn.apply(null, a); }, ms); }; }
+
+    /* ---------- Overview ---------- */
+    function viewOverview() {
+      var my = ++seq; loading();
+      rpc("admin_overview", { p_days: st.days }).then(function (d) {
+        if (my !== seq) return;
+        var u = d.users, t = d.transactions, p = d.payouts, a = d.attempts_24h;
+        st.badges = { attempts: a.failed_login + a.failed_signup, users: u.kyc.pending, tx: t.failed_24h };
+        renderNav();
+        var days = d.daily.map(function (x) { return x.day; });
+        var sel = h("select", { "aria-label": "Chart period", onchange: function () { st.days = Number(this.value); viewOverview(); } },
+          [7, 30, 90].map(function (n) { return h("option", { value: n }, "Last " + n + " days"); }));
+        sel.value = String(st.days);
+        function kpi(label, value, sub, tone) { return h("div", { class: "kpi " + (tone || "") }, h("div", { class: "label" }, label), h("div", { class: "value" }, value), h("div", { class: "sub" }, sub || "")); }
+        function go(v, extra) { return function () { if (extra) extra(); nav(v); }; }
+        main.replaceChildren(
+          head("Overview", "Everything happening on KryptoPesa. Times are East Africa Time.", sel),
+          h("div", { class: "grid-kpi" },
+            kpi("Users", num(u.total), "+" + num(u.new_7d) + " in the last 7 days"),
+            kpi("Sign-ins (24 h)", num(d.logins_24h), "successful logins"),
+            kpi("Transactions", num(t.total), num(t.pending + t.processing) + " in progress"),
+            kpi("Completed volume", money(t.kes_completed), "all time, KES", "good"),
+            kpi("Failed (24 h)", num(t.failed_24h), num(t.failed) + " failed overall", t.failed_24h ? "warn" : ""),
+            kpi("Failed attempts (24 h)", num(a.failed_login + a.failed_signup), num(a.failed_ips) + " IP addresses", (a.failed_login + a.failed_signup) ? "warn" : ""),
+            kpi("Suspended / deactivated", num(u.status.suspended + u.status.deactivated), num(u.frozen) + " with frozen transactions"),
+            kpi("M-Pesa payouts", num(p.completed), money(p.kes_completed) + " paid · " + num(p.failed) + " failed")),
+          h("div", { class: "grid-charts" },
+            h("section", { class: "card chart" }, h("h2", null, "Transactions per day"), h("p", { class: "hint" }, "All, completed and failed"),
+              lineChart(days, [
+                { name: "All", color: "#1769ff", values: d.daily.map(function (x) { return x.tx; }) },
+                { name: "Completed", color: "#12875a", values: d.daily.map(function (x) { return x.completed; }) },
+                { name: "Failed", color: "#c93232", values: d.daily.map(function (x) { return x.failed; }) }], "Transactions per day")),
+            h("section", { class: "card chart" }, h("h2", null, "Completed volume per day"), h("p", { class: "hint" }, "Kenyan Shillings paid out"),
+              barChart(days, d.daily.map(function (x) { return x.kes; }), "#1769ff", "KES", function (v) { return money(v); }, "Completed volume per day in KES")),
+            h("section", { class: "card chart" }, h("h2", null, "Sign-ups and sign-ins"), h("p", { class: "hint" }, "New accounts and logins per day"),
+              lineChart(days, [
+                { name: "Sign-ups", color: "#e6b900", values: d.daily.map(function (x) { return x.signups; }) },
+                { name: "Sign-ins", color: "#12366d", values: d.daily.map(function (x) { return x.logins; }) }], "Sign-ups and sign-ins per day")),
+            h("section", { class: "card chart" }, h("h2", null, "Transactions by asset"), h("p", { class: "hint" }, "Number of transactions per cryptocurrency"),
+              barChart(d.by_asset.map(function (x) { return x.asset; }), d.by_asset.map(function (x) { return x.count; }), "#4f8cff", "Transactions", num, "Transactions by asset")),
+            h("section", { class: "card chart" }, h("h2", null, "Transaction status"),
+              donut([{ label: "Completed", value: t.completed, color: "#12875a" }, { label: "Processing", value: t.processing, color: "#1769ff" },
+                     { label: "Pending", value: t.pending, color: "#e6b900" }, { label: "Failed", value: t.failed, color: "#c93232" }], "Transaction status")),
+            h("section", { class: "card chart" }, h("h2", null, "KYC status"),
+              donut([{ label: "Verified", value: u.kyc.verified, color: "#12875a" }, { label: "Pending", value: u.kyc.pending, color: "#e6b900" },
+                     { label: "Rejected", value: u.kyc.rejected, color: "#c93232" }, { label: "Unverified", value: u.kyc.unverified, color: "#9aa6bb" }], "KYC status")),
+            h("section", { class: "card chart" }, h("h2", null, "Account status"),
+              donut([{ label: "Active", value: u.status.active, color: "#12875a" }, { label: "Suspended", value: u.status.suspended, color: "#e6b900" },
+                     { label: "Deactivated", value: u.status.deactivated, color: "#c93232" }], "Account status")),
+            h("section", { class: "card" }, h("h2", null, "Needs attention"), h("p", { class: "hint" }, "Jump straight to what matters"),
+              h("ul", { class: "attn" },
+                h("li", null, h("button", { type: "button", onclick: go("transactions", function () { st.tx.status = "failed"; st.tx.offset = 0; }) }, "Failed transactions", h("span", { class: "pill-n " + (t.failed ? "bad" : "good") }, num(t.failed)))),
+                h("li", null, h("button", { type: "button", onclick: go("users", function () { st.users.kyc = "pending"; st.users.offset = 0; }) }, "KYC waiting for review", h("span", { class: "pill-n " + (u.kyc.pending ? "bad" : "good") }, num(u.kyc.pending)))),
+                h("li", null, h("button", { type: "button", onclick: go("users", function () { st.users.kyc = "rejected"; st.users.offset = 0; }) }, "KYC rejected", h("span", { class: "pill-n" }, num(u.kyc.rejected)))),
+                h("li", null, h("button", { type: "button", onclick: go("payouts", function () { st.payouts.status = "failed"; st.payouts.offset = 0; }) }, "Failed M-Pesa payouts", h("span", { class: "pill-n " + (p.failed ? "bad" : "good") }, num(p.failed)))),
+                h("li", null, h("button", { type: "button", onclick: go("attempts") }, "Failed sign-in / sign-up attempts (24 h)", h("span", { class: "pill-n " + ((a.failed_login + a.failed_signup) ? "bad" : "good") }, num(a.failed_login + a.failed_signup)))),
+                h("li", null, h("button", { type: "button", onclick: go("users", function () { st.users.status = "suspended"; st.users.offset = 0; }) }, "Suspended accounts", h("span", { class: "pill-n" }, num(u.status.suspended))))))));
+      }).catch(function (e) { failed(my, e); });
+    }
+
+    /* ---------- Users ---------- */
+    function viewUsers() {
+      var my = ++seq, f = st.users;
+      var q = h("input", { type: "search", value: f.q, placeholder: "Search name, email or user ID", "aria-label": "Search users" });
+      q.addEventListener("input", debounce(function () { f.q = q.value; f.offset = 0; loadUsers(); }, 350));
+      var ss = h("select", { "aria-label": "Account status", onchange: function () { f.status = this.value; f.offset = 0; loadUsers(); } },
+        [["", "All statuses"], ["active", "Active"], ["suspended", "Suspended"], ["deactivated", "Deactivated"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      var ks = h("select", { "aria-label": "KYC status", onchange: function () { f.kyc = this.value; f.offset = 0; loadUsers(); } },
+        [["", "All KYC"], ["unverified", "Unverified"], ["pending", "Pending"], ["verified", "Verified"], ["rejected", "Rejected"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      ss.value = f.status; ks.value = f.kyc;
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("Users", "Search, review and manage every account."),
+        h("div", { class: "filters" }, field("Search", q, "grow"), field("Status", ss), field("KYC", ks)), box);
+      function loadUsers() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_users", { p_search: nz(f.q), p_status: nz(f.status), p_kyc: nz(f.kyc), p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          box.replaceChildren(table([
+            { label: "User", render: function (r) { return userLink(r.id, r.username, r.email); } },
+            { label: "KYC", render: function (r) { return badge(r.kyc_status); } },
+            { label: "Status", render: function (r) { return h("span", null, badge(r.account_status), r.is_admin ? h("span", { class: "badge blue" }, "admin") : null, r.frozen ? h("span", { class: "badge amber" }, "frozen") : null); } },
+            { label: "Last sign-in", render: function (r) { return h("span", null, fmtDate(r.last_sign_in_at), h("span", { class: "sub" }, ago(r.last_sign_in_at))); } },
+            { label: "Last IP / device", render: function (r) { return h("span", null, h("span", { class: "mono" }, r.last_ip || "—"), h("span", { class: "sub" }, device(r.last_user_agent))); } },
+            { label: "Transactions", num: true, render: function (r) { return h("span", null, num(r.tx_count), r.tx_failed ? h("span", { class: "sub", style: "color:#c93232" }, num(r.tx_failed) + " failed") : null); } },
+            { label: "Joined", render: function (r) { return fmtDate(r.created_at); } },
+            { label: "", render: function (r) { return h("button", { class: "btn small", type: "button", onclick: function () { openUser(r.id); } }, "Manage"); } }
+          ], d.rows, { caption: "Users", empty: "No users match your filters." }), pager(d.total, f, loadUsers));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load users.", h("button", { class: "btn", type: "button", onclick: loadUsers }, "Try again"))); });
+      }
+      loadUsers();
+    }
+
+    /* ---------- Transactions ---------- */
+    function txTable(rows, withUser) {
+      var cols = [
+        { label: "Time", render: function (r) { return h("span", null, fmtDate(r.created_at), h("span", { class: "sub" }, ago(r.created_at))); } }
+      ];
+      if (withUser) cols.push({ label: "User", render: function (r) { return userLink(r.user_id, r.username, r.email); } });
+      cols.push(
+        { label: "Type", render: function (r) { return String(r.type || "").replace(/_/g, " "); } },
+        { label: "Asset", render: function (r) { return r.asset || "—"; } },
+        { label: "Crypto", num: true, render: function (r) { return cryptoAmt(r.crypto_amount); } },
+        { label: "KES", num: true, render: function (r) { return r.kes_amount === null || r.kes_amount === undefined ? "—" : money(r.kes_amount); } },
+        { label: "Status", render: function (r) { return h("span", null, badge(r.status), r.failure_reason ? h("span", { class: "sub", style: "color:#c93232" }, r.failure_reason) : null); } },
+        { label: "M-Pesa receipt", render: function (r) { return r.mpesa_receipt ? h("span", { class: "mono" }, r.mpesa_receipt) : "—"; } },
+        { label: "Blockchain", render: function (r) { return chainCell(r.network, r.asset, r.tx_hash); } },
+        { label: "", render: function (r, tr) {
+            return h("button", { class: "btn small", type: "button", "aria-expanded": "false", onclick: function () {
+              var open = tr.nextSibling && tr.nextSibling.classList && tr.nextSibling.classList.contains("detail-row");
+              if (open) { tr.nextSibling.remove(); this.setAttribute("aria-expanded", "false"); this.textContent = "Details"; return; }
+              var dl = h("dl", { class: "detail-grid" },
+                [["Transaction ID", r.id], ["M-Pesa number", r.mpesa_number], ["Daraja checkout ID", r.daraja_checkout_id], ["Network", r.network],
+                 ["Last updated", fmtDate(r.updated_at)], ["Failure reason", r.failure_reason]].map(function (p) {
+                  return h("div", null, h("dt", null, p[0]), h("dd", { class: /ID|number/.test(p[0]) ? "mono" : "" }, p[1] || "—"));
+                }));
+              var dr = h("tr", { class: "detail-row" }, h("td", { colspan: cols.length }, dl));
+              tr.after(dr); this.setAttribute("aria-expanded", "true"); this.textContent = "Hide";
+            } }, "Details");
+          } });
+      return table(cols, rows, { caption: "Transactions", empty: "No transactions found.", rowClass: function (r) { return r.status === "failed" ? "row-failed" : ""; } });
+    }
+    function viewTransactions() {
+      var my = ++seq, f = st.tx;
+      var q = h("input", { type: "search", value: f.q, placeholder: "User, M-Pesa receipt, transaction hash or ID", "aria-label": "Search transactions" });
+      q.addEventListener("input", debounce(function () { f.q = q.value; f.offset = 0; load(); }, 350));
+      var ss = h("select", { "aria-label": "Status", onchange: function () { f.status = this.value; f.offset = 0; load(); } },
+        [["", "All statuses"], ["pending", "Pending"], ["processing", "Processing"], ["completed", "Completed"], ["failed", "Failed"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      var ts = h("select", { "aria-label": "Type", onchange: function () { f.type = this.value; f.offset = 0; load(); } },
+        [["", "All types"], ["deposit", "Deposit"], ["swap_to_mpesa", "Swap to M-Pesa"], ["withdrawal", "Withdrawal"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      ss.value = f.status; ts.value = f.type;
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("Transactions", "Every deposit, swap and withdrawal. Failed ones are marked in red."),
+        h("div", { class: "filters" }, field("Search", q, "grow"), field("Status", ss), field("Type", ts)), box);
+      function load() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_transactions", { p_status: nz(f.status), p_type: nz(f.type), p_search: nz(f.q), p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          box.replaceChildren(txTable(d.rows, true), pager(d.total, f, load));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load transactions.", h("button", { class: "btn", type: "button", onclick: load }, "Try again"))); });
+      }
+      load();
+    }
+
+    /* ---------- Payouts ---------- */
+    function payoutTable(rows, withUser) {
+      var cols = [{ label: "Time", render: function (r) { return fmtDate(r.created_at); } }];
+      if (withUser) cols.push({ label: "User", render: function (r) { return userLink(r.user_id, r.username, r.email); } });
+      cols.push(
+        { label: "Phone", render: function (r) { return h("span", { class: "mono" }, r.phone_number || "—"); } },
+        { label: "Amount", num: true, render: function (r) { return money(r.amount_kes); } },
+        { label: "Crypto", render: function (r) { return cryptoAmt(r.crypto_amount) + " " + (r.crypto_asset || ""); } },
+        { label: "Status", render: function (r) { return h("span", null, badge(r.status), r.failure_reason ? h("span", { class: "sub", style: "color:#c93232" }, r.failure_reason) : null); } },
+        { label: "M-Pesa receipt", render: function (r) { return r.mpesa_receipt_number ? h("span", { class: "mono" }, r.mpesa_receipt_number) : "—"; } },
+        { label: "Blockchain", render: function (r) { return chainCell(null, r.crypto_asset, r.crypto_tx_reference); } });
+      return table(cols, rows, { caption: "M-Pesa payouts", empty: "No payouts found.", rowClass: function (r) { return /failed|timeout/.test(r.status) ? "row-failed" : ""; } });
+    }
+    function viewPayouts() {
+      var my = ++seq, f = st.payouts;
+      var ss = h("select", { "aria-label": "Status", onchange: function () { f.status = this.value; f.offset = 0; load(); } },
+        [["", "All statuses"], ["pending", "Pending"], ["accepted", "Accepted"], ["completed", "Completed"], ["failed", "Failed"], ["timeout", "Timed out"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      ss.value = f.status;
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("M-Pesa payouts", "Money sent to users' phones."), h("div", { class: "filters" }, field("Status", ss)), box);
+      function load() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_payouts", { p_status: nz(f.status), p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          box.replaceChildren(payoutTable(d.rows, true), pager(d.total, f, load));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load payouts.", h("button", { class: "btn", type: "button", onclick: load }, "Try again"))); });
+      }
+      load();
+    }
+
+    /* ---------- Sign-ins ---------- */
+    function viewLogins() {
+      var my = ++seq, f = st.logins;
+      var q = h("input", { type: "search", value: f.q, placeholder: "Search user, email or IP address", "aria-label": "Search sign-ins" });
+      q.addEventListener("input", debounce(function () { f.q = q.value; f.offset = 0; load(); }, 350));
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("Sign-ins", "When each user logged in, from which IP address and device."), h("div", { class: "filters" }, field("Search", q, "grow")), box);
+      function load() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_logins", { p_search: nz(f.q), p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          box.replaceChildren(table([
+            { label: "Time", render: function (r) { return h("span", null, fmtDate(r.at), h("span", { class: "sub" }, ago(r.at))); } },
+            { label: "User", render: function (r) { return r.user_id ? userLink(r.user_id, r.username, r.email) : "—"; } },
+            { label: "IP address", render: function (r) { return h("span", { class: "mono" }, r.ip || "—"); } },
+            { label: "Device", render: function (r) { return h("span", { title: r.user_agent || "" }, device(r.user_agent)); } }
+          ], d.rows, { caption: "Sign-ins", empty: "No sign-ins recorded yet." }), pager(d.total, f, load));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load sign-ins.", h("button", { class: "btn", type: "button", onclick: load }, "Try again"))); });
+      }
+      load();
+    }
+
+    /* ---------- Failed attempts ---------- */
+    function viewAttempts() {
+      var my = ++seq, f = st.attempts;
+      var all = h("input", { type: "checkbox", id: "allAtt" }); all.checked = f.all;
+      all.addEventListener("change", function () { f.all = all.checked; f.offset = 0; load(); });
+      var ks = h("select", { "aria-label": "Kind", onchange: function () { f.kind = this.value; f.offset = 0; load(); } },
+        [["", "Logins and sign-ups"], ["login", "Logins"], ["signup", "Sign-ups"], ["reset", "Password resets"]].map(function (o) { return h("option", { value: o[0] }, o[1]); }));
+      ks.value = f.kind;
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("Failed attempts", "Sign-in and sign-up attempts made through the KryptoPesa website, with the number of tries per IP address and email."),
+        h("div", { class: "filters" }, field("Kind", ks), h("div", { class: "check" }, all, h("label", { for: "allAtt" }, "Include successful attempts"))), box);
+      function load() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_attempts", { p_failed_only: !f.all, p_kind: nz(f.kind), p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          var tops = h("div", { class: "grid-charts" },
+            h("section", { class: "card" }, h("h2", null, "Most failures by IP (24 h)"),
+              d.top_ips.length ? table([{ label: "IP address", render: function (r) { return h("span", { class: "mono" }, r.ip); } }, { label: "Failures", num: true, render: function (r) { return num(r.failures); } }, { label: "Last", render: function (r) { return ago(r.last_at); } }], d.top_ips, { caption: "Top failing IPs" }) : h("div", { class: "empty" }, "No failures in the last 24 hours.")),
+            h("section", { class: "card" }, h("h2", null, "Most failures by email (24 h)"),
+              d.top_emails.length ? table([{ label: "Email", render: function (r) { return r.email; } }, { label: "Failures", num: true, render: function (r) { return num(r.failures); } }, { label: "Last", render: function (r) { return ago(r.last_at); } }], d.top_emails, { caption: "Top failing emails" }) : h("div", { class: "empty" }, "No failures in the last 24 hours.")));
+          box.replaceChildren(tops, table([
+            { label: "Time", render: function (r) { return h("span", null, fmtDate(r.at), h("span", { class: "sub" }, ago(r.at))); } },
+            { label: "Kind", render: function (r) { return r.kind; } },
+            { label: "Result", render: function (r) { return h("span", { class: "badge " + (r.success ? "green" : "red") }, r.success ? "success" : "failed"); } },
+            { label: "Email", render: function (r) { return r.email || "—"; } },
+            { label: "IP address", render: function (r) { return h("span", { class: "mono" }, r.ip || "—"); } },
+            { label: "Device", render: function (r) { return device(r.user_agent); } }
+          ], d.rows, { caption: "Attempts", empty: "No attempts recorded yet." }), pager(d.total, f, load),
+            h("p", { class: "hint", style: "margin-top:14px;color:#56657f;font-size:.82rem" }, "Only attempts made through the KryptoPesa login and sign-up pages are recorded here. Direct calls to the authentication API do not appear."));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load attempts.", h("button", { class: "btn", type: "button", onclick: load }, "Try again"))); });
+      }
+      load();
+    }
+
+    /* ---------- Audit ---------- */
+    function viewAudit() {
+      var my = ++seq, f = st.audit;
+      var box = h("div", { "aria-live": "polite" });
+      main.replaceChildren(head("Audit log", "Every action an admin has taken. This cannot be edited."), box);
+      function load() {
+        var my2 = ++seq;
+        box.replaceChildren(h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+        rpc("admin_audit", { p_limit: f.limit, p_offset: f.offset }).then(function (d) {
+          if (my2 !== seq) return;
+          box.replaceChildren(table([
+            { label: "Time", render: function (r) { return fmtDate(r.at); } },
+            { label: "Admin", render: function (r) { return r.admin || "—"; } },
+            { label: "Action", render: function (r) { return String(r.action || "").replace(/_/g, " "); } },
+            { label: "Target user", render: function (r) { return r.target_id ? userLink(r.target_id, r.target, null) : "—"; } },
+            { label: "Details", render: function (r) { var d2 = r.details || {}; return Object.keys(d2).filter(function (k) { return d2[k] !== null && d2[k] !== ""; }).map(function (k) { return k + ": " + d2[k]; }).join(" · ") || "—"; } }
+          ], d.rows, { caption: "Audit log", empty: "No admin actions yet." }), pager(d.total, f, load));
+        }).catch(function () { if (my2 === seq) box.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load the audit log.", h("button", { class: "btn", type: "button", onclick: load }, "Try again"))); });
+      }
+      load();
+    }
+
+    /* =====================================================
+       User drawer: details and admin actions
+    ===================================================== */
+    var drawer = null;
+    function openUser(id) {
+      if (drawer) { drawer.close(); }
+      var dlg = h("dialog", { class: "drawer", "aria-label": "User details" });
+      var body = h("div", { class: "drawer-body" }, h("div", { class: "loading", role: "status" }, h("div", { class: "spinner" }), "Loading…"));
+      dlg.append(h("div", { class: "drawer-inner" },
+        h("div", { class: "drawer-head", id: "dHead" }, h("h2", null, "User")),
+        body));
+      dlg.addEventListener("close", function () { dlg.remove(); if (drawer === dlg) drawer = null; });
+      dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+      document.body.append(dlg); dlg.showModal(); drawer = dlg;
+
+      function refresh() {
+        return rpc("admin_user_detail", { p_user: id }).then(function (d) {
+          if (!dlg.isConnected) return;
+          renderUser(dlg, body, d, id, refresh);
+        }).catch(function () {
+          if (dlg.isConnected) body.replaceChildren(h("div", { class: "errorbox", role: "alert" }, "Could not load this user.", h("button", { class: "btn", type: "button", onclick: refresh }, "Try again")));
+        });
+      }
+      refresh();
+    }
+
+    function renderUser(dlg, body, d, id, refresh) {
+      var p = d.profile, c = d.controls || {}, au = d.auth || {};
+      var isSelf = p.id === me.id;
+      var head = dlg.querySelector("#dHead");
+      head.replaceChildren(
+        h("div", null, h("h2", null, p.username || p.email), h("p", { class: "sub", style: "color:#56657f;word-break:break-all" }, p.email),
+          h("div", { class: "actions", style: "margin-top:8px" }, badge(p.account_status), badge("KYC " + p.kyc_status), p.is_admin ? h("span", { class: "badge blue" }, "admin") : null, c.transactions_frozen ? h("span", { class: "badge amber" }, "transactions frozen") : null,
+            c.daily_tx_limit !== null && c.daily_tx_limit !== undefined ? h("span", { class: "badge amber" }, "limit " + c.daily_tx_limit + "/day") : null)),
+        h("button", { class: "btn small", type: "button", onclick: function () { dlg.close(); }, "aria-label": "Close" }, "✕ Close"));
+
+      function act(fn) { return function () { var b = this; b.disabled = true; Promise.resolve(fn()).then(function (ok) { b.disabled = false; if (ok) { refresh(); if (st.view !== "overview") show(st.view, true); } }, function () { b.disabled = false; }); }; }
+      function call(name, args, okMsg) {
+        return rpc(name, args).then(function () { toast(okMsg); return true; }).catch(function (e) { toast(e && e.message ? e.message : "Action failed", true); return false; });
+      }
+
+      var actions = [];
+      if (p.is_admin) actions.push(h("p", { class: "sub", style: "color:#56657f" }, "Admin accounts can only be changed from the database."));
+      else {
+        if (p.account_status === "active") {
+          actions.push(h("button", { class: "btn danger", type: "button", onclick: act(function () {
+            return ask({ title: "Suspend this account?", intro: "The user is signed out immediately and cannot log in or transact until you reactivate the account.", danger: true, confirm: "Suspend",
+              fields: [{ name: "reason", label: "Reason (kept in the audit log)", type: "textarea", required: true, minLen: 3 }] })
+              .then(function (v) { return v ? call("admin_set_account_status", { p_user: id, p_status: "suspended", p_reason: v.reason }, "Account suspended") : false; });
+          }) }, "Suspend"));
+          actions.push(h("button", { class: "btn", type: "button", onclick: act(function () {
+            return ask({ title: "Deactivate this account?", intro: "Use this for accounts that should no longer be used (fake sign-ups, abuse). The user is signed out and blocked.", danger: true, confirm: "Deactivate",
+              fields: [{ name: "reason", label: "Reason (kept in the audit log)", type: "textarea", required: true, minLen: 3 }] })
+              .then(function (v) { return v ? call("admin_set_account_status", { p_user: id, p_status: "deactivated", p_reason: v.reason }, "Account deactivated") : false; });
+          }) }, "Deactivate"));
+        } else {
+          actions.push(h("button", { class: "btn ok", type: "button", onclick: act(function () {
+            return ask({ title: p.account_status === "suspended" ? "Unsuspend this account?" : "Reactivate this account?", intro: "The user will be able to log in and transact again.", confirm: "Reactivate", fields: [] })
+              .then(function (v) { return v ? call("admin_set_account_status", { p_user: id, p_status: "active", p_reason: null }, "Account is active again") : false; });
+          }) }, p.account_status === "suspended" ? "Unsuspend" : "Reactivate"));
+        }
+        actions.push(h("button", { class: "btn", type: "button", onclick: act(function () {
+          return ask({ title: "Transaction limits", intro: "Freeze all new transactions, or cap how many a user can start in 24 hours. Leave the limit empty for no limit.", confirm: "Save limits",
+            fields: [{ name: "frozen", label: "Freeze all new transactions", type: "checkbox", value: !!c.transactions_frozen },
+                     { name: "limit", label: "Max transactions per 24 hours", type: "number", min: 0, max: 10000, value: c.daily_tx_limit, placeholder: "No limit" }] })
+            .then(function (v) { return v ? call("admin_set_limits", { p_user: id, p_frozen: v.frozen, p_daily_limit: v.limit === "" ? null : v.limit }, "Limits saved") : false; });
+        }) }, "Limits"));
+        actions.push(h("button", { class: "btn", type: "button", onclick: act(function () {
+          return ask({ title: "Change KYC status", intro: "Use this when identity verification needs a manual decision. A note is required for verified or rejected.", confirm: "Update KYC",
+            fields: [{ name: "status", label: "KYC status", type: "select", value: p.kyc_status, options: [{ value: "unverified", label: "Unverified" }, { value: "pending", label: "Pending review" }, { value: "verified", label: "Verified" }, { value: "rejected", label: "Rejected" }] },
+                     { name: "note", label: "Note (kept in the audit log)", type: "textarea" }] })
+            .then(function (v) { return v ? call("admin_set_kyc_status", { p_user: id, p_status: v.status, p_note: nz(v.note) }, "KYC updated") : false; });
+        }) }, "KYC"));
+        actions.push(h("button", { class: "btn", type: "button", onclick: act(function () {
+          return ask({ title: "Internal note", intro: "Only admins can see this.", confirm: "Save note", fields: [{ name: "note", label: "Note", type: "textarea", value: c.admin_note || "", max: 1000 }] })
+            .then(function (v) { return v ? call("admin_set_note", { p_user: id, p_note: v.note }, "Note saved") : false; });
+        }) }, "Note"));
+      }
+
+      var info = h("dl", { class: "detail-grid" },
+        [["User ID", p.id, true], ["Joined", fmtDate(p.created_at)], ["Last sign-in", fmtDate(au.last_sign_in_at)], ["Email confirmed", au.email_confirmed_at ? fmtDate(au.email_confirmed_at) : "No"],
+         ["Wallet address", p.wallet_address, true], ["Login blocked", au.banned_until ? "Yes" : "No"], ["Reason on file", c.status_reason], ["Admin note", c.admin_note]].map(function (r) {
+          return h("div", null, h("dt", null, r[0]), h("dd", { class: r[2] ? "mono" : "" }, r[1] || "—"));
+        }));
+
+      var tabs = [
+        { id: "signins", label: "Sign-ins (" + d.logins.length + ")", render: function () { return table([{ label: "Time", render: function (r) { return fmtDate(r.at); } }, { label: "IP address", render: function (r) { return h("span", { class: "mono" }, r.ip || "—"); } }, { label: "Device", render: function (r) { return device(r.user_agent); } }], d.logins, { caption: "Sign-ins", empty: "No sign-ins recorded." }); } },
+        { id: "attempts", label: "Attempts (" + d.attempts.length + ")", render: function () { return table([{ label: "Time", render: function (r) { return fmtDate(r.at); } }, { label: "Kind", render: function (r) { return r.kind; } }, { label: "Result", render: function (r) { return h("span", { class: "badge " + (r.success ? "green" : "red") }, r.success ? "success" : "failed"); } }, { label: "IP address", render: function (r) { return h("span", { class: "mono" }, r.ip || "—"); } }], d.attempts, { caption: "Attempts", empty: "No website attempts recorded for this email." }); } },
+        { id: "tx", label: "Transactions (" + d.transactions.length + ")", render: function () { return txTable(d.transactions.map(function (t) { return Object.assign({ email: p.email, username: p.username }, t); }), false); } },
+        { id: "payouts", label: "Payouts (" + d.payouts.length + ")", render: function () { return payoutTable(d.payouts, false); } },
+        { id: "wallets", label: "Wallets (" + d.wallets.length + ")", render: function () { return table([{ label: "Asset", render: function (r) { return r.asset; } }, { label: "Balance", num: true, render: function (r) { return cryptoAmt(r.balance); } }], d.wallets, { caption: "Wallets", empty: "No wallet balances." }); } },
+        { id: "history", label: "Admin history (" + d.actions.length + ")", render: function () { return table([{ label: "Time", render: function (r) { return fmtDate(r.at); } }, { label: "Admin", render: function (r) { return r.admin || "—"; } }, { label: "Action", render: function (r) { return String(r.action).replace(/_/g, " "); } }, { label: "Details", render: function (r) { var x = r.details || {}; return Object.keys(x).filter(function (k) { return x[k] !== null && x[k] !== ""; }).map(function (k) { return k + ": " + x[k]; }).join(" · ") || "—"; } }], d.actions, { caption: "Admin history", empty: "No admin actions on this user." }); } }
+      ];
+      var tabBar = h("div", { class: "tabs", role: "tablist" });
+      var tabBody = h("div", { role: "tabpanel", tabindex: "0" });
+      function pick(i) {
+        Array.prototype.forEach.call(tabBar.children, function (b, j) { b.setAttribute("aria-selected", j === i ? "true" : "false"); });
+        tabBody.replaceChildren(tabs[i].render());
+      }
+      tabs.forEach(function (t, i) { tabBar.append(h("button", { type: "button", role: "tab", "aria-selected": "false", onclick: function () { pick(i); } }, t.label)); });
+
+      body.replaceChildren(
+        isSelf ? h("p", { class: "badge blue" }, "This is your own account") : null,
+        h("div", { class: "actions" }, actions),
+        h("section", { class: "card" }, info),
+        h("section", { class: "card" }, tabBar, tabBody));
+      pick(2);
+    }
+
+    /* =====================================================
+       Navigation and boot
+    ===================================================== */
+    var me = null;
+    function renderNav() {
+      var nav = $("#nav");
+      nav.replaceChildren.apply(nav, VIEWS.map(function (v) {
+        var count = v.id === "attempts" ? st.badges.attempts : v.id === "users" ? st.badges.users : v.id === "transactions" ? st.badges.tx : 0;
+        return h("button", { type: "button", "aria-current": st.view === v.id ? "page" : null, onclick: function () { nav2(v.id); } },
+          h("span", { class: "ico", "aria-hidden": "true" }, v.ico), v.label, count ? h("span", { class: "count", "aria-label": count + " need attention" }, count > 99 ? "99+" : String(count)) : null);
+      }));
+    }
+    function nav2(id) { if (location.hash !== "#" + id) location.hash = id; else show(id); }
+    function nav(id) { nav2(id); }
+    var RENDER = { overview: viewOverview, users: viewUsers, transactions: viewTransactions, payouts: viewPayouts, logins: viewLogins, attempts: viewAttempts, audit: viewAudit };
+    function show(id, keepScroll) {
+      if (!RENDER[id]) id = "overview";
+      st.view = id; renderNav();
+      var y = window.scrollY;
+      RENDER[id]();
+      if (!keepScroll) { main.focus({ preventScroll: true }); window.scrollTo(0, 0); } else { window.scrollTo(0, y); }
+    }
+    window.addEventListener("hashchange", function () { if (me) show(location.hash.slice(1)); });
+
+    function signOut() { sb.auth.signOut().then(function () { location.replace("login.html"); }, function () { location.replace("login.html"); }); }
+
+    function boot() {
+      if (typeof supabaseClient === "undefined" || !supabaseClient || !supabaseClient.auth) {
+        denied("Cannot reach the sign-in service"); return;
+      }
+      sb = supabaseClient;
+      sb.auth.getSession().then(function (r) {
+        var session = r && r.data && r.data.session;
+        if (!session) { location.replace("login.html"); return null; }
+        return sb.from("profiles").select("id,email,username,is_admin,account_status").eq("id", session.user.id).maybeSingle();
+      }).then(function (r) {
+        if (r === null || r === undefined) return;
+        if (r.error || !r.data || !r.data.is_admin || r.data.account_status !== "active") { denied(); return; }
+        me = r.data;
+        $("#meName").textContent = me.username || "Admin";
+        $("#meEmail").textContent = me.email || "";
+        $("#signOut").addEventListener("click", signOut);
+        $("#signOutMobile").addEventListener("click", signOut);
+        main = $("#main");
+        $("#gate").hidden = true; $("#app").hidden = false;
+        sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_OUT") location.replace("login.html"); });
+        show(location.hash.slice(1) || "overview");
+      }).catch(function () { denied("Something went wrong"); });
+    }
+    boot();
+
+    window.__adminTest = { explorerUrl: explorerUrl, device: device };
+  })();
+  </script>
+</body>
+</html>
