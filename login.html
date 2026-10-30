@@ -93,7 +93,7 @@
       // Check suspension status from the profiles table
       const { data: profile } = await supabaseClient
         .from('profiles')
-        .select('account_status, username')
+        .select('account_status, username, is_admin')
         .eq('id', data.user.id)
         .single();
 
@@ -110,7 +110,7 @@
         status: 'success'
       });
 
-      window.location.href = 'homepage.html';
+      window.location.replace(profile?.is_admin === true && profile?.account_status === 'active' ? 'admin.html' : 'homepage.html');
     });
   </script>
 </body>
