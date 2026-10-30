@@ -126,6 +126,7 @@
 <nav class="main-nav">
   <div class="nav-inner">
     <button class="nav-btn active" data-sec="markets" onclick="showSection('markets')"> Markets</button>
+    <button class="nav-btn" data-sec="balances" onclick="showSection('balances')">Balances</button>
     <button class="nav-btn" data-sec="swap" onclick="showSection('swap')"> Swap to M-Pesa</button>
     <button class="nav-btn" data-sec="receive" onclick="showSection('receive')"> Receive Crypto</button>
     <button class="nav-btn" data-sec="deposit" onclick="showSection('deposit')">Deposit</button>
@@ -143,6 +144,18 @@
       </div>
     </div>
     <div id="priceGrid" class="price-grid"></div>
+  </section>
+
+  <!-- BALANCES: read-only presentation until the authenticated ledger is integrated -->
+  <section id="balances" class="section">
+    <div class="sec-hdr"><div><h2>My Wallet Balances</h2><p>Balances will appear after secure wallet and ledger integration.</p></div></div>
+    <div class="card" style="margin-bottom:18px;">
+      <p class="card-sub">Total portfolio value</p>
+      <div style="font-size:2rem;font-weight:800;color:#111d36;">Unavailable</div>
+      <p class="card-sub">No verified wallet ledger is connected. Values are intentionally not shown as zero.</p>
+    </div>
+    <div id="balanceGrid" class="price-grid" aria-label="Cryptocurrency balances"></div>
+    <div class="notice" style="margin-top:18px;">Deposits and withdrawals are disabled until live KYC, custody, and blockchain confirmations are operational. Sandbox KYC does not unlock real funds.</div>
   </section>
 
   <!-- SWAP -->
@@ -221,13 +234,8 @@ const CMETA={
   WLD:{name:'Worldcoin', sym:'WLD',  icon:'🌐', bg:'#1a1a1a',wk:'WLDUSDT'}
 };
 
-const ADDRS={
-  BTC:{net:'Bitcoin (BTC Native SegWit)',addr:'bc1qkp0rqpwr5l3d5l69kjrsvvq27c8gx3d48s7jy4',warn:'⚠️ Only send BTC on the Bitcoin network. Do NOT use BSC or other networks.'},
-  ETH:{net:'Ethereum (ERC-20)',addr:'0x7A0fC9f49fE7F6bAfEe1a81e3A5b9C55c7bE3f21',warn:'⚠️ Send ETH on Ethereum mainnet (ERC-20) only.'},
-  SOL:{net:'Solana (SOL)',addr:'8cSeXM9HPCgkWRCn5Pxx9uWNXwR7bFP7E9CkEf2NBXPB',warn:'⚠️ Send SOL on the Solana network only.'},
-  USDT:{net:'Ethereum (ERC-20)',addr:'0x9a8f92a830A5cB89a3816e3D267CB7791c16b04D',warn:'⚠️ USDT on ERC-20 only here.',alt:{net:'TRON (TRC-20)',addr:'TMBHYu6bZqRaA1HZjYBzVBdCJNiLVP9RLM'}},
-  WLD:{net:'Optimism (OP Mainnet)',addr:'0x4C5c2e9E6F1234567890Ab3456789012cDEf2345',warn:'⚠️ WLD is on Optimism. Do NOT send on Ethereum mainnet.'}
-};
+// No custody provider has provisioned deposit addresses. Never display placeholder addresses.
+const ADDRS={};
 
 const prices={BTC:87000,ETH:3100,SOL:155,USDT:1,WLD:1.80};
 const WS_SYMBOLS=['BTCUSDT','ETHUSDT','SOLUSDT','WLDUSDT'];
@@ -284,34 +292,28 @@ function handleKYCClick(){
 
 // ── RECEIVE ──
 function checkReceive(){
-  if(getKYC()==='verified'){
-    document.getElementById('kycGate').style.display='none';
-    document.getElementById('receiveContent').style.display='block';
-    buildAddrs();
-  } else {
-    document.getElementById('kycGate').style.display='block';
-    document.getElementById('receiveContent').style.display='none';
+  document.getElementById('kycGate').style.display='block';
+  document.getElementById('receiveContent').style.display='none';
+  const p=document.querySelector('#kycGate p');
+  if(p) p.textContent=getKYC()==='verified' ? 'Deposit addresses are unavailable until live KYC approval and a custody provider are connected. Do not send funds to any previously displayed address.' : 'Complete identity verification before receiving crypto. Deposit addresses are not yet provisioned; do not send funds to any previously displayed address.';
+}
+function buildAddrs(){ /* Disabled: no validated custody addresses. */ }
+function buildBalances(){
+  const grid=document.getElementById('balanceGrid');
+  if(!grid)return;
+  grid.replaceChildren();
+  for(const symbol of ['BTC','ETH','SOL','WLD']){
+    const coin=CMETA[symbol];
+    const card=document.createElement('div');card.className='card';
+    card.style.minWidth='0';
+    const title=document.createElement('h3');title.textContent=coin.name+' ('+symbol+')';
+    const balance=document.createElement('p');balance.style.cssText='font-size:1.45rem;font-weight:800;margin:12px 0';balance.textContent='— '+symbol;
+    const status=document.createElement('p');status.className='card-sub';status.textContent='Available: —  ·  Pending: —';
+    const action=document.createElement('button');action.className='kyc-btn';action.textContent='Deposit unavailable';action.disabled=true;action.style.cssText='opacity:.65;cursor:not-allowed;margin-top:12px';
+    card.append(title,balance,status,action);grid.appendChild(card);
   }
 }
-function buildAddrs(){
-  const g=document.getElementById('addrGrid');
-  if(g.children.length>0)return;
-  g.innerHTML='';
-  Object.entries(CMETA).forEach(([key,meta])=>{
-    const info=ADDRS[key];
-    const d=document.createElement('div');d.className='addr-card';
-    d.innerHTML=`
-      <div class="addr-head">
-        <div class="cicon" style="width:38px;height:38px;background:${meta.bg};font-size:16px;">${meta.icon}</div>
-        <div><div class="addr-title">${esc(meta.name)}</div><span class="net-pill">${esc(info.net)}</span></div>
-      </div>
-      <label class="addr-lbl">${esc(key)} Address</label>
-      <div class="addr-box"><span id="a_${key}">${esc(info.addr)}</span><button class="copy-btn" onclick="cpAddr('a_${key}',this)">📋</button></div>
-      ${info.alt?`<label class="addr-lbl" style="margin-top:10px;">${esc(info.alt.net)}</label><div class="addr-box"><span id="a_${key}_alt">${esc(info.alt.addr)}</span><button class="copy-btn" onclick="cpAddr('a_${key}_alt',this)">📋</button></div>`:''}
-      <p class="addr-warn">${esc(info.warn)}</p>`;
-    g.appendChild(d);
-  });
-}
+
 function cpAddr(id,btn){
   const t=document.getElementById(id).textContent;
   navigator.clipboard.writeText(t).then(()=>{
@@ -493,6 +495,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   if(!(await checkAuth()))return;
   document.getElementById('userName').textContent = currentProfile?.username || currentUser.email;
   refreshKYCBadge();
+  buildBalances();
   buildCards();
   updCard('USDTUSDT',1.0,0.0);
 
