@@ -185,8 +185,8 @@
       <div class="gi"></div>
       <h3>KYC Verification Required</h3>
       <p>To receive cryptocurrency and view your wallet addresses, you must complete identity verification. This keeps your account safe and meets regulatory requirements.</p>
-      <a href="https://usesmileid.com/products/smartselfie" target="_blank" class="kyc-btn" onclick="onKYCLink()"> Verify My Identity →</a>
-      <p class="kyc-note">Powered by SmileID · Secure &amp; Encrypted · ~2 minutes</p>
+      <a href="/verify-identity.html" class="kyc-btn">Verify My Identity →</a>
+      <p class="kyc-note">Identity verification powered by Didit. Availability depends on sandbox configuration.</p>
     </div>
     <div id="receiveContent" style="display:none;">
       <div class="sec-hdr">
@@ -279,21 +279,7 @@ function refreshKYCBadge(){
 }
 function handleKYCClick(){
   closeMenu();
-  if(getKYC()==='verified'){alert('KYC already verified ');return;}
-  window.open('https://usesmileid.com/products/smartselfie','_blank');
-  onKYCLink();
-}
-async function onKYCLink(){
-  if(getKYC()==='verified') return;
-  const { error } = await supabaseClient
-    .from('profiles')
-    .update({ kyc_status: 'pending' })
-    .eq('id', currentUser.id);
-  if(!error){
-    currentProfile.kyc_status = 'pending';
-    await logAct('KYC Submitted','pending');
-    refreshKYCBadge();
-  }
+  window.location.assign('/verify-identity.html');
 }
 
 // ── RECEIVE ──
