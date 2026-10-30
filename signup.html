@@ -133,14 +133,24 @@
         return;
       }
 
-      btn.textContent = '✅ Account Created!';
-      const needsConfirmation = !data.session;
-      setTimeout(() => {
-        if (needsConfirmation) {
-          alert('Check your email to confirm your account, then log in.');
-        }
-        window.location.href = 'login.html';
-      }, 1200);
+      // Supabase returns no session when email confirmation is required.
+      // Never imply that a verification email was sent if Auth is configured to auto-confirm.
+      if (data.session) {
+        await supabaseClient.auth.signOut();
+        showError('Account created, but email confirmation is not enforced by Supabase. Registration is paused until the administrator enables Confirm email under Authentication settings.');
+        btn.textContent = 'Registration configuration required';
+        return;
+      }
+
+      document.getElementById('signupForm').hidden = true;
+      document.querySelector('.subtitle').textContent = 'Confirm your email before signing in';
+      const notice = document.getElementById('errorMsg');
+      notice.style.display = 'block';
+      notice.style.background = '#ecfdf5';
+      notice.style.borderColor = '#a7f3d0';
+      notice.style.color = '#065f46';
+      notice.textContent = 'If your address is eligible for registration, check your inbox and spam folder for the confirmation link. Open the link before logging in.';
+      btn.textContent = 'Check your email';
     });
   </script>
 </body>
