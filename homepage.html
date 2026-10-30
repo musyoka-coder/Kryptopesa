@@ -135,7 +135,10 @@
     .notice{align-items:flex-start;line-height:1.65;border-radius:12px;}
     .kyc-gate{max-width:650px;margin:0 auto;padding:clamp(28px,5vw,58px);border-radius:18px;}
     .addr-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));}
-    footer{position:static;min-height:58px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding:16px 20px;line-height:1.5;}
+    /* Keep footer anchored to the viewport bottom on short sections, without overlaying content. */
+    body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;}
+    .main{flex:1 0 auto;}
+    footer{position:static;flex-shrink:0;min-height:58px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding:16px 20px;line-height:1.5;}
     @media(min-width:1200px){.price-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
     @media(min-width:700px) and (max-width:1100px){.price-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.main{padding:28px 24px 60px;}.nav-inner{min-width:0;overflow-x:auto;}.nav-btn{padding-inline:14px;}}
     @media(max-width:699px){
