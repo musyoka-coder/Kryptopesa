@@ -68,6 +68,10 @@
     .btn.ok { background: var(--green); color: #fff; border-color: var(--green); }
     .btn.ok:hover { background: #0e6d49; }
     .btn.small { min-height: 32px; padding: 0 11px; font-size: .78rem; border-radius: 9px; }
+    /* High-contrast sign-out controls on the dark admin sidebar. */
+    #signOut, #signOutMobile { background: #ffd21f; color: #07152f; border-color: #ffd21f; font-weight: 800; }
+    #signOut:hover, #signOutMobile:hover { background: #ffe16a; color: #07152f; border-color: #ffe16a; }
+    #signOut:focus-visible, #signOutMobile:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
     .btn[disabled] { opacity: .55; cursor: not-allowed; }
     .field { display: grid; gap: 5px; }
     .field label { font-size: .76rem; font-weight: 700; color: var(--text-soft); text-transform: uppercase; letter-spacing: .05em; }
