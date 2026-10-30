@@ -24,6 +24,8 @@
       --shadow: 0 8px 28px rgba(11, 24, 48, 0.07); --radius: 16px;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* Never let display:grid/flex override the browser hidden attribute. */
+    [hidden] { display: none !important; }
     html { scroll-behavior: smooth; }
     body { font-family: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.5; min-height: 100vh; }
     button, input, select, textarea { font: inherit; color: inherit; }
