@@ -90,6 +90,15 @@
         return;
       }
 
+      // Defense in depth: reject an authenticated session that lacks email confirmation.
+      // Supabase Auth must also enforce Confirm email at the server level.
+      if (!data.user?.email_confirmed_at) {
+        await supabaseClient.auth.signOut();
+        showError('Confirm your email address using the link sent after registration before signing in.');
+        btn.disabled = false; btn.textContent = 'Log In';
+        return;
+      }
+
       // Check suspension status from the profiles table
       const { data: profile } = await supabaseClient
         .from('profiles')
@@ -97,9 +106,9 @@
         .eq('id', data.user.id)
         .single();
 
-      if (profile?.account_status === 'suspended') {
+      if (!profile || profile.account_status !== 'active') {
         await supabaseClient.auth.signOut();
-        showError('Account suspended. Contact support@kryptopesa.com');
+        showError('Account unavailable or inactive. Contact support.');
         btn.disabled = false; btn.textContent = 'Log In';
         return;
       }
