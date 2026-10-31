@@ -6,6 +6,7 @@
   <title>KryptoPesa — Log In</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
+  <script src="session-management.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);min-height:100vh;display:flex;flex-direction:column;}
@@ -60,6 +61,9 @@
   <footer>© 2025 KryptoPesa. All rights reserved.</footer>
 
   <script>
+    if(new URLSearchParams(location.search).get('session')==='expired'){
+      document.addEventListener('DOMContentLoaded',()=>showError('Session expired. Sign in again.'));
+    }
     function showError(msg) {
       const el = document.getElementById('errorMsg');
       el.textContent = msg;
@@ -113,6 +117,8 @@
         return;
       }
 
+      window.KPSession.signedIn();
+      window.KPSession.savePreference('kp_functional_cookies','enabled');
       await supabaseClient.from('activity_log').insert({
         user_id: data.user.id,
         event: 'User Login',
