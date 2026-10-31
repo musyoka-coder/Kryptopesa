@@ -277,14 +277,22 @@
     </div>
   </section>
 
-  <!-- DEPOSIT -->
+  <!-- DEPOSIT: presentation only until authenticated STK backend and verified ledger exist -->
   <section id="deposit" class="section">
     <div class="card">
-      <div class="coming">
-        <div class="ci2"></div>
-        <h3>M-Pesa Deposit Coming Soon</h3>
-        <p>Direct M-Pesa to crypto deposits are being integrated. Stay tuned!</p>
+      <h2>Deposit KES with M-Pesa</h2>
+      <p class="card-sub">An M-Pesa payment prompt will be sent to your phone once sandbox testing and secure payment verification are complete.</p>
+      <div class="notice" role="status">STK Push deposits are not active. No payment prompt will be sent and no wallet balance will be credited.</div>
+      <div class="fg">
+        <label class="fl" for="depositAmount">Deposit amount (KES)</label>
+        <input class="fi" id="depositAmount" type="number" min="100" max="300000" step="1" placeholder="e.g. 500" autocomplete="off">
       </div>
+      <div class="fg">
+        <label class="fl" for="depositPhone">M-Pesa phone number</label>
+        <input class="fi" id="depositPhone" type="tel" inputmode="tel" placeholder="07XXXXXXXX or 01XXXXXXXX" autocomplete="tel">
+      </div>
+      <button class="prim-btn" type="button" disabled aria-disabled="true">Request M-Pesa Prompt — Setup Pending</button>
+      <p class="card-sub">A deposit will be marked successful only after Safaricom confirms payment and the server records the transaction once. Your M-Pesa PIN is entered on your phone, never on KryptoPesa.</p>
     </div>
   </section>
 </main>
