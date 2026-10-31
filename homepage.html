@@ -195,7 +195,7 @@
   <div class="nav-inner">
     <button class="nav-btn active" data-sec="markets" onclick="showSection('markets')"> Markets</button>
     <button class="nav-btn" data-sec="balances" onclick="showSection('balances')">Balances</button>
-    <button class="nav-btn" data-sec="swap" onclick="showSection('swap')"> Swap to M-Pesa</button>
+    <button class="nav-btn" data-sec="swap" onclick="showSection('swap')"> Swap unavailable — B2C setup pending</button>
     <button class="nav-btn" data-sec="receive" onclick="showSection('receive')"> Receive Crypto</button>
     <button class="nav-btn" data-sec="deposit" onclick="showSection('deposit')">Deposit</button>
   </div>
@@ -230,8 +230,8 @@
   <section id="swap" class="section">
     <div class="card">
       <h2> Swap to M-Pesa</h2>
-      <p class="card-sub">Convert crypto to KSH — sent directly to your M-Pesa</p>
-      <div class="notice"> Transaction limits: <strong>&nbsp;KSH 100 minimum</strong> · <strong>KSH 300,000 maximum</strong></div>
+      <p class="card-sub">Preview estimated KES values. Real payouts require live KYC, funded balances and approved M-Pesa B2C integration.</p>
+      <div class="notice"> Indicative limits only; transfers are disabled. Transaction limits: <strong>&nbsp;KSH 100 minimum</strong> · <strong>KSH 300,000 maximum</strong></div>
       <div class="fg">
         <label class="fl">Cryptocurrency</label>
         <select id="swapCrypto" class="fs" onchange="calcConv()">
@@ -255,7 +255,7 @@
         <label class="fl">M-Pesa Number</label>
         <input type="text" id="mpesaNum" class="fi" placeholder="07XXXXXXXX or 01XXXXXXXX" maxlength="10">
       </div>
-      <button id="swapBtn" class="prim-btn" onclick="doSwap()"> Swap to M-Pesa</button>
+      <button id="swapBtn" class="prim-btn" disabled aria-disabled="true" onclick="doSwap()"> Swap to M-Pesa</button>
       <div id="swapResult"></div>
     </div>
   </section>
@@ -434,43 +434,9 @@ function calcConv(){
   box.style.display='block';
 }
 async function doSwap(){
-  if(!(await checkAuth()))return;
-  const sym=document.getElementById('swapCrypto').value;
-  const amt=parseFloat(document.getElementById('swapAmt').value);
-  const num=document.getElementById('mpesaNum').value.trim();
   const res=document.getElementById('swapResult');
-  const btn=document.getElementById('swapBtn');
-  res.innerHTML='';
-  if(!amt||isNaN(amt)||amt<=0){res.innerHTML='<div class="result err">⚠️ Enter a valid crypto amount.</div>';return;}
-  if(!/^(07|01)\d{8}$/.test(num)){res.innerHTML='<div class="result err">⚠️ Enter a valid Kenyan M-Pesa number (07XX or 01XX, 10 digits).</div>';return;}
-  const kes=amt*(prices[sym]||1)*kesRate;
-  if(kes<MIN_KES){res.innerHTML='<div class="result err">⚠️ Minimum swap is KSH '+MIN_KES+'. Your amount = KSH '+kes.toFixed(2)+'.</div>';return;}
-  if(kes>MAX_KES){res.innerHTML='<div class="result err">⚠️ Maximum swap is KSH '+MAX_KES.toLocaleString()+'. Your amount = KSH '+kes.toLocaleString('en-KE',{maximumFractionDigits:0})+'.</div>';return;}
-
-  btn.disabled=true;
-  res.innerHTML='<div class="result warn">⏳ Sending STK push to your phone…</div>';
-
-  const { data, error } = await supabaseClient.functions.invoke('daraja-stkpush', {
-    body: {
-      user_id: currentUser.id,
-      phone: num,
-      kes_amount: kes,
-      crypto_amount: amt,
-      asset: sym
-    }
-  });
-
-  btn.disabled=false;
-
-  if(error){
-    res.innerHTML='<div class="result err">⚠️ Swap failed. Please try again.</div>';
-    return;
-  }
-
-  await logAct('Swap Initiated','success');
-  res.innerHTML=`<div class="result ok"> ${esc(data.message)}<br><strong>${amt} ${esc(sym)}</strong> → <strong>KSH ${kes.toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2})}</strong><br>Sending to: <strong>${esc(num)}</strong></div>`;
-  document.getElementById('swapAmt').value='';document.getElementById('mpesaNum').value='';
-  document.getElementById('convBox').style.display='none';
+  res.textContent='Crypto-to-M-Pesa payouts are not yet available. Live KYC, funded wallet balances, server-side quotes and an approved Daraja B2C payout integration are required before a swap can be submitted.';
+  res.className='result warn';
 }
 
 // ── PRICE CARDS ──
