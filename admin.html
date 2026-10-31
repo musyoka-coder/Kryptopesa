@@ -210,6 +210,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
   <script src="supabase-client.js"></script>
+  <script src="session-management.js"></script>
   <script>
   "use strict";
   (function () {
@@ -952,7 +953,7 @@
     }
     window.addEventListener("hashchange", function () { if (me) show(location.hash.slice(1)); });
 
-    function signOut() { sb.auth.signOut().then(function () { location.replace("login.html"); }, function () { location.replace("login.html"); }); }
+    function signOut() { window.KPSession.clear(); sb.auth.signOut().then(function () { location.replace("login.html"); }, function () { location.replace("login.html"); }); }
 
     function boot() {
       if (typeof supabaseClient === "undefined" || !supabaseClient || !supabaseClient.auth) {
@@ -962,6 +963,8 @@
       sb.auth.getSession().then(function (r) {
         var session = r && r.data && r.data.session;
         if (!session) { location.replace("login.html"); return null; }
+        if(window.KPSession.expired()){window.KPSession.clear();return sb.auth.signOut({scope:"local"}).then(function(){location.replace("login.html?session=expired");return null;});}
+        window.KPSession.start();
         return sb.from("profiles").select("id,email,username,is_admin,account_status").eq("id", session.user.id).maybeSingle();
       }).then(function (r) {
         if (r === null || r === undefined) return;
