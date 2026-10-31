@@ -6,6 +6,7 @@
   <title>KryptoPesa | Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-client.js"></script>
+  <script src="session-management.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f4f8;color:#1a1a2e;min-height:100vh;}
@@ -313,10 +314,14 @@ let currentUser=null, currentProfile=null;
 
 // ── AUTH ──
 async function checkAuth(){
+  if(window.KPSession.expired()){await supabaseClient.auth.signOut({scope:'local'});window.KPSession.clear();location.replace('login.html?session=expired');return false;}
   const { data: { session } } = await supabaseClient.auth.getSession();
   if(!session){ window.location.replace('login.html'); return false; }
 
-  currentUser = session.user;
+  const {data:verified,error:verifyError}=await supabaseClient.auth.getUser();
+  if(verifyError||!verified?.user){window.KPSession.clear();location.replace('login.html');return false;}
+  currentUser = verified.user;
+  window.KPSession.start();
 
   const { data: profile } = await supabaseClient
     .from('profiles')
@@ -337,6 +342,7 @@ async function doLogout(skip){
   if(!skip && !confirm('Sign out of KryptoPesa?')) return;
   await logAct('User Logout','success');
   await supabaseClient.auth.signOut();
+  window.KPSession.clear();
   if(ws) ws.close();
   window.location.replace('login.html');
 }
