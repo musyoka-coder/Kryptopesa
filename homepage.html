@@ -436,9 +436,9 @@ function calcConv(){
   document.getElementById('rateSym').textContent=sym;
   document.getElementById('rateVal').textContent=(usd*kesRate).toLocaleString('en-KE',{maximumFractionDigits:2});
   const lbl=document.getElementById('limitLbl');
-  if(kes<MIN_KES){lbl.textContent='⚠️ Below minimum (KSH '+MIN_KES.toLocaleString()+')';lbl.className='climit bad';}
-  else if(kes>MAX_KES){lbl.textContent='⚠️ Exceeds maximum (KSH '+MAX_KES.toLocaleString()+')';lbl.className='climit bad';}
-  else{lbl.textContent='✅ Within allowed range';lbl.className='climit ok';}
+  if(kes<MIN_KES){lbl.textContent=' Below minimum (KSH '+MIN_KES.toLocaleString()+')';lbl.className='climit bad';}
+  else if(kes>MAX_KES){lbl.textContent=' Exceeds maximum (KSH '+MAX_KES.toLocaleString()+')';lbl.className='climit bad';}
+  else{lbl.textContent=' Within allowed range';lbl.className='climit ok';}
   box.style.display='block';
 }
 async function doSwap(){
