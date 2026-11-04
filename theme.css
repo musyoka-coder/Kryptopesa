@@ -1,0 +1,56 @@
+/* Shared accessible theme overrides; existing brand identity preserved. */
+:root { color-scheme: light; }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0c1425; --surface: #132239; --text: #edf3ff; --text-soft: #b3c1d8;
+  --border: #2b3b53; --blue: #83b1ff; --blue-soft: #1d3555;
+  --gray-soft: #213148; --green-soft: #113d32; --red-soft: #4c252f;
+  --amber-soft: #463812; --shadow: 0 8px 28px rgba(0,0,0,.24);
+  --panel: #132239; --ink: #edf3ff; --muted: #b3c1d8; --line: #2b3b53;
+}
+#kp-theme-toggle {
+  position:fixed;right:16px;bottom:16px;z-index:10000;min-width:110px;
+  padding:10px 14px;border-radius:999px;border:1px solid #9eafc7;
+  font:600 13px system-ui,-apple-system,sans-serif;cursor:pointer;
+  color:#14233b;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,.2);
+}
+#kp-theme-toggle:focus-visible {outline:3px solid #f6c945;outline-offset:3px;}
+:root[data-theme="dark"] #kp-theme-toggle {background:#20314a;color:#edf3ff;border-color:#60748f;}
+:root[data-theme="dark"] body {background:#0c1425!important;color:#edf3ff!important;}
+:root[data-theme="dark"] .main-nav,
+:root[data-theme="dark"] .dropdown,
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .feature,
+:root[data-theme="dark"] .features,
+:root[data-theme="dark"] .how-it-works,
+:root[data-theme="dark"] .container,
+:root[data-theme="dark"] .kyc-gate,
+:root[data-theme="dark"] main,
+:root[data-theme="dark"] .panel,
+:root[data-theme="dark"] .modal,
+:root[data-theme="dark"] .stat-card,
+:root[data-theme="dark"] .table-wrap {
+  background:#132239!important;color:#edf3ff!important;border-color:#2b3b53!important;
+}
+:root[data-theme="dark"] .card[style*="linear-gradient"], 
+:root[data-theme="dark"] .card {background-image:none!important;}
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+  background:#0e1c31!important;color:#edf3ff!important;border-color:#52647e!important;
+}
+:root[data-theme="dark"] .dd-item,
+:root[data-theme="dark"] .nav-btn,
+:root[data-theme="dark"] .feature p,
+:root[data-theme="dark"] .card-sub,
+:root[data-theme="dark"] .subtitle,
+:root[data-theme="dark"] .kyc-gate p {color:#c9d4e8!important;}
+:root[data-theme="dark"] .dd-item:hover,
+:root[data-theme="dark"] .nav-btn:hover {background:#20314a!important;color:#fff!important;}
+:root[data-theme="dark"] .feature h4,
+:root[data-theme="dark"] .features h3,
+:root[data-theme="dark"] .how-it-works h3 {color:#dce7ff!important;}
+:root[data-theme="dark"] a:not(.btn):not(.logo):not(.brand) {color:#a9c8ff;}
+:root[data-theme="dark"] .sidebar a, 
+:root[data-theme="dark"] .sidebar button {color:inherit;}
+@media (max-width:600px) {#kp-theme-toggle{right:10px;bottom:10px;padding:9px 12px;}}
