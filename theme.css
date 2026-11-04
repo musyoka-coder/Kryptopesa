@@ -54,3 +54,9 @@
 :root[data-theme="dark"] .sidebar a, 
 :root[data-theme="dark"] .sidebar button {color:inherit;}
 @media (max-width:600px) {#kp-theme-toggle{right:10px;bottom:10px;padding:9px 12px;}}
+
+/* Identity verification uses a dark original design; honor explicit light preference. */
+:root[data-theme="light"] body.kp-identity {background:#eef3fc!important;color:#13213a!important;}
+:root[data-theme="light"] body.kp-identity main {background:#fff!important;color:#13213a!important;box-shadow:0 8px 28px rgba(17,31,57,.12);}
+:root[data-theme="light"] body.kp-identity a {color:#1a237e!important;}
+:root[data-theme="dark"] body.kp-identity main {background:#132239!important;color:#edf3ff!important;}
