@@ -894,7 +894,21 @@
           return ask({ title: "Change KYC status", intro: "Use this when identity verification needs a manual decision. A note is required for verified or rejected.", confirm: "Update KYC",
             fields: [{ name: "status", label: "KYC status", type: "select", value: p.kyc_status, options: [{ value: "unverified", label: "Unverified" }, { value: "pending", label: "Pending review" }, { value: "verified", label: "Verified" }, { value: "rejected", label: "Rejected" }] },
                      { name: "note", label: "Note (kept in the audit log)", type: "textarea" }] })
-            .then(function (v) { return v ? call("admin_set_kyc_status", { p_user: id, p_status: v.status, p_note: nz(v.note) }, "KYC updated") : false; });
+            .then(function (v) {
+              if (!v) return false;
+              return rpc("admin_set_kyc_status", { p_user: id, p_status: v.status, p_note: nz(v.note) })
+                .then(async function () {
+                  if (v.status === "verified") {
+                    try {
+                      const result = await sb.functions.invoke("kyc-notification-dispatch", { body: {} });
+                      if (result.error) toast("KYC verified. Email remains queued until delivery is configured.", true);
+                      else if (result.data?.sent > 0) toast("KYC verified; notification sent.");
+                      else toast("KYC verified; notification queued.");
+                    } catch { toast("KYC verified. Notification pending.", true); }
+                  } else toast("KYC updated");
+                  return true;
+                }).catch(function (e) { toast(e?.message || "KYC update failed", true); return false; });
+            });
         }) }, "KYC"));
         actions.push(h("button", { class: "btn", type: "button", onclick: act(function () {
           return ask({ title: "Internal note", intro: "Only admins can see this.", confirm: "Save note", fields: [{ name: "note", label: "Note", type: "textarea", value: c.admin_note || "", max: 1000 }] })
@@ -981,6 +995,10 @@
         $("#gate").hidden = true; $("#app").hidden = false;
         sb.auth.onAuthStateChange(function (ev) { if (ev === "SIGNED_OUT") location.replace("login.html"); });
         show(location.hash.slice(1) || "overview");
+        // Refresh KYC counts and user rows while the admin tab is visible.
+        window.setInterval(function () {
+          if (document.visibilityState === "visible" && (st.view === "overview" || st.view === "users")) show(st.view, true);
+        }, 30000);
       }).catch(function () { denied("Something went wrong"); });
     }
     boot();
