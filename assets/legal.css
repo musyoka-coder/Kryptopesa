@@ -1,0 +1,133 @@
+/* ============================================================================
+   Legal & policy pages (terms · privacy · cookies)
+   Readable measure, consistent chrome, token-driven colour. Content structure
+   is unchanged; only typography, spacing and navigation are normalised.
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--kp-bg);
+  color: var(--kp-ink);
+  font-family: var(--kp-font);
+  font-size: var(--kp-text-base);
+  line-height: var(--kp-leading-relaxed);
+}
+
+.legal-header {
+  background: var(--kp-navy-950);
+  color: #fff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.legal-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--kp-space-3);
+  min-height: 64px;
+}
+.legal-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kp-space-3);
+  color: #fff;
+  font-family: var(--kp-font-display);
+  font-weight: 800;
+  font-size: var(--kp-text-lg);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  border-radius: var(--kp-radius-xs);
+}
+.legal-brand img { width: 34px; height: 34px; border-radius: 8px; }
+.legal-brand:focus-visible { outline: 3px solid var(--kp-gold); outline-offset: 2px; }
+
+.legal-nav { display: flex; flex-wrap: wrap; gap: var(--kp-space-1); }
+.legal-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--kp-space-3);
+  border-radius: var(--kp-radius-xs);
+  color: rgba(255, 255, 255, 0.82);
+  font-size: var(--kp-text-sm);
+  font-weight: 600;
+  text-decoration: none;
+}
+.legal-nav a:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.legal-nav a[aria-current="page"] { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.legal-nav a:focus-visible { outline: 3px solid var(--kp-gold); outline-offset: 2px; }
+
+.legal-main { flex: 1 0 auto; padding: clamp(2rem, 6vw, 3.5rem) 0 var(--kp-space-12); }
+.legal-card {
+  width: 100%;
+  max-width: 780px;
+  margin-inline: auto;
+  padding: clamp(1.35rem, 4vw, 2.75rem);
+  background: var(--kp-surface);
+  border: 1px solid var(--kp-line);
+  border-radius: var(--kp-radius-lg);
+  box-shadow: var(--kp-shadow-sm);
+}
+
+.legal-card h1 {
+  margin: 0 0 var(--kp-space-2);
+  font-family: var(--kp-font-display);
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 800;
+  line-height: var(--kp-leading-tight);
+  letter-spacing: -0.025em;
+  color: var(--kp-navy-900);
+}
+.legal-card h2 {
+  margin: var(--kp-space-8) 0 var(--kp-space-2);
+  font-family: var(--kp-font-display);
+  font-size: var(--kp-text-lg);
+  font-weight: 800;
+  color: var(--kp-navy-800);
+}
+.legal-card p { margin: 0 0 var(--kp-space-4); }
+.legal-card ul { margin: 0 0 var(--kp-space-4); padding-left: 1.2rem; }
+.legal-card li { margin-bottom: var(--kp-space-2); }
+.legal-card a { color: var(--kp-blue-700); text-underline-offset: 2px; }
+.legal-card a:focus-visible { outline: 3px solid var(--kp-blue); outline-offset: 2px; border-radius: 3px; }
+
+.legal-meta {
+  margin: 0 0 var(--kp-space-6);
+  padding: var(--kp-space-3) var(--kp-space-4);
+  border-left: 3px solid var(--kp-gold-600);
+  border-radius: 0 var(--kp-radius-sm) var(--kp-radius-sm) 0;
+  background: var(--kp-warn-bg);
+  color: var(--kp-warn);
+  font-size: var(--kp-text-sm);
+}
+
+.legal-footer {
+  border-top: 1px solid var(--kp-line);
+  background: var(--kp-surface);
+  padding: var(--kp-space-6) 0;
+  color: var(--kp-ink-soft);
+  font-size: var(--kp-text-sm);
+}
+.legal-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--kp-space-2) var(--kp-space-5);
+  justify-content: space-between;
+  align-items: center;
+}
+.legal-footer p { margin: 0; }
+.legal-footer a { color: var(--kp-blue-700); }
+
+@media (max-width: 600px) {
+  .legal-header__inner { padding-block: var(--kp-space-3); }
+  .legal-nav { width: 100%; }
+}

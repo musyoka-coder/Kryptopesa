@@ -1,5 +1,137 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>KryptoPesa | Identity Verification</title><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="supabase-client.js"></script><style>body{font:16px system-ui;background:#07152f;color:white;margin:0;min-height:100vh;display:grid;place-items:center}main{background:#10234a;padding:32px;max-width:460px;width:calc(100% - 56px);border-radius:16px}h1{margin-top:0}button{background:#ffd21f;border:0;border-radius:8px;padding:14px 18px;font-weight:700;cursor:pointer}button:disabled{opacity:.5;cursor:wait}p{line-height:1.6}a{color:#ffd21f}</style>
-</head><body><main><h1>Identity verification</h1><p>Complete secure identity checks with Didit. This environment is for sandbox testing only. No wallet or financial access will be enabled.</p><p id="status" role="status">Checking your account…</p><button id="start" disabled>Start sandbox verification</button><p><a href="homepage.html">Back to account</a></p></main><script>
-(async()=>{const sb=typeof supabaseClient!=="undefined"?supabaseClient:null;const status=document.getElementById("status"),button=document.getElementById("start");if(!sb){status.textContent="Authentication unavailable.";return;}const {data:{session},error}=await sb.auth.getSession();if(error||!session){location.replace("login.html");return;}const {data:cases,error:caseError}=await sb.from("kyc_verification_cases").select("status,created_at").order("created_at",{ascending:false}).limit(1);if(caseError){status.textContent="Unable to load verification status.";return;}if(cases?.length&&["pending","in_review","verified"].includes(cases[0].status)){status.textContent="Your current verification status: "+cases[0].status.replace("_"," ")+". Contact support if you need another verification.";return;}status.textContent="Sandbox verification is available when the provider is configured.";button.disabled=false;button.addEventListener("click",async()=>{button.disabled=true;status.textContent="Creating secure verification session…";try{const {data,error}=await sb.functions.invoke("didit-sandbox-session",{body:{}});if(error||!data?.url){let detail=data?.error||data?.message||"";if(error?.context){try{const body=await error.context.clone().json();detail=body?.error||body?.message||detail;}catch{}}throw Error(detail||"Sandbox session unavailable. Check provider configuration.");}const u=new URL(data.url);if(u.protocol!=="https:"||u.hostname!=="verify.didit.me")throw Error("Invalid provider URL.");location.assign(u.toString());}catch(e){status.textContent=e.message||"Unable to start verification.";button.disabled=false;}})})();
-</script></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <meta name="color-scheme" content="light" />
+  <title>KryptoPesa | Identity Verification</title>
+  <meta name="theme-color" content="#0B1020" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="assets/kp-tokens.css" />
+  <link rel="stylesheet" href="assets/auth.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"
+          integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="supabase-client.js"></script>
+</head>
+<body class="auth">
+  <a class="kp-skip" href="#main">Skip to verification content</a>
+
+  <header class="auth__top">
+    <a class="auth__brand" href="index.html" aria-label="KryptoPesa home">
+      <img src="assets/logo-96.png" width="40" height="40" alt="" class="auth__logo" />
+    </a>
+    <a class="auth__brand" href="index.html">KryptoPesa</a>
+  </header>
+
+  <main class="auth__main" id="main">
+    <section class="auth__card verify-card" aria-labelledby="verifyTitle">
+      <h1 class="auth__title" id="verifyTitle">Identity verification</h1>
+      <p class="auth__subtitle">Required before any wallet or payout feature is enabled.</p>
+
+      <p>
+        Complete secure identity checks with the configured provider. This environment is for
+        sandbox testing: passing a check does not enable wallet access, deposits or payouts.
+      </p>
+
+      <ul class="verify-list">
+        <li>Have a valid government-issued ID and a good light source ready.</li>
+        <li>Verification results are reviewed before your status changes to verified.</li>
+        <li>Never send identity documents by ordinary email.</li>
+      </ul>
+
+      <p class="verify-status" id="status" role="status" aria-live="polite">Checking your account…</p>
+
+      <button id="start" class="auth__submit" type="button" disabled>Start sandbox verification</button>
+
+      <div class="auth__links">
+        <a href="homepage.html">Back to my account</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="auth__foot">© 2026 KryptoPesa. All rights reserved.</footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var status = document.getElementById('status');
+      var button = document.getElementById('start');
+
+      function setStatus(text, state) {
+        status.textContent = text;
+        if (state) status.setAttribute('data-state', state);
+        else status.removeAttribute('data-state');
+      }
+
+      var sb = typeof supabaseClient !== 'undefined' ? supabaseClient : null;
+      if (!sb) {
+        setStatus('Authentication is unavailable. Reload the page or contact support.', 'error');
+        return;
+      }
+
+      sb.auth.getSession().then(async function (result) {
+        var session = result && result.data ? result.data.session : null;
+        if (!session) { location.replace('login.html'); return; }
+
+        var cases = await sb
+          .from('kyc_verification_cases')
+          .select('status,created_at')
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (cases.error) {
+          setStatus('We could not load your verification status. Try again shortly.', 'error');
+          return;
+        }
+
+        var latest = cases.data && cases.data[0];
+        if (latest && ['pending', 'in_review', 'verified'].indexOf(latest.status) !== -1) {
+          setStatus('Your current verification status: ' + String(latest.status).replace('_', ' ') +
+            '. Contact support if you need another verification.', latest.status === 'verified' ? 'ok' : null);
+          return;
+        }
+
+        setStatus('Sandbox verification is available when the provider is configured.');
+        button.disabled = false;
+      }).catch(function () {
+        setStatus('We could not check your session. Sign in again and retry.', 'error');
+      });
+
+      button.addEventListener('click', async function () {
+        button.disabled = true;
+        setStatus('Creating a secure verification session…');
+
+        try {
+          var result = await sb.functions.invoke('didit-sandbox-session', { body: {} });
+          if (result.error || !result.data || !result.data.url) {
+            var detail = (result.data && (result.data.error || result.data.message)) || '';
+            if (result.error && result.error.context) {
+              try {
+                var body = await result.error.context.clone().json();
+                detail = body && (body.error || body.message) || detail;
+              } catch (err) { /* keep the generic detail */ }
+            }
+            throw new Error(detail || 'Sandbox session unavailable. Check provider configuration.');
+          }
+
+          /* Only hand the browser to the provider's own HTTPS origin. */
+          var url = new URL(result.data.url);
+          if (url.protocol !== 'https:' || url.hostname !== 'verify.didit.me') {
+            throw new Error('Invalid provider URL.');
+          }
+          location.assign(url.toString());
+        } catch (err) {
+          setStatus(err.message || 'Unable to start verification. Try again.', 'error');
+          button.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
