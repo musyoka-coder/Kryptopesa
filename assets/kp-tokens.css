@@ -339,6 +339,73 @@
 }
 
 /* ============================================================================
+   Email-provider chooser — native <dialog>, created by index.js.
+   Keeping the styling here (rather than an injected <style>) is what lets the
+   dialog work under a `style-src 'self'` CSP.
+   ========================================================================== */
+.kp-email-dialog {
+  width: min(440px, calc(100% - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  margin: auto;
+  padding: var(--kp-space-5, 24px);
+  border: 1px solid var(--kp-line);
+  border-radius: var(--kp-radius-lg, 16px);
+  background: var(--kp-surface);
+  color: var(--kp-ink);
+  box-shadow: var(--kp-shadow-lg, 0 24px 64px rgba(11, 16, 32, 0.25));
+  text-align: left;
+}
+.kp-email-dialog::backdrop {
+  background: rgba(11, 16, 32, 0.6);
+}
+.kp-email-dialog h2 {
+  margin: 0 0 var(--kp-space-2, 8px);
+  font-size: 1.4rem;
+  line-height: 1.25;
+  color: var(--kp-navy-800);
+}
+.kp-email-dialog p {
+  margin: 0 0 var(--kp-space-4, 20px);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--kp-ink-soft);
+}
+.kp-email-providers {
+  display: grid;
+  gap: var(--kp-space-2, 8px);
+}
+.kp-email-providers a {
+  display: block;
+  padding: 12px 16px;
+  border: 1px solid var(--kp-line);
+  border-radius: var(--kp-radius-md, 10px);
+  background: var(--kp-bg);
+  color: var(--kp-navy-800);
+  font-weight: 650;
+  text-decoration: none;
+}
+.kp-email-providers a:hover {
+  border-color: var(--kp-blue);
+  background: var(--kp-blue-050);
+}
+.kp-email-dialog__cancel {
+  width: 100%;
+  margin-top: var(--kp-space-4, 20px);
+  padding: 10px 16px;
+  border: 1px solid var(--kp-line-strong);
+  border-radius: var(--kp-radius-md, 10px);
+  background: var(--kp-surface);
+  color: var(--kp-ink);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.kp-email-dialog__cancel:hover {
+  background: var(--kp-bg-alt);
+}
+
+/* ============================================================================
    Motion preferences
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {

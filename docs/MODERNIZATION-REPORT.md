@@ -306,6 +306,24 @@ evidence, `.gitignore`).
 
 Before/after screenshots: `docs/audit/`.
 
+### 10.1 Upstream merge
+
+`main` moved while this branch was in progress: five commits added `index.js`, which
+re-styled the three policy pages at runtime by injecting a `<style>` element and
+wrapped every `mailto:` link in an email-provider chooser. Those commits were merged
+and the conflicting page bodies resolved in favour of the rebuilt markup, because the
+injected styles (a navy/yellow theme) would have replaced `assets/legal.css` and are
+blocked outright by the `style-src 'self'` CSP on those pages.
+
+The chooser itself was kept and reimplemented: `index.js` now only builds the dialog,
+its styling lives in `assets/kp-tokens.css`, contact links read *Email us* in the HTML
+(rather than being relabelled by script), and `<dialog>`-less browsers still get a
+working `mailto:` link. Verified on `terms.html` and `index.html`: dialog opens with
+four providers, the draft carries the right recipient and subject, Escape closes and
+returns focus to the link, and no CSP violation is logged.
+
+![Email provider chooser](audit/new-email-chooser.png)
+
 ---
 
 ## 11. Deployment readiness
