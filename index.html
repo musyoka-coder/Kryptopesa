@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>KryptoPesa — Convert Crypto to M-Pesa Instantly in Kenya</title>
-  <meta name="description" content="KryptoPesa is developing a cryptocurrency-to-M-Pesa service for Kenya. Availability and verification requirements apply." />
+  <title>KryptoPesa — Crypto to M-Pesa for Kenya</title>
+  <meta name="description" content="KryptoPesa is building a cryptocurrency-to-M-Pesa service for Kenya. Account creation and identity verification are available; M-Pesa payouts, deposits and custody wallets are still in development." />
   <meta name="keywords" content="crypto to mpesa, sell bitcoin kenya, buy bitcoin kenya, crypto to cash kenya, USDT to mpesa, ethereum to mpesa, kryptopesa, crypto exchange kenya" />
   <meta name="robots" content="index, follow" />
   <meta name="author" content="KryptoPesa" />
@@ -18,31 +18,46 @@
 
   <!-- Open Graph (Facebook, WhatsApp, LinkedIn link previews) -->
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="KryptoPesa — Convert Crypto to M-Pesa Instantly" />
-  <meta property="og:description" content="Explore the planned KryptoPesa cryptocurrency-to-M-Pesa service for Kenya." />
-  <meta property="og:image" content="https://kryptopesa.app/logo.jpg" />
+  <meta property="og:title" content="KryptoPesa — Crypto to M-Pesa for Kenya" />
+  <meta property="og:description" content="An identity-first crypto-to-M-Pesa service in development for Kenya. Check what is available today." />
+  <meta property="og:image" content="https://kryptopesa.app/assets/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="KryptoPesa — crypto to M-Pesa for Kenya" />
   <meta property="og:url" content="https://kryptopesa.app/" />
   <meta property="og:locale" content="en_KE" />
   <meta property="og:site_name" content="KryptoPesa" />
 
   <!-- Twitter/X card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="KryptoPesa — Convert Crypto to M-Pesa Instantly" />
-  <meta name="twitter:description" content="Explore the planned cryptocurrency-to-M-Pesa service for Kenya." />
-  <meta name="twitter:image" content="https://kryptopesa.app/logo.jpg" />
+  <meta name="twitter:title" content="KryptoPesa — Crypto to M-Pesa for Kenya" />
+  <meta name="twitter:description" content="An identity-first crypto-to-M-Pesa service in development for Kenya." />
+  <meta name="twitter:image" content="https://kryptopesa.app/assets/og-image.jpg" />
+  <meta name="twitter:image:alt" content="KryptoPesa — crypto to M-Pesa for Kenya" />
 
-  <link rel="icon" type="image/jpeg" href="logo.jpg" />
-  <link rel="apple-touch-icon" href="logo.jpg" />
-  <meta name="theme-color" content="#1a237e" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <meta name="theme-color" content="#0B1020" />
+  <meta name="color-scheme" content="light" />
+
+  <!-- Defence in depth: script/style/connect allow-lists for this page.
+       HTTP response headers (CSP, X-Frame-Options, X-Content-Type-Options)
+       must still be set by the host; see docs/MODERNIZATION-REPORT.md. -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="assets/kp-tokens.css" />
+  <link rel="stylesheet" href="assets/landing.css" />
 
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "FinancialService",
     "name": "KryptoPesa",
-    "description": "Proposed cryptocurrency-to-M-Pesa service for Kenya.",
+    "description": "Cryptocurrency-to-M-Pesa service in development for Kenya. Payouts are not yet available.",
     "url": "https://kryptopesa.app/",
-    "logo": "https://kryptopesa.app/logo.jpg",
+    "logo": "https://kryptopesa.app/assets/logo-192.png",
+    "image": "https://kryptopesa.app/assets/og-image.jpg",
     "areaServed": {
       "@type": "Country",
       "name": "Kenya"
@@ -50,193 +65,265 @@
     "availableLanguage": ["en"]
   }
   </script>
-
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f5f5f5;color:#212121;}
-
-    .navbar{display:flex;justify-content:space-between;align-items:center;background:#1a237e;padding:1rem 2rem;position:relative;}
-    .logo{display:flex;align-items:center;color:#fff;gap:12px;text-decoration:none;}
-    .logo-icon{width:44px;height:44px;background:#ffd600;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;color:#1a237e;flex-shrink:0;}
-    .logo h1{font-size:1.4rem;font-weight:700;color:#fff;}
-
-    .nav-links{list-style:none;display:flex;gap:20px;align-items:center;}
-    .nav-links li a{text-decoration:none;color:#fff;transition:color .3s;font-weight:500;}
-    .nav-links li a:hover{color:#ffd600;}
-
-    .btn{background:#ffd600;color:#000;padding:.6rem 1.2rem;border-radius:6px;text-decoration:none;font-weight:700;transition:all .2s;border:none;cursor:pointer;font-size:14px;display:inline-block;}
-    .btn:hover{background:#e6c200;transform:translateY(-1px);}
-
-    .menu-toggle{display:none;background:none;border:none;color:#fff;font-size:14px;font-weight:700;cursor:pointer;padding:10px 12px;line-height:1; border-radius:6px;}
-
-    .hero{background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);color:#fff;text-align:center;padding:5rem 2rem;}
-    .hero h2{font-size:2.8rem;margin-bottom:1rem;font-weight:800;line-height:1.15;}
-    .hero p{font-size:1.2rem;margin-bottom:2rem;opacity:.9;}
-
-    .features,.how-it-works{padding:3.5rem 2rem;text-align:center;}
-    .features h3,.how-it-works h3{font-size:1.8rem;font-weight:700;margin-bottom:2rem;color:#1a237e;}
-    .feature-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;margin-top:1rem;}
-    .feature{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.1);padding:2rem;max-width:260px;flex:1;min-width:220px;transition:transform .2s;}
-    .feature:hover{transform:translateY(-4px);}
-    .feature-icon{font-size:1.1rem;margin-bottom:1rem; font-weight:800; color:#1a237e; background:#eef2ff; width:54px; height:54px; line-height:54px; border-radius:12px; margin-left:auto; margin-right:auto;}
-    .feature h4{font-size:1.1rem;font-weight:700;color:#1a237e;margin-bottom:.5rem;}
-    .feature p{font-size:.9rem;color:#555;line-height:1.6;}
-
-    .how-it-works{background:#fff;}
-    .steps{display:flex;flex-wrap:wrap;justify-content:center;gap:2rem;margin-top:1rem;}
-    .step{text-align:center;max-width:220px;}
-    .step-num{width:52px;height:52px;border-radius:50%;background:#11044e;color:#ffd600;font-size:1.2rem;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;}
-    .step p{font-size:.95rem;color:#444;font-weight:500;}
-
-    footer{text-align:center;background:#1a237e;color:#fff;padding:1.5rem;}
-    footer a{color:#ffd600;text-decoration:none;}
-
-    @media(max-width:768px){
-      .hero{padding:3.5rem 1.5rem;}
-      .hero h2{font-size:2.2rem;}
-      .features,.how-it-works{padding:2.5rem 1.5rem;}
-    }
-
-    @media(max-width:600px){
-      .navbar{padding:.85rem 1.25rem;}
-      .logo h1{font-size:1.2rem;}
-      .logo-icon{width:38px;height:38px;font-size:18px;}
-
-      .menu-toggle{display:block;}
-
-      .nav-links{
-        display:none;
-        flex-direction:column;
-        align-items:stretch;
-        gap:0;
-        position:absolute;
-        top:100%;
-        left:0;
-        right:0;
-        background:#1a237e;
-        box-shadow:0 8px 20px rgba(0,0,0,.25);
-        z-index:100;
-      }
-      .nav-links.open{display:flex;}
-      .nav-links li{width:100%;border-top:1px solid rgba(255,255,255,.12);}
-      .nav-links li a{display:block;padding:14px 1.25rem;}
-      .nav-links li:last-child{padding:12px 1.25rem;}
-      .nav-links li:last-child a.btn{width:100%;justify-content:center;}
-
-      .hero{padding:3rem 1.25rem;}
-      .hero h2{font-size:1.7rem;}
-      .hero p{font-size:1rem;}
-      .hero .btn{width:100%;justify-content:center;font-size:1rem;padding:.85rem 1.5rem;}
-
-      .features h3,.how-it-works h3{font-size:1.4rem;}
-      .feature{min-width:100%;padding:1.5rem;}
-      .step{max-width:100%;width:100%;}
-    }
-
-    @media(max-width:380px){
-      .hero h2{font-size:1.5rem;}
-    }
-  </style>
 </head>
 <body>
-  <header>
-    <nav class="navbar">
-      <a href="index.html" class="logo">
-        <img src="logo.jpg" alt="KryptoPesa — crypto to M-Pesa exchange logo" class="logo-icon">
-        <h1>KryptoPesa</h1>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <nav class="site-nav kp-container" aria-label="Main">
+      <a class="brand" href="index.html" aria-label="KryptoPesa home">
+        <img src="assets/logo-96.png" width="40" height="40" alt="" decoding="async" />
+        <span class="brand__name">Krypto<span>Pesa</span></span>
       </a>
-      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false">Menu</button>
-      <ul class="nav-links" id="navLinks">
+
+      <button class="nav-toggle" id="navToggle" type="button" aria-expanded="false" aria-controls="navList">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+        <span id="navToggleLabel">Menu</span>
+      </button>
+
+      <ul class="nav-list" id="navList">
         <li><a href="#features">Features</a></li>
-        <li><a href="#how">How It Works</a></li>
-        <li><a href="#contact">Contact</a></li>
-        <li><a href="login.html" class="btn">Login</a></li>
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#availability">Availability</a></li>
+        <li><a href="login.html">Log in</a></li>
+        <li><a class="nav-cta" href="signup.html">Create account</a></li>
       </ul>
     </nav>
   </header>
 
-  <section class="hero">
-    <h2>Your Crypto to Cash Bridge</h2>
-    <p>Explore a proposed crypto-to-M-Pesa service. Transactions are not guaranteed to be available.</p>
-    <a href="signup.html" class="btn" style="font-size:1rem;padding:.75rem 2rem;">Get Started Free</a>
-  </section>
+  <main id="main">
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="kp-container">
+        <div class="hero__inner">
+          <p class="hero__eyebrow">
+            <span class="kp-dot" aria-hidden="true"></span>
+            Service in development
+          </p>
+          <h1 id="heroTitle">Your crypto to <em>cash</em> bridge</h1>
+          <p class="hero__lead">
+            KryptoPesa is building an identity-first way to turn cryptocurrency into Kenyan
+            Shillings on M-Pesa. Accounts and identity checks are live today — payouts and
+            deposit wallets are not yet switched on, and we will say so plainly on every screen
+            until they are.
+          </p>
 
-  <section id="features" class="features">
-    <h3>Why KryptoPesa?</h3>
-    <div class="feature-grid">
-      <div class="feature">
-        <div class="feature-icon">FAST</div>
-        <h4>Proposed Transfers</h4>
-        <p>Transaction availability and settlement times depend on verified integrations.</p>
+          <div class="hero__actions">
+            <a class="kp-btn kp-btn--gold" href="signup.html">Create a free account</a>
+            <a class="kp-btn kp-btn--onDark" href="#how">See how it works</a>
+          </div>
+
+          <p class="hero__note">No payment is taken on this site. Trading and payouts are disabled while integrations are completed.</p>
+
+          <ul class="hero__facts">
+            <li><strong>5 assets</strong> BTC, ETH, SOL, USDT and WLD market data</li>
+            <li><strong>KYC-first</strong> Identity checks gate account actions</li>
+            <li><strong>M-Pesa payouts</strong> In development — not live</li>
+          </ul>
+        </div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">SAFE</div>
-        <h4>Identity Checks</h4>
-        <p>Identity verification and security controls must be completed before live transactions.</p>
+    </section>
+
+    <section class="section" id="features" aria-labelledby="featuresTitle">
+      <div class="kp-container">
+        <div class="section__head">
+          <h2 id="featuresTitle">Why KryptoPesa</h2>
+          <p>A Kenyan crypto-to-cash service should be legible before it is fast. Here is what the platform is being built around.</p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 3l7 3v6c0 4.2-2.9 7.7-7 9-4.1-1.3-7-4.8-7-9V6l7-3z"></path>
+                <path d="M9 12l2 2 4-4"></path>
+              </svg>
+            </div>
+            <h3>Identity-checked accounts</h3>
+            <p>Every account is subject to identity verification before it can transact. Verification status is shown in your dashboard and kept in sync.</p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 19V5"></path><path d="M4 19h16"></path>
+                <path d="M8 15l4-5 3 3 4-6"></path>
+              </svg>
+            </div>
+            <h3>Pricing you can read</h3>
+            <p>Live market prices with an indicative USD/KES conversion, so you can see what a figure means before any payout service is enabled.</p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect>
+                <path d="M10.5 18.5h3"></path>
+              </svg>
+            </div>
+            <h3>Built for Kenyan phones</h3>
+            <p>Designed for everyday Android devices and mobile data: light pages, tap targets that fit a thumb, and no layout that needs zooming.</p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path>
+                <path d="M14 3v5h5"></path><path d="M9 13h6M9 17h6"></path>
+              </svg>
+            </div>
+            <h3>Disclosed, not implied</h3>
+            <p>Fees, limits, reversibility and availability are stated on the page where a feature would be used — including when a feature is switched off.</p>
+          </article>
+        </div>
       </div>
-      <div class="feature">
-        <div class="feature-icon">REWARDS</div>
-        <h4>User Rewards</h4>
-        <p>Any future rewards will be subject to published eligibility terms.</p>
+    </section>
+
+    <section class="section section--alt" id="how" aria-labelledby="howTitle">
+      <div class="kp-container">
+        <div class="section__head">
+          <h2 id="howTitle">How it works</h2>
+          <p>Three steps once the service is fully enabled. Steps two and three are partly or entirely unavailable today.</p>
+        </div>
+
+        <ol class="steps">
+          <li class="step">
+            <h3>Create and confirm your account</h3>
+            <p>Sign up with an email address, confirm it, then log in. Account creation is available now.</p>
+          </li>
+          <li class="step">
+            <h3>Complete identity verification</h3>
+            <p>Verification runs through the configured identity provider. Sandbox sessions are available; production approval depends on provider configuration.</p>
+          </li>
+          <li class="step">
+            <h3>Convert to M-Pesa</h3>
+            <p>When payouts open, a verified account will be able to request an M-Pesa payout. This is disabled today, so no prompt will reach your phone.</p>
+          </li>
+        </ol>
       </div>
-      <div class="feature">
-        <div class="feature-icon">SMART</div>
-        <h4>User Friendly</h4>
-        <p>Clean interface — no crypto experience needed.</p>
+    </section>
+
+    <section class="section" id="availability" aria-labelledby="availabilityTitle">
+      <div class="kp-container">
+        <div class="disclosure" role="note">
+          <h2 id="availabilityTitle">What is available today</h2>
+          <p>KryptoPesa is not yet taking or paying money. This section is the source of truth for the current build.</p>
+          <ul>
+            <li><strong>Available:</strong> account creation, email confirmation, login and session handling.</li>
+            <li><strong>Available:</strong> live market prices for BTC, ETH, SOL and WLD, plus an indicative USD/KES rate.</li>
+            <li><strong>Sandbox only:</strong> identity verification, depending on the operator's provider configuration.</li>
+            <li><strong>Not available:</strong> M-Pesa deposits, crypto-to-M-Pesa payouts, custody deposit addresses and wallet balances.</li>
+          </ul>
+          <p>No wallet balance, transaction or exchange rate on this site is represented as a live settlement. Where a figure is unavailable we show it as unavailable rather than as zero.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="kp-container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a class="brand" href="index.html" aria-label="KryptoPesa home">
+            <img src="assets/logo-96.png" width="40" height="40" alt="" loading="lazy" decoding="async" />
+            <span class="brand__name">Krypto<span>Pesa</span></span>
+          </a>
+          <p>An identity-first cryptocurrency-to-M-Pesa service being built for Kenya. Availability is limited and stated in the open.</p>
+        </div>
+
+        <nav aria-labelledby="footerProduct">
+          <h2 id="footerProduct">Product</h2>
+          <ul class="footer-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#availability">Availability</a></li>
+            <li><a href="login.html">Log in</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footerLegal">
+          <h2 id="footerLegal">Legal</h2>
+          <ul class="footer-links">
+            <li><a href="privacy.html">Privacy</a></li>
+            <li><a href="terms.html">Terms and disclosures</a></li>
+            <li><a href="cookies.html">Cookies</a></li>
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="footerContact">
+          <h2 id="footerContact">Contact</h2>
+          <ul class="footer-links">
+            <li><a href="mailto:support@kryptopesa.com">support@kryptopesa.com</a></li>
+            <li><a href="mailto:musyokanicholus53@gmail.com?subject=Privacy%20request">Privacy requests</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 KryptoPesa. All rights reserved.</p>
+        <p>Designed by <a href="https://www.techcraftlimited.me" rel="noopener">techcraftlimited</a></p>
       </div>
     </div>
-  </section>
-
-  <section id="how" class="how-it-works">
-    <h3>How It Works</h3>
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <p>Sign up &amp; verify your identity with KYC</p>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <p>Send crypto to your KryptoPesa wallet</p>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <p>Request withdrawal when the payout service becomes available</p>
-      </div>
-    </div>
-  </section>
-
-  <footer id="contact">
-    <p>© 2026 KryptoPesa. All rights reserved.</p><p><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms and disclosures</a> · <a href="cookies.html">Cookies</a></p>
-    <p>Designed by <a href="https://www.techcraftlimited.me">techcraftlimited</a></p>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"
+          integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="supabase-client.js"></script>
   <script>
-    document.querySelectorAll('.btn').forEach(btn=>{
-      btn.addEventListener('mouseover',()=>btn.style.transform='scale(1.04)');
-      btn.addEventListener('mouseout',()=>btn.style.transform='scale(1)');
-    });
+    (function () {
+      'use strict';
 
-    const menuToggle = document.getElementById('menuToggle');
-    const navLinks = document.getElementById('navLinks');
-    menuToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('open');
-      menuToggle.setAttribute('aria-expanded', isOpen);
-      menuToggle.textContent = isOpen ? 'Close' : 'Menu';
-    });
+      /* ── Mobile navigation ────────────────────────────────────────────── */
+      var toggle = document.getElementById('navToggle');
+      var list = document.getElementById('navList');
+      var label = document.getElementById('navToggleLabel');
 
-    navLinks.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.textContent = 'Menu';
-      });
-    });
+      function setNav(open) {
+        if (!toggle || !list) return;
+        list.setAttribute('data-open', open ? 'true' : 'false');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (label) label.textContent = open ? 'Close' : 'Menu';
+      }
 
-    supabaseClient.auth.getSession().then(({ data: { session } }) => {
-      if (session) window.location.href = 'homepage.html';
-    });
+      if (toggle && list) {
+        /* Start closed only on small screens; desktop shows the list via CSS. */
+        setNav(false);
+
+        toggle.addEventListener('click', function () {
+          setNav(toggle.getAttribute('aria-expanded') !== 'true');
+        });
+
+        list.addEventListener('click', function (event) {
+          if (event.target.closest('a')) setNav(false);
+        });
+
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+            setNav(false);
+            toggle.focus();
+          }
+        });
+
+        document.addEventListener('click', function (event) {
+          if (toggle.getAttribute('aria-expanded') !== 'true') return;
+          if (list.contains(event.target) || toggle.contains(event.target)) return;
+          setNav(false);
+        });
+      }
+
+      /* ── Send already-signed-in visitors straight to the dashboard ────── */
+      if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
+        supabaseClient.auth.getSession().then(function (result) {
+          if (result && result.data && result.data.session) {
+            window.location.replace('homepage.html');
+          }
+        }).catch(function () {
+          /* A failed session check must never block the marketing page. */
+        });
+      }
+    })();
   </script>
 </body>
 </html>
