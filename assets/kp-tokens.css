@@ -1,0 +1,354 @@
+/* ============================================================================
+   KryptoPesa design tokens & primitives
+   Single source of truth for colour, type, spacing, radius, elevation and
+   motion. Page stylesheets consume these variables; nothing here overrides
+   page layout, so every page keeps its own structure and brand personality.
+
+   Breakpoints (CSS custom properties cannot be used inside media queries,
+   so these are the documented values):
+     phone   320px - 479px
+     phone-l 480px - 599px
+     tablet  600px - 899px
+     laptop  900px - 1199px
+     desktop 1200px+
+   ========================================================================== */
+
+:root {
+  /* ── Brand: navy ─────────────────────────────────────────────────────── */
+  --kp-navy-950: #0b1020;
+  --kp-navy-900: #0f1830;
+  --kp-navy-800: #182d58;
+  --kp-navy-700: #1d3a6e;
+  --kp-navy-600: #24488a;
+
+  /* ── Brand: action blue ──────────────────────────────────────────────── */
+  --kp-blue: #315cf5;
+  --kp-blue-700: #2749c9;
+  --kp-blue-600: #2a4fe0;
+  --kp-blue-050: #eef3ff;
+
+  /* ── Brand: teal accent (positive / live states) ─────────────────────── */
+  --kp-teal: #16b8a6;
+  --kp-teal-700: #0d8577;
+  --kp-teal-050: #e7f8f5;
+
+  /* ── Brand: restrained gold highlight (kept from the original identity) ─ */
+  --kp-gold: #f4c95d;
+  --kp-gold-600: #d9a93a;
+  --kp-gold-700: #7a5a08; /* only for text on light surfaces */
+  --kp-gold-050: #fdf6e3;
+
+  /* ── Neutrals ────────────────────────────────────────────────────────── */
+  --kp-bg: #f8fafc;
+  --kp-bg-alt: #eef2f9;
+  --kp-surface: #ffffff;
+  --kp-ink: #0f1b33;
+  --kp-ink-soft: #4a5a76;
+  --kp-ink-faint: #6b7a93;
+  --kp-line: #e2e8f0;
+  --kp-line-strong: #cbd5e1;
+
+  /* ── Status ──────────────────────────────────────────────────────────── */
+  --kp-ok: #0e7c5a;
+  --kp-ok-bg: #e6f6ef;
+  --kp-ok-line: #b9e6d3;
+  --kp-warn: #8a5a00;
+  --kp-warn-bg: #fff6e0;
+  --kp-warn-line: #f3dda6;
+  --kp-danger: #c02626;
+  --kp-danger-bg: #fdecec;
+  --kp-danger-line: #f4c4c4;
+
+  /* ── Typography ──────────────────────────────────────────────────────── */
+  --kp-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --kp-font-display: "Manrope", var(--kp-font);
+  --kp-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --kp-text-xs: 0.75rem;
+  --kp-text-sm: 0.875rem;
+  --kp-text-base: 1rem;
+  --kp-text-lg: 1.125rem;
+  --kp-text-xl: 1.375rem;
+  --kp-text-2xl: 1.75rem;
+  --kp-text-3xl: 2.25rem;
+
+  --kp-leading-tight: 1.2;
+  --kp-leading: 1.55;
+  --kp-leading-relaxed: 1.7;
+
+  /* ── Spacing (4px scale) ─────────────────────────────────────────────── */
+  --kp-space-1: 0.25rem;
+  --kp-space-2: 0.5rem;
+  --kp-space-3: 0.75rem;
+  --kp-space-4: 1rem;
+  --kp-space-5: 1.25rem;
+  --kp-space-6: 1.5rem;
+  --kp-space-8: 2rem;
+  --kp-space-10: 2.5rem;
+  --kp-space-12: 3rem;
+  --kp-space-16: 4rem;
+  --kp-space-20: 5rem;
+
+  /* ── Radii ───────────────────────────────────────────────────────────── */
+  --kp-radius-xs: 6px;
+  --kp-radius-sm: 9px;
+  --kp-radius-md: 12px;
+  --kp-radius-lg: 16px;
+  --kp-radius-xl: 22px;
+  --kp-radius-pill: 999px;
+
+  /* ── Elevation ───────────────────────────────────────────────────────── */
+  --kp-shadow-xs: 0 1px 2px rgba(11, 16, 32, 0.05);
+  --kp-shadow-sm: 0 1px 2px rgba(11, 16, 32, 0.06), 0 2px 6px rgba(11, 16, 32, 0.04);
+  --kp-shadow-md: 0 8px 24px rgba(11, 16, 32, 0.08);
+  --kp-shadow-lg: 0 20px 50px rgba(11, 16, 32, 0.14);
+  --kp-shadow-focus: 0 0 0 3px rgba(49, 92, 245, 0.4);
+
+  /* ── Gradients: subtle, low-glow ─────────────────────────────────────── */
+  --kp-grad-navy: linear-gradient(150deg, var(--kp-navy-950) 0%, var(--kp-navy-800) 100%);
+  --kp-grad-brand: linear-gradient(120deg, var(--kp-navy-800) 0%, var(--kp-navy-700) 55%, #23407a 100%);
+  --kp-grad-surface: linear-gradient(180deg, #ffffff 0%, #fbfcff 100%);
+  --kp-grad-teal: linear-gradient(135deg, var(--kp-teal) 0%, var(--kp-teal-700) 100%);
+
+  /* ── Motion ──────────────────────────────────────────────────────────── */
+  --kp-ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+  --kp-dur-fast: 120ms;
+  --kp-dur: 180ms;
+
+  /* ── Layout ──────────────────────────────────────────────────────────── */
+  --kp-shell-max: 1200px;
+  --kp-gutter: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* ============================================================================
+   Base primitives
+   ========================================================================== */
+
+/* Visible focus for every interactive element, never removed. */
+:where(a, button, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--kp-blue);
+  outline-offset: 2px;
+  border-radius: var(--kp-radius-xs);
+}
+
+/* Screen-reader-only text (labels, table captions, headings for sections). */
+.kp-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Keyboard-only skip link that becomes visible on focus. */
+.kp-skip {
+  position: absolute;
+  left: var(--kp-space-4);
+  top: -100px;
+  z-index: 9999;
+  padding: var(--kp-space-3) var(--kp-space-5);
+  border-radius: var(--kp-radius-sm);
+  background: var(--kp-navy-950);
+  color: #fff;
+  font: 700 var(--kp-text-sm) / 1 var(--kp-font);
+  text-decoration: none;
+  transition: top var(--kp-dur) var(--kp-ease);
+}
+.kp-skip:focus-visible {
+  top: var(--kp-space-4);
+  outline-color: var(--kp-gold);
+}
+
+/* Content container shared by every page shell. */
+.kp-container {
+  width: 100%;
+  max-width: var(--kp-shell-max);
+  margin-inline: auto;
+  padding-inline: var(--kp-gutter);
+}
+
+/* ============================================================================
+   Buttons
+   ========================================================================== */
+
+.kp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--kp-space-2);
+  min-height: 46px;
+  padding: 0 var(--kp-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--kp-radius-sm);
+  background: var(--kp-blue);
+  color: #fff;
+  font: 700 var(--kp-text-sm) / 1.2 var(--kp-font);
+  text-decoration: none;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background var(--kp-dur) var(--kp-ease),
+    border-color var(--kp-dur) var(--kp-ease),
+    box-shadow var(--kp-dur) var(--kp-ease),
+    transform var(--kp-dur) var(--kp-ease);
+}
+.kp-btn:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--kp-blue-700);
+  box-shadow: var(--kp-shadow-md);
+}
+.kp-btn:active:not(:disabled):not([aria-disabled="true"]) {
+  transform: translateY(1px);
+  box-shadow: var(--kp-shadow-xs);
+}
+.kp-btn:disabled,
+.kp-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.kp-btn--gold {
+  background: var(--kp-gold);
+  color: var(--kp-navy-950);
+  border-color: var(--kp-gold-600);
+}
+.kp-btn--gold:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--kp-gold-600);
+}
+
+.kp-btn--ghost {
+  background: transparent;
+  color: var(--kp-navy-800);
+  border-color: var(--kp-line-strong);
+}
+.kp-btn--ghost:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: var(--kp-bg-alt);
+  border-color: var(--kp-navy-700);
+}
+
+.kp-btn--onDark {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.32);
+  color: #fff;
+}
+.kp-btn--onDark:hover:not(:disabled):not([aria-disabled="true"]) {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.kp-btn--block {
+  width: 100%;
+}
+
+/* ============================================================================
+   Form controls
+   ========================================================================== */
+
+.kp-label {
+  display: block;
+  margin-bottom: var(--kp-space-2);
+  font-size: var(--kp-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--kp-ink-soft);
+}
+
+.kp-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid var(--kp-line-strong);
+  border-radius: var(--kp-radius-sm);
+  background: var(--kp-surface);
+  color: var(--kp-ink);
+  font: 400 var(--kp-text-base) / 1.4 var(--kp-font);
+  transition: border-color var(--kp-dur) var(--kp-ease),
+    box-shadow var(--kp-dur) var(--kp-ease);
+}
+.kp-input::placeholder {
+  color: var(--kp-ink-faint);
+}
+.kp-input:hover {
+  border-color: #b6c2d4;
+}
+.kp-input:focus {
+  border-color: var(--kp-blue);
+  box-shadow: var(--kp-shadow-focus);
+  outline: none;
+}
+.kp-input[aria-invalid="true"] {
+  border-color: var(--kp-danger);
+}
+
+/* ============================================================================
+   Surfaces, badges, alerts
+   ========================================================================== */
+
+.kp-card {
+  background: var(--kp-surface);
+  border: 1px solid var(--kp-line);
+  border-radius: var(--kp-radius-lg);
+  box-shadow: var(--kp-shadow-sm);
+}
+
+.kp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--kp-space-2);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--kp-radius-pill);
+  background: var(--kp-bg-alt);
+  color: var(--kp-ink-soft);
+  font-size: var(--kp-text-xs);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.kp-badge--ok { background: var(--kp-ok-bg); color: var(--kp-ok); }
+.kp-badge--warn { background: var(--kp-warn-bg); color: var(--kp-warn); }
+.kp-badge--danger { background: var(--kp-danger-bg); color: var(--kp-danger); }
+.kp-badge--info { background: var(--kp-blue-050); color: var(--kp-blue-700); }
+.kp-badge--live { background: var(--kp-teal-050); color: var(--kp-teal-700); }
+
+.kp-alert {
+  display: flex;
+  gap: var(--kp-space-3);
+  padding: var(--kp-space-3) var(--kp-space-4);
+  border: 1px solid var(--kp-line);
+  border-radius: var(--kp-radius-md);
+  background: var(--kp-bg-alt);
+  color: var(--kp-ink-soft);
+  font-size: var(--kp-text-sm);
+  line-height: var(--kp-leading);
+}
+.kp-alert--info { background: var(--kp-blue-050); border-color: #c9d8ff; color: #1b3aa8; }
+.kp-alert--warn { background: var(--kp-warn-bg); border-color: var(--kp-warn-line); color: var(--kp-warn); }
+.kp-alert--error { background: var(--kp-danger-bg); border-color: var(--kp-danger-line); color: var(--kp-danger); }
+.kp-alert--ok { background: var(--kp-ok-bg); border-color: var(--kp-ok-line); color: var(--kp-ok); }
+
+/* Status dot used by the market "live / cached" indicator. */
+.kp-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: 0 0 auto;
+}
+
+/* ============================================================================
+   Motion preferences
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
