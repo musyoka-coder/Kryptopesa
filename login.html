@@ -2,131 +2,209 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="light" />
   <title>KryptoPesa — Log In</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="theme-color" content="#0B1020" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="assets/kp-tokens.css" />
+  <link rel="stylesheet" href="assets/auth.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"
+          integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="supabase-client.js"></script>
   <script src="session-management.js"></script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#1a237e 0%,#0d47a1 100%);min-height:100vh;display:flex;flex-direction:column;}
-    .top-bar{padding:16px 24px;display:flex;align-items:center;gap:10px;}
-    .logo-icon{width:38px;height:38px;background:#ffd600;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:900;color:#1a237e;}
-    .brand{color:#fff;font-weight:700;font-size:1.2rem;}
-    .center{flex:1;display:flex;align-items:center;justify-content:center;padding:20px;}
-    .container{background:#fff;max-width:400px;width:100%;padding:36px;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.3);}
-    h2{text-align:center;color:#1a237e;margin-bottom:6px;font-size:1.6rem;font-weight:800;}
-    .subtitle{text-align:center;color:#64748b;font-size:.875rem;margin-bottom:24px;}
-    .form-group{margin-bottom:18px;}
-    label{display:block;margin-bottom:6px;font-weight:600;font-size:13px;color:#374151;text-transform:uppercase;letter-spacing:.4px;}
-    input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:15px;transition:border-color .2s;font-family:inherit;}
-    input:focus{outline:none;border-color:#1a237e;box-shadow:0 0 0 3px rgba(26,35,126,.1);}
-    .error-msg{background:#fef2f2;border:1px solid #fecaca;color:#dc2626;padding:10px 14px;border-radius:8px;font-size:13px;margin-bottom:16px;display:none;}
-    .btn{width:100%;padding:13px;background:#1a237e;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;}
-    .btn:hover{background:#0d47a1;transform:translateY(-1px);}
-    .btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-    .link-row{text-align:center;margin-top:18px;font-size:.9rem;color:#64748b;}
-    .link-row a{color:#1a237e;font-weight:700;text-decoration:none;}
-    .link-row a:hover{text-decoration:underline;}
-    footer{text-align:center;padding:16px;color:rgba(255,255,255,.7);font-size:.8rem;}
-  </style>
 </head>
-<body>
-  <div class="top-bar">
-    <img src="logo.jpg" alt="KryptoPesa Logo" class="logo-icon">
-    <span class="brand">KryptoPesa</span>
-  </div>
-  <div class="center">
-    <div class="container">
-      <h2>Welcome Back</h2>
-      <p class="subtitle">Log in to your KryptoPesa account</p>
-      <div class="error-msg" id="errorMsg"></div>
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="username" required />
+<body class="auth">
+  <a class="kp-skip" href="#main">Skip to sign-in form</a>
+
+  <header class="auth__top">
+    <a class="auth__brand" href="index.html" aria-label="KryptoPesa home">
+      <img src="assets/logo-96.png" width="40" height="40" alt="" class="auth__logo" />
+    </a>
+    <a class="auth__brand" href="index.html">KryptoPesa</a>
+  </header>
+
+  <main class="auth__main" id="main">
+    <section class="auth__card" aria-labelledby="loginTitle">
+      <h1 class="auth__title" id="loginTitle">Welcome back</h1>
+      <p class="auth__subtitle">Log in to your KryptoPesa account</p>
+
+      <div class="auth__msg auth__msg--error" id="errorMsg" role="alert" aria-live="assertive"></div>
+
+      <form id="loginForm" novalidate>
+        <div class="auth__group">
+          <label class="kp-label" for="loginEmail">Email address</label>
+          <input class="kp-input" type="email" id="loginEmail" name="email"
+                 placeholder="you@example.com" autocomplete="username" inputmode="email"
+                 aria-describedby="emailHelp" required />
+          <p class="auth__hint" id="emailHelp">Use the address you signed up with.</p>
         </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="loginPassword" placeholder="Enter password" autocomplete="current-password" required />
+
+        <div class="auth__group">
+          <label class="kp-label" for="loginPassword">Password</label>
+          <div class="auth__field">
+            <input class="kp-input" type="password" id="loginPassword" name="password"
+                   placeholder="Enter your password" autocomplete="current-password" required />
+            <button class="auth__reveal" type="button" data-target="loginPassword" aria-label="Show password" aria-pressed="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
         </div>
-        <button type="submit" class="btn" id="loginBtn">Log In</button>
+
+        <button type="submit" class="auth__submit" id="loginBtn">Log in</button>
       </form>
-      <div class="link-row">
-        Don't have an account? <a href="signup.html">Sign Up</a>
+
+      <div class="auth__links">
+        <a href="forgot_password.html">Forgot your password?</a>
+        <span>New to KryptoPesa? <a href="signup.html">Create an account</a></span>
       </div>
-      <div class="link-row" style="margin-top:10px;"><a href="forgot_password.html">Forgot Password?</a></div>
-    </div>
-  </div>
-  <footer>© 2025 KryptoPesa. All rights reserved.</footer>
+    </section>
+  </main>
+
+  <footer class="auth__foot">© 2026 KryptoPesa. All rights reserved.</footer>
 
   <script>
-    if(new URLSearchParams(location.search).get('session')==='expired'){
-      document.addEventListener('DOMContentLoaded',()=>showError('Session expired. Sign in again.'));
-    }
-    function showError(msg) {
-      const el = document.getElementById('errorMsg');
-      el.textContent = msg;
-      el.style.display = 'block';
-    }
+    (function () {
+      'use strict';
 
-    document.getElementById('loginForm').addEventListener('submit', async function(e) {
-      e.preventDefault();
-      document.getElementById('errorMsg').style.display = 'none';
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const btn = document.getElementById('loginBtn');
+      var form = document.getElementById('loginForm');
+      var emailInput = document.getElementById('loginEmail');
+      var passwordInput = document.getElementById('loginPassword');
+      var btn = document.getElementById('loginBtn');
+      var errorBox = document.getElementById('errorMsg');
 
-      if (!email || !password) { showError('Please fill in all fields.'); return; }
-
-      btn.disabled = true;
-      btn.textContent = 'Verifying…';
-
-      // Supabase Auth handles brute-force rate limiting server-side —
-      // no need for a client-side lockout that anyone could bypass by clearing localStorage.
-      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-      if (error) {
-        showError(error.message.includes('Invalid login')
-          ? 'Invalid email or password.'
-          : error.message);
-        btn.disabled = false; btn.textContent = 'Log In';
-        return;
+      function showError(msg) {
+        errorBox.textContent = msg;
+        errorBox.setAttribute('data-show', 'true');
+        errorBox.focus && errorBox.focus();
       }
 
-      // Defense in depth: reject an authenticated session that lacks email confirmation.
-      // Supabase Auth must also enforce Confirm email at the server level.
-      if (!data.user?.email_confirmed_at) {
-        await supabaseClient.auth.signOut();
-        showError('Confirm your email address using the link sent after registration before signing in.');
-        btn.disabled = false; btn.textContent = 'Log In';
-        return;
+      function clearError() {
+        errorBox.textContent = '';
+        errorBox.removeAttribute('data-show');
       }
 
-      // Check suspension status from the profiles table
-      const { data: profile } = await supabaseClient
-        .from('profiles')
-        .select('account_status, username, is_admin')
-        .eq('id', data.user.id)
-        .single();
-
-      if (!profile || profile.account_status !== 'active') {
-        await supabaseClient.auth.signOut();
-        showError('Account unavailable or inactive. Contact support.');
-        btn.disabled = false; btn.textContent = 'Log In';
-        return;
+      function busy(on) {
+        btn.disabled = on;
+        btn.textContent = on ? 'Verifying…' : 'Log in';
+        form.setAttribute('aria-busy', on ? 'true' : 'false');
       }
 
-      window.KPSession.signedIn();
-      window.KPSession.savePreference('kp_functional_cookies','enabled');
-      await supabaseClient.from('activity_log').insert({
-        user_id: data.user.id,
-        event: 'User Login',
-        status: 'success'
+      if (new URLSearchParams(location.search).get('session') === 'expired') {
+        showError('Your session expired. Please sign in again.');
+      }
+
+      /* Password visibility toggle. */
+      document.querySelectorAll('.auth__reveal').forEach(function (toggle) {
+        toggle.addEventListener('click', function () {
+          var input = document.getElementById(toggle.getAttribute('data-target'));
+          if (!input) return;
+          var hidden = input.type === 'password';
+          input.type = hidden ? 'text' : 'password';
+          toggle.setAttribute('aria-label', hidden ? 'Hide password' : 'Show password');
+          toggle.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+        });
       });
 
-      window.location.replace(profile?.is_admin === true && profile?.account_status === 'active' ? 'admin.html' : 'homepage.html');
-    });
+      form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        clearError();
+
+        var email = emailInput.value.trim();
+        var password = passwordInput.value;
+
+        if (!email || !password) {
+          showError('Enter both your email address and password.');
+          (!email ? emailInput : passwordInput).focus();
+          return;
+        }
+        if (!emailInput.checkValidity()) {
+          showError('That email address does not look valid.');
+          emailInput.focus();
+          return;
+        }
+
+        busy(true);
+
+        var result;
+        try {
+          result = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
+        } catch (err) {
+          busy(false);
+          showError('We could not reach the sign-in service. Check your connection and try again.');
+          return;
+        }
+
+        if (result.error) {
+          busy(false);
+          var message = result.error.message || '';
+          if (/invalid login/i.test(message)) {
+            showError('Invalid email or password.');
+          } else if (/rate limit|too many/i.test(message)) {
+            showError('Too many attempts. Wait a minute and try again.');
+          } else {
+            showError(message);
+          }
+          return;
+        }
+
+        /* Defence in depth: never accept a session without a confirmed email.
+           Supabase Auth must also enforce "Confirm email" server-side. */
+        if (!result.data.user || !result.data.user.email_confirmed_at) {
+          await supabaseClient.auth.signOut();
+          busy(false);
+          showError('Confirm your email address using the link sent after registration before signing in.');
+          return;
+        }
+
+        var profileResult;
+        try {
+          profileResult = await supabaseClient
+            .from('profiles')
+            .select('account_status, username, is_admin')
+            .eq('id', result.data.user.id)
+            .single();
+        } catch (err) {
+          profileResult = { data: null, error: err };
+        }
+
+        var profile = profileResult && profileResult.data;
+        if (profileResult && profileResult.error) {
+          await supabaseClient.auth.signOut();
+          busy(false);
+          showError('We could not load your account profile. Try again, or contact support if this continues.');
+          return;
+        }
+
+        if (!profile || profile.account_status !== 'active') {
+          await supabaseClient.auth.signOut();
+          busy(false);
+          showError('Account unavailable or inactive. Contact support.');
+          return;
+        }
+
+        window.KPSession.signedIn();
+        window.KPSession.savePreference('kp_functional_cookies', 'enabled');
+
+        /* Best-effort audit trail: never block sign-in on a log write. */
+        try {
+          await supabaseClient.from('activity_log').insert({
+            user_id: result.data.user.id,
+            event: 'User Login',
+            status: 'success'
+          });
+        } catch (err) { /* non-blocking */ }
+
+        window.location.replace(profile.is_admin === true ? 'admin.html' : 'homepage.html');
+      });
+    })();
   </script>
 </body>
 </html>
