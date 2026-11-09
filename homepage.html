@@ -2,565 +2,767 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>KryptoPesa | Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="color-scheme" content="light" />
+  <title>KryptoPesa — Dashboard</title>
+  <meta name="theme-color" content="#0B1020" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.binance.com wss://stream.binance.com:9443 https://api.exchangerate-api.com https://open.er-api.com; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
+  <link rel="apple-touch-icon" href="assets/icon-180.png" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="preconnect" href="https://api.binance.com" crossorigin />
+  <link rel="stylesheet" href="assets/kp-tokens.css" />
+  <link rel="stylesheet" href="assets/dashboard.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"
+          integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O"
+          crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   <script src="supabase-client.js"></script>
   <script src="session-management.js"></script>
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;}
-    body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:#f0f4f8;color:#1a1a2e;min-height:100vh;}
-    header{background:#1a237e;color:#fff;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:68px;position:sticky;top:0;z-index:200;box-shadow:0 2px 10px rgba(0,0,0,.3);}
-    .logo{display:flex;align-items:center;gap:10px;}
-    .logo img{height:36px;width:auto;border-radius:6px;}
-    .header-right{display:flex;align-items:center;gap:12px;}
-    .kyc-badge{padding:5px 13px;border-radius:20px;font-size:11px;font-weight:800;cursor:pointer;letter-spacing:.4px;transition:all .2s;}
-    .kyc-badge.unverified{background:rgba(220,38,38,.2);color:#fca5a5;border:1px solid rgba(220,38,38,.4);}
-    .kyc-badge.pending{background:rgba(217,119,6,.2);color:#fcd34d;border:1px solid rgba(217,119,6,.4);}
-    .kyc-badge.verified{background:rgba(5,150,105,.2);color:#6ee7b7;border:1px solid rgba(5,150,105,.4);}
-    .user-name{font-size:13px;color:rgba(255,255,255,.8);font-weight:600;}
-    .user-menu-wrap{position:relative;}
-    .menu-btn{background:transparent;border:none;color:#fff;font-size:1.6rem;cursor:pointer;padding:8px;border-radius:6px;line-height:1;transition:background .2s;}
-    .menu-btn:hover{background:rgba(255,255,255,.12);}
-    .dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 12px 40px rgba(0,0,0,.15);min-width:190px;display:none;z-index:500;}
-    .dropdown.open{display:block;}
-    .dd-item{display:flex;align-items:center;gap:10px;width:100%;padding:11px 16px;background:none;border:none;font-size:14px;color:#1e293b;font-weight:500;cursor:pointer;text-align:left;font-family:inherit;transition:background .15s;}
-    .dd-item:hover{background:#f8fafc;color:#1a237e;}
-    .dd-item.red:hover{color:#dc2626;}
-    .dd-sep{border:none;border-top:1px solid #e2e8f0;margin:4px 0;}
-    .main-nav{background:#fff;border-bottom:1px solid #e2e8f0;overflow-x:auto;}
-    .nav-inner{display:flex;padding:0 16px;}
-    .nav-btn{padding:14px 20px;border:none;background:transparent;color:#64748b;font-weight:600;font-size:14px;cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:7px;}
-    .nav-btn:hover{color:#1a237e;background:#f8fafc;}
-    .nav-btn.active{color:#1a237e;border-bottom-color:#1a237e;}
-    .main{max-width:1200px;margin:0 auto;padding:28px 20px 90px;}
-    .section{display:none;}
-    .section.active{display:block;}
-    .sec-hdr{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;margin-bottom:24px;}
-    .sec-hdr h2{font-size:1.5rem;font-weight:800;color:#0f172a;}
-    .sec-hdr p{font-size:.85rem;color:#64748b;margin-top:3px;}
-    .ws-badge{display:inline-flex;align-items:center;gap:7px;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;}
-    .ws-badge.live{background:rgba(5,150,105,.1);border:1px solid #059669;color:#059669;}
-    .ws-badge.cached{background:rgba(220,38,38,.1);border:1px solid #dc2626;color:#dc2626;}
-    .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
-    .dot.live{background:#059669;}
-    .dot.cached{background:#dc2626;}
-    .rate-box{background:#fff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 14px;font-size:13px;color:#64748b;}
-    .rate-box span{color:#059669;font-weight:800;}
-    .price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px;}
-    .price-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:22px;box-shadow:0 1px 4px rgba(0,0,0,.06);transition:all .2s;}
-    .price-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
-    .ci{display:flex;align-items:center;gap:11px;margin-bottom:14px;}
-    .cicon{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;color:#fff;}
-    .cname{font-weight:700;font-size:15px;color:#0f172a;}
-    .csym{font-size:12px;color:#64748b;}
-    .cprice{font-size:1.2rem;font-weight:800;color:#0f172a;}
-    .ckes{font-size:12px;color:#64748b;margin-top:2px;}
-    .cchg{font-size:13px;font-weight:700;margin-top:5px;}
-    .pos{color:#059669;} .neg{color:#dc2626;}
-    .card{background:#fff;border:1.5px solid #e2e8f0;border-radius:14px;padding:28px;max-width:500px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
-    .card h2{font-size:1.3rem;font-weight:800;margin-bottom:4px;}
-    .card-sub{font-size:.85rem;color:#64748b;margin-bottom:22px;}
-    .fg{margin-bottom:18px;}
-    .fl{display:block;margin-bottom:7px;font-weight:700;font-size:12px;color:#374151;text-transform:uppercase;letter-spacing:.5px;}
-    .fi,.fs{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:15px;font-family:inherit;background:#fff;transition:border-color .2s;}
-    .fi:focus,.fs:focus{outline:none;border-color:#1a237e;box-shadow:0 0 0 3px rgba(26,35,126,.1);}
-    .notice{display:flex;gap:8px;background:#fefce8;border:1px solid #fde047;border-radius:8px;padding:10px 14px;font-size:13px;color:#713f12;margin-bottom:18px;line-height:1.5;}
-    .conv-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:12px 14px;margin-bottom:18px;font-size:13px;color:#1e40af;}
-    .conv-big{font-size:1.1rem;font-weight:800;color:#1e3a8a;}
-    .climit{font-size:11px;margin-top:4px;font-weight:600;}
-    .climit.ok{color:#059669;} .climit.bad{color:#dc2626;}
-    .prim-btn{width:100%;padding:14px;background:#1a237e;color:#fff;border:none;border-radius:9px;font-weight:800;font-size:15px;cursor:pointer;transition:all .2s;font-family:inherit;}
-    .prim-btn:hover{background:#0d47a1;transform:translateY(-1px);}
-    .prim-btn:disabled{opacity:.6;cursor:not-allowed;transform:none;}
-    .result{margin-top:14px;padding:12px 14px;border-radius:9px;font-size:14px;font-weight:600;line-height:1.7;}
-    .result.ok{background:rgba(5,150,105,.1);color:#059669;border:1px solid rgba(5,150,105,.25);}
-    .result.err{background:rgba(220,38,38,.1);color:#dc2626;border:1px solid rgba(220,38,38,.25);}
-    .result.warn{background:rgba(217,119,6,.1);color:#d97706;border:1px solid rgba(217,119,6,.25);}
-    .kyc-gate{text-align:center;padding:52px 24px;border:2px dashed #cbd5e1;border-radius:14px;max-width:460px;background:#fff;}
-    .kyc-gate .gi{font-size:52px;margin-bottom:14px;}
-    .kyc-gate h3{font-size:1.3rem;font-weight:800;margin-bottom:10px;}
-    .kyc-gate p{font-size:.9rem;color:#64748b;line-height:1.7;margin-bottom:24px;}
-    .kyc-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;background:#ffd600;color:#1a237e;border:none;border-radius:9px;font-weight:800;font-size:14px;cursor:pointer;text-decoration:none;transition:all .2s;}
-    .kyc-btn:hover{background:#e6c200;transform:translateY(-1px);}
-    .kyc-note{font-size:11px;color:#94a3b8;margin-top:12px;}
-    .addr-grid{display:grid;gap:16px;}
-    .addr-card{background:#fff;border:1.5px solid #e2e8f0;border-radius:12px;padding:20px;transition:border-color .2s;}
-    .addr-card:hover{border-color:#1a237e;}
-    .addr-head{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
-    .addr-title{font-size:15px;font-weight:700;}
-    .net-pill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;}
-    .addr-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#64748b;display:block;margin-bottom:5px;}
-    .addr-box{background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;font-size:11.5px;word-break:break-all;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;}
-    .copy-btn{flex-shrink:0;padding:4px 9px;background:#fff;border:1px solid #e2e8f0;border-radius:6px;cursor:pointer;font-size:13px;transition:all .2s;}
-    .copy-btn:hover{background:#1a237e;color:#fff;border-color:#1a237e;}
-    .addr-warn{font-size:11.5px;color:#d97706;margin-top:7px;font-weight:600;}
-    .coming{text-align:center;padding:56px 24px;color:#64748b;}
-    .coming .ci2{font-size:56px;opacity:.4;margin-bottom:14px;}
-    .coming h3{font-size:1.2rem;font-weight:700;color:#0f172a;margin-bottom:6px;}
-    footer{position:fixed;bottom:0;width:100%;background:#1a237e;color:#fff;text-align:center;padding:10px;font-size:13px;}
-    footer a{color:#ffd600;text-decoration:none;}
-    @media(max-width:600px){.price-grid{grid-template-columns:1fr 1fr;gap:12px;}.main{padding:16px 12px 90px;}.card{padding:20px;}}
-    @media(max-width:380px){.price-grid{grid-template-columns:1fr;}}
-
-    /* Responsive dashboard refinement: desktop, tablet and phones */
-    :root{--brand:#1a237e;--brand-deep:#11195d;--accent:#ffd600;--panel:#fff;--ink:#13213a;--muted:#58677d;--line:#dfe6f0;}
-    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
-    body{font-family:Inter,"Segoe UI",system-ui,-apple-system,sans-serif;background:linear-gradient(180deg,#eef2fa 0,#f6f8fc 380px);color:var(--ink);overflow-x:hidden;}
-    button,select,input{font:inherit;}button{touch-action:manipulation;}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #d2a900;outline-offset:3px;}
-    header{height:auto;min-height:72px;padding:12px clamp(16px,3vw,44px);gap:14px;background:linear-gradient(110deg,#101950,#1a237e);box-shadow:0 8px 26px rgba(15,23,70,.14);}
-    .logo img{height:42px;max-width:160px;object-fit:contain;}
-    .header-right{min-width:0;gap:clamp(8px,1.5vw,18px);}
-    .user-name{display:block;max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#e4eaff;}
-    .kyc-badge{white-space:nowrap;line-height:1.4;padding:8px 12px;}
-    .menu-btn{min-width:44px;min-height:44px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.24);border-radius:12px;}
-    .dropdown{border-radius:14px;overflow:hidden;max-width:min(320px,calc(100vw - 24px));}
-    .dd-item{min-height:46px;}
-    .main-nav{position:sticky;top:72px;z-index:150;box-shadow:0 4px 14px rgba(17,25,93,.04);scrollbar-width:thin;overscroll-behavior-x:contain;}
-    .nav-inner{max-width:1440px;margin:auto;padding:0 clamp(12px,2vw,28px);gap:4px;min-width:max-content;}
-    .nav-btn{min-height:54px;padding:12px clamp(12px,1.6vw,23px);border-bottom-width:3px;border-radius:6px 6px 0 0;}
-    .nav-btn.active{background:#eef1ff;font-weight:800;}
-    .main{width:min(100%,1440px);max-width:1440px;padding:clamp(20px,3vw,44px) clamp(16px,3vw,40px) 56px;}
-    .sec-hdr{align-items:center;margin-bottom:24px;}
-    .sec-hdr h2{font-size:clamp(1.35rem,2.1vw,1.95rem);letter-spacing:-.025em;}
-    .sec-hdr p{font-size:.9rem;line-height:1.6;}
-    .price-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,245px),1fr));gap:clamp(12px,1.6vw,22px);}
-    .price-card,.card,.addr-card{border:1px solid var(--line);border-radius:18px;box-shadow:0 8px 28px rgba(18,31,66,.045);}
-    .price-card{padding:clamp(17px,2vw,26px);min-width:0;}
-    .price-card:hover{border-color:#c4cee4;}
-    .card{width:100%;max-width:620px;padding:clamp(20px,3vw,34px);}
-    #balances>.card{max-width:none;background:linear-gradient(115deg,#fff,#f5f7ff);}
-    #balanceGrid .card{max-width:none;min-width:0;}
-    .fi,.fs{min-height:48px;border-radius:11px;}
-    .prim-btn,.kyc-btn{min-height:48px;border-radius:11px;justify-content:center;}
-    .notice{align-items:flex-start;line-height:1.65;border-radius:12px;}
-    .kyc-gate{max-width:650px;margin:0 auto;padding:clamp(28px,5vw,58px);border-radius:18px;}
-    .addr-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));}
-    /* Keep footer anchored to the viewport bottom on short sections, without overlaying content. */
-    body{display:flex;flex-direction:column;min-height:100vh;min-height:100dvh;}
-    .main{flex:1 0 auto;}
-    footer{position:static;flex-shrink:0;min-height:58px;display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px;padding:16px 20px;line-height:1.5;}
-    @media(min-width:1200px){.price-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
-    @media(min-width:700px) and (max-width:1100px){.price-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.main{padding:28px 24px 60px;}.nav-inner{min-width:0;overflow-x:auto;}.nav-btn{padding-inline:14px;}}
-    @media(max-width:699px){
-      header{min-height:64px;padding:10px 14px;}.logo img{height:34px;max-width:120px;}
-      .user-name{max-width:105px;font-size:11px;}
-      .kyc-badge{font-size:10px;padding:7px 9px;letter-spacing:0;}
-      .header-right{gap:7px;}.main-nav{top:64px;}.nav-inner{padding:0 8px;gap:0;}
-      .nav-btn{min-height:48px;padding:10px 13px;font-size:12px;}
-      .main{padding:20px 14px 42px;}
-      .sec-hdr{gap:12px;margin-bottom:18px;}
-      .sec-hdr h2{font-size:1.35rem;}
-      .price-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;}
-      .price-card{padding:14px 12px;border-radius:14px;}
-      .ci{gap:8px;}.cicon{width:34px;height:34px;font-size:16px;}
-      .cname{font-size:13px;}.cprice{font-size:1.03rem;overflow-wrap:anywhere;}
-      .card{padding:20px 16px;border-radius:15px;}
-      .notice{font-size:12px;}.kyc-gate{padding:30px 18px;}
-      .rate-box,.ws-badge{font-size:11px;padding:7px 10px;}
-      #balanceGrid .card{padding:18px 14px;}
-    }
-    @media(max-width:420px){
-      .user-name{display:none;}
-      .price-grid{grid-template-columns:1fr;}
-      .price-card{padding:18px;}
-      .cprice{font-size:1.2rem;}
-      .sec-hdr>div[style]{width:100%;justify-content:flex-start;}
-      .kyc-badge{max-width:132px;text-align:center;}
-    }
-    @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;}}
-  </style>
 </head>
 <body>
-<header>
-  <div class="logo">
-    <img src="logo.jpg" alt="KryptoPesa">
-  </div>
-  <div class="header-right">
-    <span id="userName" class="user-name"></span>
-    <span id="kycBadge" class="kyc-badge unverified" onclick="handleKYCClick()">KYC Unverified</span>
-    <div class="user-menu-wrap">
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-      <div id="dd" class="dropdown">
-        <button class="dd-item" onclick="showSection('markets');closeMenu()"> Markets</button>
-        <button class="dd-item" onclick="handleKYCClick()"> Verify KYC</button>
-        <hr class="dd-sep">
-       <button class="dd-item red" onclick="doLogout()">Sign Out</button>
+  <a class="kp-skip" href="#main">Skip to account content</a>
+
+  <header class="app-header">
+    <a class="app-header__logo" href="homepage.html" aria-label="KryptoPesa dashboard">
+      <img src="assets/logo-96.png" width="40" height="40" alt="" />
+    </a>
+
+    <div class="app-header__right">
+      <span class="user-name" id="userName"></span>
+      <button class="kyc-badge kyc-badge--unverified" id="kycBadge" type="button">KYC unverified</button>
+
+      <div class="user-menu">
+        <button class="user-menu__btn" id="menuBtn" type="button" aria-label="Account menu" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"></path>
+          </svg>
+        </button>
+        <div class="dropdown" id="accountMenu" role="menu" aria-labelledby="menuBtn">
+          <button class="dropdown__item" type="button" role="menuitem" data-action="markets">Market prices</button>
+          <button class="dropdown__item" type="button" role="menuitem" data-action="kyc">Verify identity</button>
+          <hr class="dropdown__sep" />
+          <button class="dropdown__item dropdown__item--danger" type="button" role="menuitem" data-action="logout">Sign out</button>
+        </div>
       </div>
     </div>
-  </div>
-</header>
+  </header>
 
-<nav class="main-nav">
-  <div class="nav-inner">
-    <button class="nav-btn active" data-sec="markets" onclick="showSection('markets')"> Markets</button>
-    <button class="nav-btn" data-sec="balances" onclick="showSection('balances')">Balances</button>
-    <button class="nav-btn" data-sec="swap" onclick="showSection('swap')"> Swap  to Mpesa  This is  Test site </button>
-    <button class="nav-btn" data-sec="receive" onclick="showSection('receive')"> Receive Crypto</button>
-    <button class="nav-btn" data-sec="deposit" onclick="showSection('deposit')">Deposit</button>
-  </div>
-</nav>
-
-<main class="main">
-  <!-- MARKETS -->
-  <section id="markets" class="section active">
-    <div class="sec-hdr">
-      <div><h2>Live Market Prices</h2><p>Real-time prices · Converted to Kenyan Shillings</p></div>
-      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-        <div class="rate-box">USD/KES: <span id="kesDisplay">—</span></div>
-        <div id="wsBadge" class="ws-badge cached"><span class="dot cached" id="wsDot"></span><span id="wsText">Connecting…</span></div>
-      </div>
+  <nav class="app-nav" aria-label="Account sections">
+    <div class="app-nav__inner" id="tabBar">
+      <button class="tab" type="button" data-sec="markets" aria-current="true">Markets</button>
+      <button class="tab" type="button" data-sec="balances">Balances</button>
+      <button class="tab" type="button" data-sec="swap">Swap to M-Pesa</button>
+      <button class="tab" type="button" data-sec="receive">Receive crypto</button>
+      <button class="tab" type="button" data-sec="deposit">Deposit</button>
     </div>
-    <div id="priceGrid" class="price-grid"></div>
-  </section>
+  </nav>
 
-  <!-- BALANCES: read-only presentation until the authenticated ledger is integrated -->
-  <section id="balances" class="section">
-    <div class="sec-hdr"><div><h2>My Wallet Balances</h2><p>Balances will appear after secure wallet and ledger integration.</p></div></div>
-    <div class="card" style="margin-bottom:18px;">
-      <p class="card-sub">Total portfolio value</p>
-      <div style="font-size:2rem;font-weight:800;color:#111d36;">Unavailable</div>
-      <p class="card-sub">No verified wallet ledger is connected. Values are intentionally not shown as zero.</p>
-    </div>
-    <div id="balanceGrid" class="price-grid" aria-label="Cryptocurrency balances"></div>
-    <div class="notice" style="margin-top:18px;">Deposits and withdrawals are disabled until live KYC, custody, and blockchain confirmations are operational. </div>
-  </section>
-
-  <!-- SWAP -->
-  <section id="swap" class="section">
-    <div class="card">
-      <h2> Swap to M-Pesa</h2>
-      <p class="card-sub">Preview estimated KES values. Real payouts require live KYC, This is a test site .</p>
-      <div class="notice"> Indicative limits only; transfers are disabled. Transaction limits: <strong>&nbsp;KSH 100 minimum</strong> · <strong>KSH 300,000 maximum</strong></div>
-      <div class="fg">
-        <label class="fl">Cryptocurrency</label>
-        <select id="swapCrypto" class="fs" onchange="calcConv()">
-          <option value="BTC">Bitcoin (BTC)</option>
-          <option value="ETH">Ethereum (ETH)</option>
-          <option value="SOL">Solana (SOL)</option>
-          <option value="USDT">Tether (USDT)</option>
-          <option value="WLD">Worldcoin (WLD)</option>
-        </select>
+  <main class="app-main" id="main">
+    <noscript>
+      <div class="card">
+        <h3>JavaScript is required</h3>
+        <p class="card__sub">The KryptoPesa dashboard loads your account and market data with JavaScript. Enable it, or contact support@kryptopesa.com for help.</p>
       </div>
-      <div class="fg">
-        <label class="fl">Amount (crypto)</label>
-        <input type="number" id="swapAmt" class="fi" placeholder="e.g. 0.001" min="0" step="any" oninput="calcConv()">
+    </noscript>
+
+    <!-- MARKETS -->
+    <section id="markets" aria-labelledby="marketsTitle">
+      <div class="section-head">
+        <div>
+          <h2 id="marketsTitle">Market prices</h2>
+          <p>Public market data converted to Kenyan Shillings. Indicative only — not a quote or a settlement rate.</p>
+        </div>
+        <div class="section-head__tools">
+          <span class="rate-box">USD/KES <strong id="kesDisplay">—</strong></span>
+          <span class="feed-badge" id="feedBadge" data-state="cached" role="status">
+            <span class="kp-dot" aria-hidden="true"></span>
+            <span id="feedText">Connecting…</span>
+          </span>
+        </div>
       </div>
-      <div id="convBox" class="conv-box" style="display:none;">
-        ≈ KSH <span id="kesAmt" class="conv-big">0.00</span>
-        <div class="climit" id="limitLbl"></div>
-        <div style="font-size:11px;margin-top:3px;color:#3b82f6;">1 <span id="rateSym">BTC</span> = KSH <span id="rateVal">—</span></div>
+      <ul class="price-grid" id="priceGrid" aria-label="Cryptocurrency prices"></ul>
+      <p class="field__hint source-note">Source: Binance public ticker data, refreshed over WebSocket with a REST fallback. USD/KES from a public exchange-rate feed.</p>
+    </section>
+
+    <!-- BALANCES -->
+    <section id="balances" aria-labelledby="balancesTitle" hidden>
+      <div class="section-head">
+        <div>
+          <h2 id="balancesTitle">My wallet balances</h2>
+          <p>Balances appear once a secure wallet and ledger integration is connected.</p>
+        </div>
       </div>
-      <div class="fg">
-        <label class="fl">M-Pesa Number</label>
-        <input type="text" id="mpesaNum" class="fi" placeholder="07XXXXXXXX or 01XXXXXXXX" maxlength="10">
+
+      <div class="card spaced-below">
+        <p class="card__sub">Total portfolio value</p>
+        <div class="stat-value">Unavailable</div>
+        <p class="card__sub card__sub--flush">No verified wallet ledger is connected, so a total is not shown — including as zero.</p>
       </div>
-      <button id="swapBtn" class="prim-btn" disabled aria-disabled="true" onclick="doSwap()"> Swap to M-Pesa</button>
-      <div id="swapResult"></div>
-    </div>
-  </section>
 
-  <!-- RECEIVE -->
-  <section id="receive" class="section">
-    <div id="kycGate" class="kyc-gate">
-      <div class="gi"></div>
-      <h3>KYC Verification Required</h3>
-      <p>To receive cryptocurrency and view your wallet addresses, you must complete identity verification. This keeps your account safe and meets regulatory requirements.</p>
-      <a href="/verify-identity.html" class="kyc-btn">Verify My Identity →</a>
-      <p class="kyc-note">Identity verification powered by Didit. Availability depends on sandbox configuration.</p>
-    </div>
-    <div id="receiveContent" style="display:none;">
-      <div class="sec-hdr">
-        <div><h2> Receive Cryptocurrency</h2><p>Send crypto to your verified KryptoPesa wallet addresses. Always confirm the correct network before sending.</p></div>
+      <ul class="price-grid" id="balanceGrid" aria-label="Cryptocurrency balances"></ul>
+
+      <div class="kp-alert kp-alert--warn spaced-above" role="note">
+        Deposits and withdrawals stay disabled until live KYC, custody and blockchain confirmations are operational.
       </div>
-      <div id="addrGrid" class="addr-grid"></div>
-    </div>
-  </section>
+    </section>
 
-  <!-- DEPOSIT: disabled until authenticated production STK backend and verified ledger exist -->
-  <section id="deposit" class="section">
-    <div class="card">
-      <h2>Deposit KES with M-Pesa</h2>
-      <p class="card-sub">M-Pesa deposits will become available after production payment verification and wallet accounting are connected.</p>
-      <div class="notice" role="status">STK Push deposits are not active. No payment prompt will be sent and no wallet balance will be credited.</div>
-      <div class="fg">
-        <label class="fl" for="depositAmount">Deposit amount (KES)</label>
-        <input class="fi" id="depositAmount" type="number" min="100" max="300000" step="1" placeholder="e.g. 500" autocomplete="off">
+    <!-- SWAP -->
+    <section id="swap" aria-labelledby="swapTitle" hidden>
+      <div class="card card--wide">
+        <h3 id="swapTitle">Swap to M-Pesa</h3>
+        <p class="card__sub">Preview an estimated KES value. Payouts are not available yet — this screen never sends a payment prompt.</p>
+
+        <div class="kp-alert kp-alert--warn spaced-below" role="note">
+          Transfers are disabled. Indicative limits only: minimum KSH 100, maximum KSH 300,000.
+        </div>
+
+        <div class="field">
+          <label class="kp-label" for="swapCrypto">Cryptocurrency</label>
+          <select class="kp-input" id="swapCrypto">
+            <option value="BTC">Bitcoin (BTC)</option>
+            <option value="ETH">Ethereum (ETH)</option>
+            <option value="SOL">Solana (SOL)</option>
+            <option value="USDT">Tether (USDT)</option>
+            <option value="WLD">Worldcoin (WLD)</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label class="kp-label" for="swapAmt">Amount in crypto</label>
+          <input class="kp-input" type="number" id="swapAmt" placeholder="e.g. 0.001"
+                 min="0" step="any" inputmode="decimal" autocomplete="off" aria-describedby="convBox" />
+        </div>
+
+        <div class="conv-box" id="convBox" hidden>
+          ≈ KSH <span class="conv-box__big" id="kesAmt">0.00</span>
+          <div class="limit-label" id="limitLbl"></div>
+          <div class="field__hint" id="rateLine">1 <span id="rateSym">BTC</span> = KSH <span id="rateVal">—</span></div>
+        </div>
+
+        <div class="field">
+          <label class="kp-label" for="mpesaNum">M-Pesa number</label>
+          <input class="kp-input" type="tel" id="mpesaNum" placeholder="07XXXXXXXX or 01XXXXXXXX"
+                 inputmode="tel" maxlength="13" autocomplete="tel-national" aria-describedby="mpesaHelp" />
+          <p class="field__hint" id="mpesaHelp">Safaricom numbers only. A payout fee may apply once payouts are enabled.</p>
+        </div>
+
+        <button id="swapBtn" class="primary-btn" type="button" disabled aria-disabled="true">Swap to M-Pesa — not available</button>
+        <div id="swapResult" role="status" aria-live="polite"></div>
       </div>
-      <div class="fg">
-        <label class="fl" for="depositPhone">M-Pesa phone number</label>
-        <input class="fi" id="depositPhone" type="tel" inputmode="tel" placeholder="07XXXXXXXX or 01XXXXXXXX" autocomplete="tel">
+    </section>
+
+    <!-- RECEIVE -->
+    <section id="receive" aria-labelledby="receiveTitle" hidden>
+      <div class="kyc-gate" id="kycGate">
+        <div class="kyc-gate__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+          </svg>
+        </div>
+        <h3 id="receiveTitle">Identity verification required</h3>
+        <p id="kycGateText">Complete identity verification before receiving crypto. Deposit addresses are not provisioned yet — do not send funds to any previously displayed address.</p>
+        <a href="verify-identity.html" class="kp-btn kp-btn--gold">Verify my identity</a>
+        <p class="kyc-gate__note">Identity checks run through the configured provider. Sandbox availability depends on operator configuration.</p>
       </div>
-      <button class="prim-btn" type="button" disabled aria-disabled="true">Request M-Pesa Prompt — Setup Pending</button>
-      <p class="card-sub">A deposit will be marked successful only after Safaricom confirms payment and the server records the transaction once. Your M-Pesa PIN is entered on your phone, never on KryptoPesa.</p>
-    </div>
-  </section>
-</main>
 
-<footer>© 2025 KryptoPesa — Secure Crypto Trading | <a href="mailto:support@kryptopesa.com">support@kryptopesa.com</a></footer>
+      <div id="receiveContent" hidden>
+        <div class="section-head">
+          <div>
+            <h2>Receive cryptocurrency</h2>
+            <p>Send crypto to your verified KryptoPesa wallet addresses. Always confirm the network before sending.</p>
+          </div>
+        </div>
+        <div id="addrGrid"></div>
+      </div>
+    </section>
 
-<script>
-const MIN_KES=100, MAX_KES=300000;
+    <!-- DEPOSIT -->
+    <section id="deposit" aria-labelledby="depositTitle" hidden>
+      <div class="card card--wide">
+        <h3 id="depositTitle">Deposit KES with M-Pesa</h3>
+        <p class="card__sub">M-Pesa deposits become available after production payment verification and wallet accounting are connected.</p>
 
-const CMETA={
-  BTC:{name:'Bitcoin',   sym:'BTC',  icon:'₿',  bg:'#f7931a',wk:'BTCUSDT'},
-  ETH:{name:'Ethereum',  sym:'ETH',  icon:'Ξ',  bg:'#627eea',wk:'ETHUSDT'},
-  SOL:{name:'Solana',    sym:'SOL',  icon:'◎',  bg:'#9945ff',wk:'SOLUSDT'},
-  USDT:{name:'Tether',   sym:'USDT', icon:'₮',  bg:'#26a17b',wk:'USDTUSDT'},
-  WLD:{name:'Worldcoin', sym:'WLD',  icon:'🌐', bg:'#1a1a1a',wk:'WLDUSDT'}
-};
+        <div class="kp-alert kp-alert--warn spaced-below" role="status">
+          STK Push deposits are not active. No payment prompt will be sent and no wallet balance will be credited.
+        </div>
 
-// No custody provider has provisioned deposit addresses. Never display placeholder addresses.
-const ADDRS={};
+        <div class="field">
+          <label class="kp-label" for="depositAmount">Deposit amount (KES)</label>
+          <input class="kp-input" id="depositAmount" type="number" min="100" max="300000" step="1"
+                 placeholder="e.g. 500" inputmode="numeric" autocomplete="off" />
+        </div>
 
-const prices={BTC:87000,ETH:3100,SOL:155,USDT:1,WLD:1.80};
-const WS_SYMBOLS=['BTCUSDT','ETHUSDT','SOLUSDT','WLDUSDT'];
-let kesRate=130, ws=null, reconnects=0;
+        <div class="field">
+          <label class="kp-label" for="depositPhone">M-Pesa phone number</label>
+          <input class="kp-input" id="depositPhone" type="tel" inputmode="tel"
+                 placeholder="07XXXXXXXX or 01XXXXXXXX" autocomplete="tel-national" />
+        </div>
 
-// currentUser = the Supabase auth user object; currentProfile = row from public.profiles
-let currentUser=null, currentProfile=null;
+        <button class="primary-btn" type="button" disabled aria-disabled="true">Request M-Pesa prompt — setup pending</button>
+        <p class="field__hint">A deposit is only marked successful after Safaricom confirms payment and the server records the transaction once. Your M-Pesa PIN is entered on your phone, never on KryptoPesa.</p>
+      </div>
+    </section>
+  </main>
 
-// ── AUTH ──
-async function checkAuth(){
-  if(window.KPSession.expired()){await supabaseClient.auth.signOut({scope:'local'});window.KPSession.clear();location.replace('login.html?session=expired');return false;}
-  const { data: { session } } = await supabaseClient.auth.getSession();
-  if(!session){ window.location.replace('login.html'); return false; }
+  <footer class="app-footer">
+    <span>© 2026 KryptoPesa</span>
+    <span aria-hidden="true">·</span>
+    <span><a href="terms.html">Terms and disclosures</a></span>
+    <span aria-hidden="true">·</span>
+    <span><a href="mailto:support@kryptopesa.com">support@kryptopesa.com</a></span>
+  </footer>
 
-  const {data:verified,error:verifyError}=await supabaseClient.auth.getUser();
-  if(verifyError||!verified?.user){window.KPSession.clear();location.replace('login.html');return false;}
-  currentUser = verified.user;
-  window.KPSession.start();
+  <script>
+    (function () {
+      'use strict';
 
-  const { data: profile } = await supabaseClient
-    .from('profiles')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
+      var MIN_KES = 100;
+      var MAX_KES = 300000;
 
-  currentProfile = profile;
+      var CMETA = {
+        BTC: { name: 'Bitcoin', sym: 'BTC', icon: '₿', bg: '#f7931a', stream: 'BTCUSDT' },
+        ETH: { name: 'Ethereum', sym: 'ETH', icon: 'Ξ', bg: '#627eea', stream: 'ETHUSDT' },
+        SOL: { name: 'Solana', sym: 'SOL', icon: '◎', bg: '#9945ff', stream: 'SOLUSDT' },
+        USDT: { name: 'Tether', sym: 'USDT', icon: '₮', bg: '#26a17b', stream: null },
+        WLD: { name: 'Worldcoin', sym: 'WLD', icon: 'W', bg: '#1a1a1a', stream: 'WLDUSDT' }
+      };
 
-  if(profile && profile.account_status === 'suspended'){
-    alert('Account suspended. Contact support@kryptopesa.com');
-    await doLogout(true);
-    return false;
-  }
-  return true;
-}
-async function doLogout(skip){
-  if(!skip && !confirm('Sign out of KryptoPesa?')) return;
-  await logAct('User Logout','success');
-  await supabaseClient.auth.signOut();
-  window.KPSession.clear();
-  if(ws) ws.close();
-  window.location.replace('login.html');
-}
-function esc(s){return String(s).replace(/[<>"'&]/g,c=>({'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c]));}
+      /* No custody provider has provisioned deposit addresses. Never render placeholders. */
+      var ADDRS = {};
 
-// ── KYC ── (backed by profiles.kyc_status: 'unverified' | 'pending' | 'verified' | 'rejected')
-function getKYC(){
-  return currentProfile?.kyc_status || 'unverified';
-}
-function refreshKYCBadge(){
-  const s=getKYC(),b=document.getElementById('kycBadge');
-  if(s==='verified'){b.className='kyc-badge verified';b.textContent=' KYC Verified';}
-  else if(s==='pending'){b.className='kyc-badge pending';b.textContent='KYC Pending';}
-  else{b.className='kyc-badge unverified';b.textContent='KYC Unverified';}
-}
-function handleKYCClick(){
-  closeMenu();
-  window.location.assign('/verify-identity.html');
-}
+      /* Prices start empty: nothing is displayed as a live price until it is fetched.
+         USDT is a USD peg reference, not a Binance feed, and is labelled as such. */
+      var PEG_USD = { USDT: 1 };
+      var prices = {};
+      var STREAMS = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'WLDUSDT'];
+      var kesRate = null;
+      var ws = null;
+      var reconnects = 0;
 
-// ── RECEIVE ──
-function checkReceive(){
-  document.getElementById('kycGate').style.display='block';
-  document.getElementById('receiveContent').style.display='none';
-  const p=document.querySelector('#kycGate p');
-  if(p) p.textContent=getKYC()==='verified' ? 'Deposit addresses are unavailable until live KYC approval and a custody provider are connected. Do not send funds to any previously displayed address.' : 'Complete identity verification before receiving crypto. Deposit addresses are not yet provisioned; do not send funds to any previously displayed address.';
-}
-function buildAddrs(){ /* Disabled: no validated custody addresses. */ }
-function buildBalances(){
-  const grid=document.getElementById('balanceGrid');
-  if(!grid)return;
-  grid.replaceChildren();
-  for(const symbol of ['BTC','ETH','SOL','WLD']){
-    const coin=CMETA[symbol];
-    const card=document.createElement('div');card.className='card';
-    card.style.minWidth='0';
-    const title=document.createElement('h3');title.textContent=coin.name+' ('+symbol+')';
-    const balance=document.createElement('p');balance.style.cssText='font-size:1.45rem;font-weight:800;margin:12px 0';balance.textContent='— '+symbol;
-    const status=document.createElement('p');status.className='card-sub';status.textContent='Available: —  ·  Pending: —';
-    const action=document.createElement('button');action.className='kyc-btn';action.textContent='Deposit unavailable';action.disabled=true;action.style.cssText='opacity:.65;cursor:not-allowed;margin-top:12px';
-    card.append(title,balance,status,action);grid.appendChild(card);
-  }
-}
+      var currentUser = null;
+      var currentProfile = null;
 
-function cpAddr(id,btn){
-  const t=document.getElementById(id).textContent;
-  navigator.clipboard.writeText(t).then(()=>{
-    const o=btn.textContent;btn.textContent='';btn.style.background='#059669';btn.style.color='#fff';
-    setTimeout(()=>{btn.textContent=o;btn.style.background='';btn.style.color='';},1800);
-  }).catch(()=>{
-    const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-    btn.textContent='';setTimeout(()=>btn.textContent='',1500);
-  });
-}
+      /* ── Helpers ─────────────────────────────────────────────────────────── */
+      function $(id) { return document.getElementById(id); }
 
-// ── KES RATE ──
-async function fetchKES(){
-  for(const url of['https://api.exchangerate-api.com/v4/latest/USD','https://open.er-api.com/v6/latest/USD']){
-    try{
-      const r=await fetch(url);if(!r.ok)continue;
-      const d=await r.json();const rate=d.rates?.KES||d.conversion_rates?.KES;
-      if(rate){kesRate=rate;document.getElementById('kesDisplay').textContent=rate.toFixed(2);updateAllKES();return;}
-    }catch(_){}
-  }
-  document.getElementById('kesDisplay').textContent=kesRate+' (est.)';
-}
-function updateAllKES(){
-  Object.entries(CMETA).forEach(([k,m])=>{
-    const el=document.getElementById('kes_'+m.wk);
-    if(el)el.textContent='≈ KES '+(prices[k]*kesRate).toLocaleString('en-KE',{maximumFractionDigits:0});
-  });
-  calcConv();
-}
-
-// ── SWAP ──
-function calcConv(){
-  const sym=document.getElementById('swapCrypto').value;
-  const amt=parseFloat(document.getElementById('swapAmt').value);
-  const box=document.getElementById('convBox');
-  if(!amt||isNaN(amt)||amt<=0){box.style.display='none';return;}
-  const usd=prices[sym]||1;const kes=amt*usd*kesRate;
-  document.getElementById('kesAmt').textContent=kes.toLocaleString('en-KE',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('rateSym').textContent=sym;
-  document.getElementById('rateVal').textContent=(usd*kesRate).toLocaleString('en-KE',{maximumFractionDigits:2});
-  const lbl=document.getElementById('limitLbl');
-  if(kes<MIN_KES){lbl.textContent=' Below minimum (KSH '+MIN_KES.toLocaleString()+')';lbl.className='climit bad';}
-  else if(kes>MAX_KES){lbl.textContent=' Exceeds maximum (KSH '+MAX_KES.toLocaleString()+')';lbl.className='climit bad';}
-  else{lbl.textContent=' Within allowed range';lbl.className='climit ok';}
-  box.style.display='block';
-}
-async function doSwap(){
-  const res=document.getElementById('swapResult');
-  res.textContent='Crypto-to-M-Pesa payouts are not yet available. Live KYC, funded wallet balances, server-side quotes and an approved Daraja B2C payout integration are required before a swap can be submitted.';
-  res.className='result warn';
-}
-
-// ── PRICE CARDS ──
-function buildCards(){
-  const g=document.getElementById('priceGrid');g.innerHTML='';
-  Object.entries(CMETA).forEach(([key,m])=>{
-    const p=prices[key]||0;
-    const d=document.createElement('div');d.className='price-card';
-    d.innerHTML=`<div class="ci"><div class="cicon" style="background:${m.bg};">${m.icon}</div><div><div class="cname">${m.name}</div><div class="csym">${m.sym}</div></div></div><div id="p_${m.wk}" class="cprice">$${p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:p>1?2:6})}</div><div id="kes_${m.wk}" class="ckes">≈ KES ${(p*kesRate).toLocaleString('en-KE',{maximumFractionDigits:0})}</div><div id="ch_${m.wk}" class="cchg pos">▲ 0.00%</div>`;
-    g.appendChild(d);
-  });
-}
-function updCard(wk,price,chg){
-  const pe=document.getElementById('p_'+wk),ke=document.getElementById('kes_'+wk),ce=document.getElementById('ch_'+wk);
-  if(pe)pe.textContent='$'+price.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:price>1?2:6});
-  if(ke)ke.textContent='≈ KES '+(price*kesRate).toLocaleString('en-KE',{maximumFractionDigits:0});
-  if(ce){ce.textContent=(chg>=0?'▲':'▼')+' '+Math.abs(chg).toFixed(2)+'%';ce.className='cchg '+(chg>=0?'pos':'neg');}
-  const e=Object.entries(CMETA).find(([,m])=>m.wk===wk);if(e)prices[e[0]]=price;
-}
-function setWS(live){
-  const b=document.getElementById('wsBadge'),d=document.getElementById('wsDot'),t=document.getElementById('wsText');
-  if(live){b.className='ws-badge live';d.className='dot live';t.textContent='Live';}
-  else{b.className='ws-badge cached';d.className='dot cached';t.textContent='Cached';}
-}
-function connectWS(){
-  if(ws&&(ws.readyState===WebSocket.OPEN||ws.readyState===WebSocket.CONNECTING))return;
-  const streams=WS_SYMBOLS.map(s=>s.toLowerCase()+'@ticker').join('/');
-  try{
-    ws=new WebSocket('wss://stream.binance.com:9443/stream?streams='+streams);
-    ws.onopen=()=>{reconnects=0;setWS(true);};
-    ws.onmessage=(e)=>{
-      try{const d=JSON.parse(e.data);const t=d.data||d;if(!t.s)return;const sym=t.s.toUpperCase();if(!WS_SYMBOLS.includes(sym))return;updCard(sym,parseFloat(t.c),parseFloat(t.P));calcConv();}catch(_){}
-    };
-    ws.onerror=(err)=>{console.error('Binance WebSocket error — falling back to REST polling.', err);setWS(false);};
-    ws.onclose=()=>{setWS(false);if(reconnects<5){reconnects++;setTimeout(connectWS,Math.min(1000*Math.pow(2,reconnects),30000));}};
-  }catch(err){console.error('Could not open Binance WebSocket:', err);setWS(false);}
-}
-
-// REST fallback — many networks (mobile data, school/office wifi, some ISPs) block
-// raw WebSocket connections outright while allowing normal HTTPS through fine.
-// This guarantees the price grid is never empty, even when the socket above fails.
-async function fetchRestPrices(){
-  const symbolsParam = encodeURIComponent(JSON.stringify(WS_SYMBOLS));
-  try{
-    const res = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbols=${symbolsParam}`);
-    if(!res.ok) throw new Error('Binance REST API returned ' + res.status);
-    const tickers = await res.json();
-    tickers.forEach(t=>{
-      if(WS_SYMBOLS.includes(t.symbol)){
-        updCard(t.symbol, parseFloat(t.lastPrice), parseFloat(t.priceChangePercent));
+      function kes(n) {
+        return Number(n).toLocaleString('en-KE', { maximumFractionDigits: 0 });
       }
-    });
-    calcConv();
-  }catch(err){
-    console.error('Batch price fetch failed, retrying symbols individually:', err);
-    // A single invalid/delisted symbol makes Binance reject the whole batch —
-    // fall back to one request per symbol so the rest still load.
-    await Promise.allSettled(WS_SYMBOLS.map(async sym=>{
-      try{
-        const r = await fetch(`https://api.binance.com/api/v3/ticker/24hr?symbol=${sym}`);
-        if(!r.ok) throw new Error(sym + ' returned ' + r.status);
-        const t = await r.json();
-        updCard(t.symbol, parseFloat(t.lastPrice), parseFloat(t.priceChangePercent));
-      }catch(e){
-        console.error(`Could not fetch price for ${sym} — it may be delisted or mistyped.`, e);
+
+      function usdPrice(n) {
+        return '$' + Number(n).toLocaleString('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: n > 1 ? 2 : 6
+        });
       }
-    }));
-    calcConv();
-  }
-}
 
-// ── UI HELPERS ──
-function showSection(id){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>{if(b.getAttribute('data-sec')===id)b.classList.add('active');});
-  if(id==='receive')checkReceive();
-}
-function toggleMenu(){document.getElementById('dd').classList.toggle('open');}
-function closeMenu(){document.getElementById('dd').classList.remove('open');}
-document.addEventListener('click',e=>{const dd=document.getElementById('dd');const mb=document.querySelector('.menu-btn');if(!dd?.contains(e.target)&&!mb?.contains(e.target))closeMenu();});
+      function esc(s) {
+        return String(s).replace(/[<>"'&]/g, function (c) {
+          return { '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;' }[c];
+        });
+      }
 
-async function logAct(ev,st){
-  if(!currentUser) return;
-  await supabaseClient.from('activity_log').insert({
-    user_id: currentUser.id,
-    event: ev,
-    status: st
-  });
-}
+      /* ── Auth ────────────────────────────────────────────────────────────── */
+      async function checkAuth() {
+        if (window.KPSession.expired()) {
+          await supabaseClient.auth.signOut({ scope: 'local' });
+          window.KPSession.clear();
+          location.replace('login.html?session=expired');
+          return false;
+        }
 
-// ── INIT ──
-document.addEventListener('DOMContentLoaded',async()=>{
-  if(!(await checkAuth()))return;
-  document.getElementById('userName').textContent = currentProfile?.username || currentUser.email;
-  refreshKYCBadge();
-  buildBalances();
-  buildCards();
-  updCard('USDTUSDT',1.0,0.0);
+        var sessionResult = await supabaseClient.auth.getSession();
+        var session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
+        if (!session) { window.location.replace('login.html'); return false; }
 
-  // Load real prices immediately over plain HTTPS — this works even on
-  // networks that block raw WebSocket connections, so the grid is never blank.
-  await fetchRestPrices();
+        var verified = await supabaseClient.auth.getUser();
+        if (verified.error || !verified.data || !verified.data.user) {
+          window.KPSession.clear();
+          location.replace('login.html');
+          return false;
+        }
+        currentUser = verified.data.user;
+        window.KPSession.start();
 
-  // Then try the WebSocket for live, sub-second updates. If it can't connect,
-  // the REST poll below keeps prices reasonably fresh (every 15s) as a fallback.
-  connectWS();
-  setInterval(()=>{ if(!ws||ws.readyState!==WebSocket.OPEN) fetchRestPrices(); },15000);
+        var profileResult = await supabaseClient
+          .from('profiles')
+          .select('*')
+          .eq('id', currentUser.id)
+          .single();
 
-  await fetchKES();
-  updateAllKES();
-  setInterval(async()=>{await fetchKES();updateAllKES();},300000);
-  setTimeout(()=>{if(!ws||ws.readyState!==WebSocket.OPEN)setWS(false);},7000);
-});
-window.addEventListener('beforeunload',()=>{if(ws)ws.close();});
-</script>
+        currentProfile = profileResult ? profileResult.data : null;
+
+        if (currentProfile && currentProfile.account_status === 'suspended') {
+          await doLogout(true, 'Your account is suspended. Contact support@kryptopesa.com.');
+          return false;
+        }
+        return true;
+      }
+
+      async function doLogout(skipConfirm, message) {
+        if (!skipConfirm && !window.confirm('Sign out of KryptoPesa?')) return;
+        try { await logAct('User Logout', 'success'); } catch (err) { /* non-blocking */ }
+        await supabaseClient.auth.signOut();
+        window.KPSession.clear();
+        if (ws) ws.close();
+        if (message) {
+          sessionStorage.setItem('kp_notice', message);
+        }
+        window.location.replace('login.html');
+      }
+
+      async function logAct(event, status) {
+        if (!currentUser) return;
+        await supabaseClient.from('activity_log').insert({
+          user_id: currentUser.id,
+          event: event,
+          status: status
+        });
+      }
+
+      /* ── KYC ─────────────────────────────────────────────────────────────── */
+      function getKYC() {
+        return (currentProfile && currentProfile.kyc_status) || 'unverified';
+      }
+
+      function refreshKYCBadge() {
+        var status = getKYC();
+        var badge = $('kycBadge');
+        if (!badge) return;
+        if (status === 'verified') {
+          badge.className = 'kyc-badge kyc-badge--verified';
+          badge.textContent = 'KYC verified';
+        } else if (status === 'pending') {
+          badge.className = 'kyc-badge kyc-badge--pending';
+          badge.textContent = 'KYC pending';
+        } else if (status === 'rejected') {
+          badge.className = 'kyc-badge kyc-badge--unverified';
+          badge.textContent = 'KYC rejected';
+        } else {
+          badge.className = 'kyc-badge kyc-badge--unverified';
+          badge.textContent = 'KYC unverified';
+        }
+        badge.setAttribute('aria-label', 'Identity verification status: ' + badge.textContent + '. Open identity verification.');
+      }
+
+      function handleKYCClick() {
+        closeMenu();
+        window.location.assign('verify-identity.html');
+      }
+
+      /* ── Receive ─────────────────────────────────────────────────────────── */
+      function checkReceive() {
+        var verified = getKYC() === 'verified';
+        var gateText = $('kycGateText');
+        if (gateText) {
+          gateText.textContent = verified
+            ? 'Your identity is verified, but deposit addresses are unavailable until a custody provider is connected. Do not send funds to any previously displayed address.'
+            : 'Complete identity verification before receiving crypto. Deposit addresses are not provisioned yet — do not send funds to any previously displayed address.';
+        }
+      }
+
+      function buildBalances() {
+        var grid = $('balanceGrid');
+        if (!grid) return;
+        grid.replaceChildren();
+
+        ['BTC', 'ETH', 'SOL', 'WLD'].forEach(function (symbol) {
+          var coin = CMETA[symbol];
+          var card = document.createElement('li');
+          card.className = 'price-card balance-card';
+
+          var head = document.createElement('div');
+          head.className = 'price-card__head';
+          head.innerHTML = '<span class="coin-icon" aria-hidden="true">' +
+            coin.icon + '</span><span><span class="coin-name">' + coin.name +
+            '</span><span class="coin-sym"> ' + symbol + '</span></span>';
+          head.querySelector('.coin-icon').style.background = coin.bg;
+
+          var amount = document.createElement('p');
+          amount.className = 'balance-card__amount';
+          amount.textContent = '— ' + symbol;
+
+          var meta = document.createElement('p');
+          meta.className = 'balance-card__meta';
+          meta.textContent = 'Available: — · Pending: —';
+
+          var action = document.createElement('button');
+          action.className = 'primary-btn';
+          action.type = 'button';
+          action.disabled = true;
+          action.textContent = 'Deposit unavailable';
+
+          card.append(head, amount, meta, action);
+          grid.appendChild(card);
+        });
+      }
+
+      /* ── KES rate ────────────────────────────────────────────────────────── */
+      async function fetchKES() {
+        var sources = [
+          'https://api.exchangerate-api.com/v4/latest/USD',
+          'https://open.er-api.com/v6/latest/USD'
+        ];
+        for (var i = 0; i < sources.length; i++) {
+          try {
+            var response = await fetch(sources[i], { cache: 'no-store' });
+            if (!response.ok) continue;
+            var data = await response.json();
+            var rate = (data.rates && data.rates.KES) || data.conversion_rates && data.conversion_rates.KES;
+            if (rate) {
+              kesRate = rate;
+              $('kesDisplay').textContent = Number(rate).toFixed(2);
+              updateAllKES();
+              return;
+            }
+          } catch (err) { /* try the next source */ }
+        }
+        $('kesDisplay').textContent = 'unavailable';
+        updateAllKES();
+      }
+
+      function updateAllKES() {
+        Object.keys(CMETA).forEach(function (key) {
+          var meta = CMETA[key];
+          var el = meta.stream ? $('kes_' + meta.stream) : null;
+          if (!el) return;
+          var usd = priceOf(key);
+          el.textContent = (usd == null || kesRate == null)
+            ? '≈ KES —'
+            : '≈ KES ' + kes(usd * kesRate);
+        });
+        calcConv();
+      }
+
+      function priceOf(symbol) {
+        if (prices[symbol] != null) return prices[symbol];
+        if (PEG_USD[symbol] != null) return PEG_USD[symbol];
+        return null;
+      }
+
+      /* ── Swap preview ────────────────────────────────────────────────────── */
+      function calcConv() {
+        var symbol = $('swapCrypto').value;
+        var amount = parseFloat($('swapAmt').value);
+        var box = $('convBox');
+
+        if (!amount || isNaN(amount) || amount <= 0) {
+          box.hidden = true;
+          return;
+        }
+
+        /* Flag market data as stale if every feed has already failed. */
+        if (Object.keys(prices).length === 0) {
+          document.querySelectorAll('.price-card__price[data-pending]').forEach(function (el) {
+            el.removeAttribute('data-pending');
+            el.setAttribute('data-unavailable', 'true');
+            el.textContent = 'Unavailable';
+          });
+        }
+
+        var usd = priceOf(symbol);
+        if (usd == null || kesRate == null) {
+          $('kesAmt').textContent = '—';
+          $('rateSym').textContent = symbol;
+          $('rateVal').textContent = 'unavailable';
+          var pending = $('limitLbl');
+          pending.textContent = 'A price or exchange rate is not available yet, so no estimate can be shown.';
+          pending.setAttribute('data-ok', 'false');
+          box.hidden = false;
+          return;
+        }
+
+        var value = amount * usd * kesRate;
+        $('kesAmt').textContent = value.toLocaleString('en-KE', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        });
+        $('rateSym').textContent = symbol;
+        $('rateVal').textContent = kes(usd * kesRate);
+
+        var label = $('limitLbl');
+        if (value < MIN_KES) {
+          label.textContent = 'Below the KSH ' + kes(MIN_KES) + ' minimum.';
+          label.setAttribute('data-ok', 'false');
+        } else if (value > MAX_KES) {
+          label.textContent = 'Above the KSH ' + kes(MAX_KES) + ' maximum.';
+          label.setAttribute('data-ok', 'false');
+        } else {
+          label.textContent = 'Within the indicative limit.';
+          label.setAttribute('data-ok', 'true');
+        }
+        box.hidden = false;
+      }
+
+      function doSwap() {
+        var result = $('swapResult');
+        result.className = 'result result--warn';
+        result.textContent = 'Crypto-to-M-Pesa payouts are not available yet. Live KYC, funded wallet balances, server-side quotes and an approved Daraja B2C payout integration are required before a swap can be submitted. Nothing has been sent to your phone.';
+      }
+
+      /* ── Price cards ─────────────────────────────────────────────────────── */
+      function buildCards() {
+        var grid = $('priceGrid');
+        grid.replaceChildren();
+
+        Object.keys(CMETA).forEach(function (key) {
+          var meta = CMETA[key];
+          var item = document.createElement('li');
+          item.className = 'price-card';
+
+          var usd = priceOf(key);
+          var id = meta.stream || key;
+
+          item.innerHTML =
+            '<div class="price-card__head">' +
+              '<span class="coin-icon" aria-hidden="true">' + meta.icon + '</span>' +
+              '<span><span class="coin-name">' + meta.name + '</span><span class="coin-sym"> ' + meta.sym +
+              (meta.stream ? '' : ' · USD peg') + '</span></span>' +
+            '</div>' +
+            '<div class="price-card__price" id="p_' + id + '"' + (usd == null ? ' data-pending="true"' : '') + '>' +
+              (usd == null ? 'Loading…' : usdPrice(usd)) + '</div>' +
+            '<div class="price-card__kes" id="kes_' + id + '">' +
+              (usd == null || kesRate == null ? '≈ KES —' : '≈ KES ' + kes(usd * kesRate)) + '</div>' +
+            '<div class="price-card__change" id="ch_' + id + '" data-dir="flat"' +
+              (meta.stream ? '' : ' data-ref="peg"') + '>' +
+              (meta.stream ? 'Waiting for market data' : 'Stablecoin reference — no live feed') + '</div>';
+
+          /* CSSOM assignment keeps the strict style-src CSP (no inline attributes). */
+          var icon = item.querySelector('.coin-icon');
+          if (icon) icon.style.background = meta.bg;
+
+          grid.appendChild(item);
+        });
+      }
+
+      function updCard(stream, price, changePercent) {
+        var priceEl = $('p_' + stream);
+        var kesEl = $('kes_' + stream);
+        var changeEl = $('ch_' + stream);
+        var entry = Object.keys(CMETA).find(function (k) { return CMETA[k].stream === stream; });
+        if (entry) prices[entry] = price;
+
+        if (priceEl) {
+          priceEl.textContent = usdPrice(price);
+          priceEl.removeAttribute('data-pending');
+        }
+        if (kesEl && kesRate != null) {
+          kesEl.textContent = '≈ KES ' + kes(price * kesRate);
+        }
+        if (changeEl && changePercent != null && !isNaN(changePercent)) {
+          var dir = changePercent > 0 ? 'up' : changePercent < 0 ? 'down' : 'flat';
+          changeEl.setAttribute('data-dir', dir);
+          changeEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '') +
+            Math.abs(changePercent).toFixed(2) + '% (24h)';
+        }
+      }
+
+      /* When no price could be fetched at all, say so instead of leaving the
+         cards reading "Loading…" forever. Never substitute a made-up number. */
+      function markPricesUnavailable() {
+        document.querySelectorAll('.price-card__price[data-pending]').forEach(function (el) {
+          el.removeAttribute('data-pending');
+          el.setAttribute('data-unavailable', 'true');
+          el.textContent = 'Unavailable';
+        });
+        document.querySelectorAll('.price-card__change[data-dir="flat"]').forEach(function (el) {
+          if (el.getAttribute('data-ref')) return;
+          el.textContent = 'Market data unavailable';
+        });
+        setFeed('offline', 'Market data unavailable');
+        calcConv();
+      }
+
+      function setFeed(state, text) {
+        var badge = $('feedBadge');
+        if (!badge) return;
+        badge.setAttribute('data-state', state);
+        $('feedText').textContent = text;
+      }
+
+      function connectWS() {
+        if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+        var streams = STREAMS.map(function (s) { return s.toLowerCase() + '@ticker'; }).join('/');
+        try {
+          ws = new WebSocket('wss://stream.binance.com:9443/stream?streams=' + streams);
+          ws.onopen = function () {
+            reconnects = 0;
+            setFeed('live', 'Live market data');
+          };
+          ws.onmessage = function (event) {
+            try {
+              var payload = JSON.parse(event.data);
+              var ticker = payload.data || payload;
+              if (!ticker.s) return;
+              var stream = ticker.s.toUpperCase();
+              if (STREAMS.indexOf(stream) === -1) return;
+              updCard(stream, parseFloat(ticker.c), parseFloat(ticker.P));
+              updateAllKES();
+            } catch (err) { /* ignore malformed frame */ }
+          };
+          ws.onerror = function () {
+            setFeed('cached', 'Cached prices (polling)');
+          };
+          ws.onclose = function () {
+            setFeed('cached', 'Cached prices (polling)');
+            if (reconnects < 5) {
+              reconnects++;
+              setTimeout(connectWS, Math.min(1000 * Math.pow(2, reconnects), 30000));
+            }
+          };
+        } catch (err) {
+          setFeed('offline', 'Market data unavailable');
+        }
+      }
+
+      /* REST fallback — mobile networks and some ISPs block raw WebSockets
+         while allowing normal HTTPS, so the grid must never depend on the socket. */
+      async function fetchRestPrices() {
+        var symbolsParam = encodeURIComponent(JSON.stringify(STREAMS));
+        try {
+          var response = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbols=' + symbolsParam, { cache: 'no-store' });
+          if (!response.ok) throw new Error('REST ' + response.status);
+          var tickers = await response.json();
+          tickers.forEach(function (t) {
+            if (STREAMS.indexOf(t.symbol) !== -1) {
+              updCard(t.symbol, parseFloat(t.lastPrice), parseFloat(t.priceChangePercent));
+            }
+          });
+          if (!ws || ws.readyState !== WebSocket.OPEN) setFeed('cached', 'Cached prices (polling)');
+          updateAllKES();
+        } catch (err) {
+          /* A single invalid or delisted symbol rejects the whole batch, so fall
+             back to one request per symbol and keep the rest of the grid alive. */
+          await Promise.allSettled(STREAMS.map(async function (symbol) {
+            try {
+              var single = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol, { cache: 'no-store' });
+              if (!single.ok) throw new Error(symbol + ' ' + single.status);
+              var ticker = await single.json();
+              updCard(ticker.symbol, parseFloat(ticker.lastPrice), parseFloat(ticker.priceChangePercent));
+            } catch (innerErr) { /* leave this card in its pending state */ }
+          }));
+          updateAllKES();
+          if (Object.keys(prices).length === 0) markPricesUnavailable();
+        }
+      }
+
+      /* ── Navigation ──────────────────────────────────────────────────────── */
+      var SECTIONS = ['markets', 'balances', 'swap', 'receive', 'deposit'];
+
+      function showSection(id) {
+        if (SECTIONS.indexOf(id) === -1) id = 'markets';
+
+        SECTIONS.forEach(function (name) {
+          var panel = $(name);
+          if (panel) panel.hidden = name !== id;
+        });
+
+        document.querySelectorAll('.tab').forEach(function (tab) {
+          if (tab.getAttribute('data-sec') === id) {
+            tab.setAttribute('aria-current', 'true');
+          } else {
+            tab.removeAttribute('aria-current');
+          }
+        });
+
+        if (id === 'receive') checkReceive();
+
+        if (location.hash !== '#' + id) {
+          history.replaceState(null, '', '#' + id);
+        }
+        closeMenu();
+      }
+
+      /* ── Account menu ────────────────────────────────────────────────────── */
+      var menuBtn = $('menuBtn');
+      var menu = $('accountMenu');
+
+      function openMenu(open) {
+        if (!menu || !menuBtn) return;
+        menu.setAttribute('data-open', open ? 'true' : 'false');
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open) {
+          var first = menu.querySelector('[role="menuitem"]');
+          if (first) first.focus();
+        }
+      }
+
+      function closeMenu() { openMenu(false); }
+
+      if (menuBtn && menu) {
+        menuBtn.addEventListener('click', function () {
+          openMenu(menuBtn.getAttribute('aria-expanded') !== 'true');
+        });
+
+        menu.addEventListener('click', function (event) {
+          var item = event.target.closest('[data-action]');
+          if (!item) return;
+          var action = item.getAttribute('data-action');
+          closeMenu();
+          if (action === 'markets') { showSection('markets'); menuBtn.focus(); }
+          else if (action === 'kyc') handleKYCClick();
+          else if (action === 'logout') doLogout();
+        });
+
+        document.addEventListener('click', function (event) {
+          if (menuBtn.getAttribute('aria-expanded') !== 'true') return;
+          if (menu.contains(event.target) || menuBtn.contains(event.target)) return;
+          closeMenu();
+        });
+
+        document.addEventListener('keydown', function (event) {
+          if (event.key === 'Escape' && menuBtn.getAttribute('aria-expanded') === 'true') {
+            closeMenu();
+            menuBtn.focus();
+          }
+        });
+      }
+
+      /* ── Init ────────────────────────────────────────────────────────────── */
+      document.addEventListener('DOMContentLoaded', async function () {
+        $('kycBadge').addEventListener('click', handleKYCClick);
+
+        document.getElementById('tabBar').addEventListener('click', function (event) {
+          var tab = event.target.closest('[data-sec]');
+          if (tab) showSection(tab.getAttribute('data-sec'));
+        });
+
+        $('swapCrypto').addEventListener('change', calcConv);
+        $('swapAmt').addEventListener('input', calcConv);
+        $('swapBtn').addEventListener('click', doSwap);
+
+        if (!(await checkAuth())) return;
+
+        $('userName').textContent = (currentProfile && currentProfile.username) || currentUser.email;
+        refreshKYCBadge();
+        buildBalances();
+        buildCards();
+
+        var notice = sessionStorage.getItem('kp_notice');
+        if (notice) {
+          sessionStorage.removeItem('kp_notice');
+          window.alert(notice);
+        }
+
+        /* Prices first over plain HTTPS so the grid is never blank, then the
+           socket for sub-second updates, with a 15s poll as the safety net. */
+        await fetchRestPrices();
+        connectWS();
+        setInterval(function () {
+          if (!ws || ws.readyState !== WebSocket.OPEN) fetchRestPrices();
+        }, 15000);
+
+        await fetchKES();
+        updateAllKES();
+        setInterval(function () { fetchKES(); }, 300000);
+
+        showSection((location.hash || '#markets').slice(1));
+      });
+
+      window.addEventListener('beforeunload', function () { if (ws) ws.close(); });
+    })();
+  </script>
 </body>
 </html>
