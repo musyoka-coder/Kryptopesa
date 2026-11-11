@@ -5,13 +5,35 @@
   "private": true,
   "main": "homepage.html",
   "scripts": {
-    "start": "npx serve . -p 3000",
-    "dev": "npx live-server --port=3000 --open=index.html"
+    "start": "serve dist -p 3000",
+    "dev": "npm run build && npm start",
+    "build": "node --env-file-if-exists=.env.local scripts/build.cjs",
+    "test": "node --test tests/*.test.cjs",
+    "lint": "eslint .",
+    "format:check": "prettier --check scripts tests account-access.js supabase-client.js vercel.json package.json",
+    "format": "prettier --write scripts tests account-access.js supabase-client.js vercel.json package.json",
+    "build:all": "npm run build && npm run build --prefix web && node scripts/package-web.cjs"
   },
   "devDependencies": {
-    "live-server": "^1.2.2",
-    "serve": "^14.0.0"
+    "@eslint/js": "10.0.1",
+    "eslint": "10.14.0",
+    "globals": "16.5.0",
+    "prettier": "3.6.2",
+    "serve": "14.2.6"
   },
-  "keywords": ["crypto", "mpesa", "kenya", "bitcoin", "fintech"],
-  "license": "UNLICENSED"
+  "keywords": [
+    "crypto",
+    "mpesa",
+    "kenya",
+    "bitcoin",
+    "fintech"
+  ],
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "overrides": {
+    "compression": "1.8.2",
+    "minimatch": "11.0.1"
+  }
 }

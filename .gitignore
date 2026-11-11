@@ -2,3 +2,10 @@
 node_modules/
 npm-debug.log*
 .DS_Store
+
+.env*
+!.env.example
+dist/
+.angular/
+coverage/
+config.js

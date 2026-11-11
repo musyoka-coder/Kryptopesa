@@ -41,6 +41,23 @@
           "value": "noindex, nofollow"
         }
       ]
+    },
+    {
+      "source": "/next/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
     }
-  ]
+  ],
+  "buildCommand": "npm run build:all",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci && npm ci --prefix web",
+  "framework": null
 }

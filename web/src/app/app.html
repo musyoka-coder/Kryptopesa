@@ -1,0 +1,18 @@
+<header><a href="/index.html" aria-label="KryptoPesa home">Krypto<span>Pesa</span></a><a class="back" href="/homepage.html">Dashboard</a></header>
+<main>
+  <p class="eyebrow">YOUR ACCOUNT</p>
+  <h1>Account overview</h1>
+  <p class="intro">Review your account and identity verification status.</p>
+  <section [attr.aria-busy]="busy()" aria-label="Account status">
+    @if (busy()) { <p role="status">Checking your account…</p> }
+    @if (error()) { <p role="alert" class="error">{{ error() }}</p><a href="/login.html">Sign in</a> }
+    @if (account(); as user) {
+      <h2>{{ user.username || 'Your account' }}</h2>
+      <dl><div><dt>Account</dt><dd>Active</dd></div><div><dt>Identity verification</dt><dd>{{ user.kyc_status }}</dd></div></dl>
+      <a href="/verify-identity.html">View verification</a>
+    }
+    <button type="button" (click)="refresh()" [disabled]="busy()">Refresh status</button>
+  </section>
+  <p class="note">Deposits and M-Pesa payouts are not available. Account status does not confirm payment availability.</p>
+</main>
+<footer><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/cookies.html">Cookies</a></footer>
