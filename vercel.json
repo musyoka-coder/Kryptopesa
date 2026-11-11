@@ -1,0 +1,63 @@
+{
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net 'sha256-ozuTgUvK27k09Wy0cInGYPR71j5n7u7nSPwHCX28jKs='; script-src-attr 'none'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://tpqpzzmqmsspmtmulecq.supabase.co wss://tpqpzzmqmsspmtmulecq.supabase.co https://api.binance.com wss://stream.binance.com:9443 https://api.exchangerate-api.com https://open.er-api.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "https://www.kryptopesa.app"
+        }
+      ]
+    },
+    {
+      "source": "/(login|signup|homepage|admin|verify-identity|forgot_password|reset_password).html",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    },
+    {
+      "source": "/next/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "private, no-store"
+        },
+        {
+          "key": "X-Robots-Tag",
+          "value": "noindex, nofollow"
+        }
+      ]
+    }
+  ],
+  "buildCommand": "npm run build:all",
+  "outputDirectory": "dist",
+  "installCommand": "npm ci && npm ci --prefix web",
+  "framework": null
+}

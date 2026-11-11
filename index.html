@@ -43,7 +43,7 @@
   <!-- Defence in depth: script/style/connect allow-lists for this page.
        HTTP response headers (CSP, X-Frame-Options, X-Content-Type-Options)
        must still be set by the host; see docs/MODERNIZATION-REPORT.md. -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-ozuTgUvK27k09Wy0cInGYPR71j5n7u7nSPwHCX28jKs=' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
 
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="assets/kp-tokens.css" />
@@ -270,61 +270,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.119.0/dist/umd/supabase.js"
           integrity="sha384-uteMfOloLDGt042uDz+xHGF3ym63/WQ6rFq7murQRG8Ih7QrXGEGNtWd8688sb4O"
           crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="config.js"></script>
   <script src="supabase-client.js"></script>
-  <script>
-    (function () {
-      'use strict';
-
-      /* ── Mobile navigation ────────────────────────────────────────────── */
-      var toggle = document.getElementById('navToggle');
-      var list = document.getElementById('navList');
-      var label = document.getElementById('navToggleLabel');
-
-      function setNav(open) {
-        if (!toggle || !list) return;
-        list.setAttribute('data-open', open ? 'true' : 'false');
-        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        if (label) label.textContent = open ? 'Close' : 'Menu';
-      }
-
-      if (toggle && list) {
-        /* Start closed only on small screens; desktop shows the list via CSS. */
-        setNav(false);
-
-        toggle.addEventListener('click', function () {
-          setNav(toggle.getAttribute('aria-expanded') !== 'true');
-        });
-
-        list.addEventListener('click', function (event) {
-          if (event.target.closest('a')) setNav(false);
-        });
-
-        document.addEventListener('keydown', function (event) {
-          if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
-            setNav(false);
-            toggle.focus();
-          }
-        });
-
-        document.addEventListener('click', function (event) {
-          if (toggle.getAttribute('aria-expanded') !== 'true') return;
-          if (list.contains(event.target) || toggle.contains(event.target)) return;
-          setNav(false);
-        });
-      }
-
-      /* ── Send already-signed-in visitors straight to the dashboard ────── */
-      if (typeof supabaseClient !== 'undefined' && supabaseClient && supabaseClient.auth) {
-        supabaseClient.auth.getSession().then(function (result) {
-          if (result && result.data && result.data.session) {
-            window.location.replace('homepage.html');
-          }
-        }).catch(function () {
-          /* A failed session check must never block the marketing page. */
-        });
-      }
-    })();
-  </script>
+  <script src="assets/pages/index-1.js"></script>
 <script src="index.js" defer></script>
 </body>
 </html>

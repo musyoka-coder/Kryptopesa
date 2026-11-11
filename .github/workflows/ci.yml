@@ -1,0 +1,39 @@
+name: Verify KryptoPesa
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            web/package-lock.json
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          cache: false
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm test
+      - run: npm ci --prefix web
+      - run: npm test --prefix web
+      - run: npm run build:all
+        env:
+          PUBLIC_SUPABASE_URL: https://fixture.supabase.co
+          PUBLIC_SUPABASE_ANON_KEY: sb_publishable_ci_fixture
+      - run: go vet ./api ./cmd/... ./pkg/...
+      - run: go test -race -cover ./api ./cmd/... ./pkg/...
+      - run: test -z "$(gofmt -l api cmd pkg)"
