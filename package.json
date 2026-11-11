@@ -12,7 +12,8 @@
     "lint": "eslint .",
     "format:check": "prettier --check scripts tests account-access.js supabase-client.js vercel.json package.json",
     "format": "prettier --write scripts tests account-access.js supabase-client.js vercel.json package.json",
-    "build:all": "npm run build && npm run build --prefix web && node scripts/package-web.cjs"
+    "build:all": "npm run build && npm run build --prefix web && node scripts/package-web.cjs",
+    "verify:production": "node scripts/verify-production.cjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

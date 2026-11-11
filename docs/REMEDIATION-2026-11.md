@@ -1,5 +1,7 @@
 # KryptoPesa review remediation — 11 November 2026
 
+Historical review record. Current deployed status and the follow-up ZAP results are in [PRODUCTION-READINESS.md](PRODUCTION-READINESS.md).
+
 Scope: the supplied ZAP report, DataFactor's earlier code-quality feedback, and the prior application security review. DataFactor's score described an older tree, so this document records current changes rather than claiming the old assessment still describes every file. No revised score, offer or licensing approval has been obtained.
 
 ## Changes implemented in source

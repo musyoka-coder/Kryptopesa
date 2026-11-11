@@ -12,7 +12,7 @@ Public web configuration and provider secrets are separate. This slice needs no 
 
 ## Existing frontend hardening
 
-Executable inline scripts were moved into external files so `script-src` no longer needs `unsafe-inline`. Structured JSON-LD uses an exact hash. Response CSP sets `frame-ancestors 'none'`; X-Frame-Options is DENY, MIME sniffing is disabled and cross-origin access is restricted to the canonical origin. Inline **styles** remain allowed in the response policy because the legacy admin page uses them. Its migration is separate from the script-injection finding.
+Executable inline scripts were moved into external files so `script-src` no longer needs `unsafe-inline`. Structured JSON-LD uses an exact hash. Response CSP sets `frame-ancestors 'none'`; X-Frame-Options is DENY, MIME sniffing is disabled and cross-origin access is restricted to the canonical origin. Admin styles and Angular component styles are now external assets. The response policy contains no `unsafe-inline` allowance for scripts or styles. The admin page uses system fonts, eliminating an external font stylesheet without integrity metadata.
 
 The browser guard supports navigation and UX; it cannot replace RLS or server checks. Supabase browser session timeout controls are not server-side revocation. Existing admin RPC permissions and MFA still need end-to-end coverage before broader backend migration.
 

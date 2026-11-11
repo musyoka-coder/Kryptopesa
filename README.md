@@ -65,6 +65,7 @@ The SQL files are not a complete database baseline. A fresh Supabase deployment 
 ```sh
 npm audit
 npm audit --prefix web
+npm run verify:production
 npm run format
 ```
 
