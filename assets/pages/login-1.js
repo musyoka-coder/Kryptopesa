@@ -28,6 +28,12 @@
         showError('Your session expired. Please sign in again.');
       }
 
+      var notice = sessionStorage.getItem('kp_notice');
+      if (notice) {
+        sessionStorage.removeItem('kp_notice');
+        showError(notice);
+      }
+
       /* Password visibility toggle. */
       document.querySelectorAll('.auth__reveal').forEach(function (toggle) {
         toggle.addEventListener('click', function () {

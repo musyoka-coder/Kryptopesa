@@ -56,31 +56,16 @@
           return false;
         }
 
-        var sessionResult = await supabaseClient.auth.getSession();
-        var session = sessionResult && sessionResult.data ? sessionResult.data.session : null;
-        if (!session) { window.location.replace('login.html'); return false; }
-
-        var verified = await supabaseClient.auth.getUser();
-        if (verified.error || !verified.data || !verified.data.user) {
+        var access = await window.KPAccountAccess.loadActiveAccount(supabaseClient);
+        if (!access.allowed) {
           window.KPSession.clear();
+          sessionStorage.setItem('kp_notice', access.reason);
           location.replace('login.html');
           return false;
         }
-        currentUser = verified.data.user;
+        currentUser = access.user;
+        currentProfile = access.profile;
         window.KPSession.start();
-
-        var profileResult = await supabaseClient
-          .from('profiles')
-          .select('*')
-          .eq('id', currentUser.id)
-          .single();
-
-        currentProfile = profileResult ? profileResult.data : null;
-
-        if (currentProfile && currentProfile.account_status === 'suspended') {
-          await doLogout(true, 'Your account is suspended. Contact support@kryptopesa.com.');
-          return false;
-        }
         return true;
       }
 
