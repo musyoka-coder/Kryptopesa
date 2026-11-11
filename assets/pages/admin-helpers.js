@@ -65,7 +65,7 @@
       polygon: "https://polygonscan.com/tx/"
     };
     function explorerUrl(network, asset, hash) {
-      if (!hash || !HASH_RE.test(hash)) return null;
+      if (typeof hash !== "string" || !HASH_RE.test(hash)) return null;
       var n = String(network || "").toLowerCase();
       if (!n) {
         var a = String(asset || "").toUpperCase();
@@ -75,7 +75,7 @@
         else if (a === "WLD") n = "worldchain";
         else if (a === "USDT") n = /^0x[0-9a-fA-F]{64}$/.test(hash) ? "ethereum" : /^[0-9a-fA-F]{64}$/.test(hash) ? "tron" : "";
       }
-      var base = EXPLORERS[n];
+      var base = Object.hasOwn(EXPLORERS, n) ? EXPLORERS[n] : null;
       return base ? base + encodeURIComponent(hash) : null;
     }
     function chainCell(network, asset, hash) {

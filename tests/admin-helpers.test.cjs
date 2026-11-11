@@ -10,6 +10,8 @@ for (const [network, asset, value, expected] of [
   ["", "ETH", "0x" + hash, "https://etherscan.io/tx/0x" + hash],
   ["", "USDT", hash, "https://tronscan.org/#/transaction/" + hash],
   ["unknown", "ETH", hash, null],
+  ["constructor", "ETH", hash, null],
+  ["__proto__", "ETH", hash, null],
   ["ethereum", "ETH", "<img src=x onerror=alert(1)>", null],
   ["bitcoin", "BTC", "a".repeat(129), null],
   ["bitcoin", "BTC", "../redirect?to=evil", null],
