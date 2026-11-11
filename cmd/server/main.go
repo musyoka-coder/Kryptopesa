@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"errors"
-	"kryptopesa/internal/account"
+	"kryptopesa/pkg/account"
 	"log"
 	"net/http"
 	"os"

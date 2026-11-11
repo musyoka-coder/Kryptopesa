@@ -31,7 +31,7 @@ The Supabase apply operation returned an expired confirmation. It did not report
 
 - 31 Node regression tests passed.
 - 4 Angular integration tests passed; production bundle compiled with strict types/templates.
-- Go race tests and vet passed. `internal/account` statement coverage: 90.3%; executable adapters are not covered by those unit tests.
+- Go race tests and vet passed. `pkg/account` statement coverage: 90.3%; executable adapters are not covered by those unit tests.
 - ESLint and targeted Prettier checks passed.
 - Root and Angular dependency audits reported zero known vulnerabilities. This is time-bound advisory evidence, not proof of absence of vulnerabilities.
 - Static build excludes source, reports, tests, SQL and local environment files.

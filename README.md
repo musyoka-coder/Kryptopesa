@@ -4,7 +4,7 @@ Crypto-to-M-Pesa application under development. The existing static frontend rem
 
 ## Reproduce the build
 
-Requirements: Node.js 24.15+ (24.x), npm, Go 1.27+. Dependencies are locked; do not use `npm install` in CI.
+Requirements: Node.js 24.15+ (24.x), npm, Go 1.27.4+. Dependencies are locked; do not use `npm install` in CI.
 
 ```sh
 npm ci
@@ -26,8 +26,8 @@ Tests need no production credentials. A clean fixture build can use `PUBLIC_SUPA
 ## Go API
 
 ```sh
-go vet ./api ./cmd/... ./internal/...
-go test -race -cover ./api ./cmd/... ./internal/...
+go vet ./api ./cmd/... ./pkg/...
+go test -race -cover ./api ./cmd/... ./pkg/...
 # Export the two PUBLIC_SUPABASE_* values in your shell, then:
 go run ./cmd/server
 ```
@@ -50,7 +50,7 @@ GitHub Actions runs frontend checks, Angular tests/build, Go vet and race tests 
 | account-access.js | Fail-closed browser navigation guard |
 | scripts | Validated public configuration and deployment packaging |
 | web | Angular account UI and integration tests |
-| internal/account | Go account authorization and regression tests |
+| pkg/account | Go account authorization and regression tests |
 | api/account.go | Vercel adapter |
 | cmd/server | Standalone Go server with timeouts and graceful shutdown |
 | supabase/migrations | Incremental migration for the existing database |

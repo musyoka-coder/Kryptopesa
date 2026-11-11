@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"kryptopesa/internal/account"
+	"kryptopesa/pkg/account"
 	"net/http"
 	"os"
 )
