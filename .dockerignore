@@ -1,0 +1,10 @@
+.git
+node_modules
+web/node_modules
+web/.angular
+web/dist
+dist
+.env*
+coverage
+coverage.out
+*.log

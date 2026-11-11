@@ -25,15 +25,32 @@ jobs:
           go-version-file: go.mod
           cache: false
       - run: npm ci
+      - run: npm ci --prefix web
+      - run: npm audit --audit-level=high
+      - run: npm audit --prefix web --audit-level=high
       - run: npm run lint
       - run: npm run format:check
-      - run: npm test
-      - run: npm ci --prefix web
+      - run: npm run test:coverage
       - run: npm test --prefix web
       - run: npm run build:all
         env:
           PUBLIC_SUPABASE_URL: https://fixture.supabase.co
           PUBLIC_SUPABASE_ANON_KEY: sb_publishable_ci_fixture
       - run: go vet ./api ./cmd/... ./pkg/...
-      - run: go test -race -cover ./api ./cmd/... ./pkg/...
+      - run: go test -race -coverprofile=coverage.out ./api ./cmd/... ./pkg/...
+      - run: node scripts/check-go-coverage.cjs coverage.out
       - run: test -z "$(gofmt -l api cmd pkg)"
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose build
+      - run: docker compose up -d
+      - name: Check container liveness, static UI, and denied account access
+        run: |
+          curl --fail --retry 10 --retry-connrefused --retry-delay 1 http://127.0.0.1:8080/api/health
+          curl --fail http://127.0.0.1:8080/next/
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8080/api/account)" = 401
+      - if: always()
+        run: docker compose logs && docker compose down
