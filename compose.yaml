@@ -1,0 +1,15 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        PUBLIC_SUPABASE_URL: ${PUBLIC_SUPABASE_URL:-https://fixture.supabase.co}
+        PUBLIC_SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_ANON_KEY:-sb_publishable_ci_fixture}
+    environment:
+      PUBLIC_SUPABASE_URL: ${PUBLIC_SUPABASE_URL:-https://fixture.supabase.co}
+      PUBLIC_SUPABASE_ANON_KEY: ${PUBLIC_SUPABASE_ANON_KEY:-sb_publishable_ci_fixture}
+    ports:
+      - "127.0.0.1:8080:8080"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]

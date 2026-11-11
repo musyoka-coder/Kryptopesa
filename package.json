@@ -13,7 +13,8 @@
     "format:check": "prettier --check scripts tests account-access.js supabase-client.js vercel.json package.json",
     "format": "prettier --write scripts tests account-access.js supabase-client.js vercel.json package.json",
     "build:all": "npm run build && npm run build --prefix web && node scripts/package-web.cjs",
-    "verify:production": "node scripts/verify-production.cjs"
+    "verify:production": "node scripts/verify-production.cjs",
+    "test:coverage": "node --experimental-test-coverage --test-coverage-include=account-access.js --test-coverage-include=assets/pages/admin-helpers.js --test-coverage-include=scripts/config.cjs --test-coverage-lines=80 --test tests/*.test.cjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
