@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"kryptopesa/pkg/account"
+	"kryptopesa/pkg/observability"
 	"log"
 	"net/http"
 	"os"
@@ -19,11 +20,13 @@ func main() {
 	}
 	mux := http.NewServeMux()
 	mux.Handle("/api/account", h)
+	mux.HandleFunc("/api/health", observability.Health)
+	mux.Handle("/", http.FileServer(http.Dir("dist")))
 	addr := os.Getenv("LISTEN_ADDR")
 	if addr == "" {
 		addr = "127.0.0.1:8080"
 	}
-	server := &http.Server{Addr: addr, Handler: mux, ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16384}
+	server := &http.Server{Addr: addr, Handler: observability.Wrap(mux), ReadHeaderTimeout: 5 * time.Second, ReadTimeout: 10 * time.Second, WriteTimeout: 15 * time.Second, IdleTimeout: 60 * time.Second, MaxHeaderBytes: 16384}
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGTERM, os.Interrupt)
 	defer stop()
 	go func() {
