@@ -74,3 +74,34 @@ The root manifest overrides `compression` and `minimatch` to patched versions fo
 ## Licensing
 
 Private/proprietary (`UNLICENSED`). No rights have been transferred and no DataFactor agreement has been accepted. Passing tests does not guarantee a licensing offer or a specific review score.
+
+## Containerized setup
+
+```sh
+# Fixture-only UI and unauthorized API checks, no real accounts:
+docker compose up --build
+# With a separate staging project's public configuration:
+cp .env.example .env.local
+# Fill the two PUBLIC_SUPABASE_* values, then:
+docker compose --env-file .env.local up --build
+```
+
+Open `http://127.0.0.1:8080`. The image serves `dist/` and `/api/*` on one origin, runs as an unprivileged user, has no shell, and receives no privileged key. Compose binds only to localhost with a read-only filesystem. Public configuration is baked into the frontend during build: rebuild after changing it. Fixture credentials intentionally cannot sign in. Docker CI builds and smoke-tests this setup; Docker is not required for Vercel deployment. The local static server does not reproduce Vercel's response-header rules; use a Vercel preview to verify CSP and hosting configuration.
+
+## Operations and quality gates
+
+`GET /api/health` reports process liveness only, not Supabase/provider readiness. Account and health responses include a generated `X-Request-ID`. JSON logs contain only request ID, status and elapsed milliseconds; unhandled panics produce a separate generic event. Use Vercel runtime logs to correlate errors; no external error-tracking service or alert destination has been configured.
+
+Run `npm run test:coverage` for the scoped Node gate. Go's weighted statement coverage is enforced with `node scripts/check-go-coverage.cjs coverage.out`. Both npm dependency trees are audited in CI. Dependabot checks npm, Go and workflow updates weekly. See [CONTRIBUTING.md](CONTRIBUTING.md) for exact commands and coverage scope and [CHANGELOG.md](CHANGELOG.md) for changes.
+
+### Environment reference
+
+| Variable | Used by | Required |
+| --- | --- | --- |
+| `PUBLIC_SUPABASE_URL` | Static build and Go API | Yes for real account access |
+| `PUBLIC_SUPABASE_ANON_KEY` | Static build and Go API | Yes; public key only |
+| `LISTEN_ADDR` | Standalone Go server | No; defaults to localhost:8080 |
+| `KP_SMOKE_ACCESS_TOKEN` | Optional production smoke script | No; a short-lived test-user token, never commit it |
+| `TEST_DATABASE_URL` | Manual staging SQL test commands | Only for those explicit commands; never production |
+
+`package.json`'s `private: true` prevents npm publication; it does not make the GitHub repository private. The source has been publicly accessible. `UNLICENSED` does not undo public exposure or establish DataFactor eligibility.
