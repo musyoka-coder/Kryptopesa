@@ -49,3 +49,10 @@ for (const file of fs.readdirSync(".").filter((f) => f.endsWith(".html"))) {
     }
   });
 }
+
+test("all production styles are external and CSP rejects inline styles", () => {
+  assert.doesNotMatch(headers["content-security-policy"], /unsafe-inline/);
+  for (const file of fs.readdirSync(".").filter((f) => f.endsWith(".html"))) {
+    assert.doesNotMatch(fs.readFileSync(file, "utf8"), /<style\b|\sstyle\s*=/i);
+  }
+});

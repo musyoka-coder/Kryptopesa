@@ -2,7 +2,7 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Account, AccountService } from './account.service';
 
-@Component({ selector: 'app-root', templateUrl: './app.html', styleUrl: './app.css' })
+@Component({ selector: 'app-root', templateUrl: './app.html' })
 export class App {
   private readonly service = inject(AccountService);
   readonly account = signal<Account | null>(null);
