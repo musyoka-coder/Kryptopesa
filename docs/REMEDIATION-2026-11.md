@@ -6,15 +6,15 @@ Scope: the supplied ZAP report, DataFactor's earlier code-quality feedback, and 
 
 | Finding | Change | Verification |
 | --- | --- | --- |
-| Missing anti-clickjacking policy | Response CSP `frame-ancestors 'none'` and `X-Frame-Options: DENY` | Header configuration regression test; deployment check pending |
+| Missing anti-clickjacking policy | Response CSP `frame-ancestors 'none'` and `X-Frame-Options: DENY` | Regression test and hosted preview headers verified |
 | Executable inline scripts | Page scripts externalized; exact hash for JSON-LD; `script-src-attr 'none'` | Every root HTML script reference and syntax checked |
-| Wildcard cross-origin access | Canonical-origin ACAO response header | Regression test; deployment check pending |
+| Wildcard cross-origin access | Canonical-origin ACAO response header | Regression test and hosted preview headers verified |
 | Missing MIME protection | `X-Content-Type-Options: nosniff` | Regression test |
 | Cached response | Public assets may cache; authenticated shells/API marked private/no-store | Header and API tests; ZAP cache notice alone is informational |
 | Dashboard accepted failed profile checks | Confirmed user and active profile required, with timeout and deny-on-error behavior | 10 account guard cases |
 | Session controls not starting | Shared client explicitly assigned on `window` | Source repaired; real session-expiry browser test remains |
 | Missing runnable tests/build | Root tests, Angular integration tests, Go API tests; explicit build commands | Local checks below |
-| Broken package-publish CI | Push/PR validation workflow; no package publication | CI execution pending remote branch run |
+| Broken package-publish CI | Push/PR validation workflow; no package publication | GitHub Actions run 43083273960 passed |
 | Hardcoded environment configuration | Build-generated public config, `.env.example`, missing/secret-key rejection | 8 configuration cases and clean fixture build |
 | No backend architecture | Read-only Go account endpoint and Angular account page | Go authorization tests, Angular HTTP integration tests |
 | Dependency reproducibility | Exact direct versions, two npm lockfiles, patched tooling overrides | Both npm audits report zero known vulnerabilities at this check |
@@ -38,7 +38,7 @@ The Supabase apply operation returned an expired confirmation. It did not report
 
 ## Still required before resubmission / broader rollout
 
-1. Verify hosted headers, script loading and routing; repeat the ZAP scan against the deployed commit, including authenticated routes where appropriate. This work does not claim a fresh ZAP clearance.
+1. Repeat ZAP against the deployed commit, including authenticated routes where appropriate. Hosted HTTP checks verified the new security headers, root/login/Angular HTML and the external dashboard script; this is not a fresh ZAP clearance.
 2. Exercise real user/admin sign-in, email confirmation/reset, logout/session expiry and KYC completion with authorized test accounts. Unit mocks do not establish provider end-to-end behavior.
 3. Apply and verify the database migration. Review exposed SECURITY DEFINER RPCs with authenticated/non-admin tests; do not blanket-revoke functions used by the current admin UI.
 4. Enable/check leaked-password protection where the Supabase plan supports it, admin MFA and edge abuse controls. These hosted controls are not changed by frontend code.
@@ -47,3 +47,15 @@ The Supabase apply operation returned an expired confirmation. It did not report
 7. Complete provider onboarding and signed-webhook/idempotency tests before enabling payouts or production KYC. Deposits remain out of scope and disabled.
 8. Confirm legal entity/contact/retention statements with the owner rather than inventing them. No mailbox, license or regulatory approval is inferred from application code.
 9. Submit the verified repository to DataFactor only under an explicitly approved licensing workflow. No score guarantee and no manufactured contribution history.
+
+## Hosted verification and delivery
+
+- Pull request: https://github.com/musyoka-coder/Kryptopesa/pull/1
+- Verified code commit: `eb8a07ddc5f80ce22f2dd69b58bf39d3575cc3cc`.
+- Primary Vercel preview deployment `dpl_9VyLgpCnuU5pnS6K7xkTXYAfWi78` reached READY. An initial packaging failure was fixed by moving the shared Go package out of `internal`, which Vercel's generated wrapper cannot import.
+- Hosted root, login, Angular page and external dashboard script returned HTTP 200 with the expected CSP, anti-framing and nosniff headers. Login/Angular responses use private/no-store caching.
+- Browser rendering could not be checked: the browser could not reach the local server and the hosted preview required Vercel sign-in. Deployment protection remains enabled.
+- The protected fetch tool reported an authentication barrier for `/api/account`; no hosted API authorization result is claimed. Go behavior is verified by local tests.
+- GitHub Actions run `43083273960` passed for the verified code commit. The additional `kryptopesa-hem3` Vercel check remains failed; the connected Vercel account returned not-found for that project/deployment, so its cause could not be inspected.
+- Database recheck confirmed raw profile reporting access is still present and the aggregate view is absent. The pending migration has not been applied.
+- Changes are on the review branch and preview, not merged or promoted to production.
