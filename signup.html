@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="referrer" content="no-referrer" />
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
   <meta name="color-scheme" content="light" />
   <title>KryptoPesa — Create Account</title>
   <meta name="theme-color" content="#0B1020" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'self'; object-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self'; base-uri 'self'; form-action 'none'; object-src 'none'" />
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icon-32.png" />
   <link rel="apple-touch-icon" href="assets/icon-180.png" />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
@@ -36,7 +37,8 @@
 
       <div class="auth__msg auth__msg--error" id="errorMsg" role="alert" aria-live="assertive"></div>
 
-      <form id="signupForm" novalidate>
+      <noscript><p>JavaScript is required to securely submit this form.</p></noscript>
+      <form method="post" id="signupForm" novalidate>
         <div class="auth__group">
           <label class="kp-label" for="signupUsername">Username</label>
           <input class="kp-input" type="text" id="signupUsername" name="username"

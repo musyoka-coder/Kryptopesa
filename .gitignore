@@ -9,3 +9,5 @@ dist/
 .angular/
 coverage/
 config.js
+
+coverage.out
