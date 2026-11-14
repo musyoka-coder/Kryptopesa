@@ -179,7 +179,7 @@
             if (!response.ok) continue;
             var data = await response.json();
             var rate = (data.rates && data.rates.KES) || data.conversion_rates && data.conversion_rates.KES;
-            if (rate) {
+            if (typeof rate === 'number' && Number.isFinite(rate) && rate > 0) {
               kesRate = rate;
               $('kesDisplay').textContent = Number(rate).toFixed(2);
               updateAllKES();
@@ -213,10 +213,10 @@
       /* ── Swap preview ────────────────────────────────────────────────────── */
       function calcConv() {
         var symbol = $('swapCrypto').value;
-        var amount = parseFloat($('swapAmt').value);
+        var amount = Number($('swapAmt').value);
         var box = $('convBox');
 
-        if (!amount || isNaN(amount) || amount <= 0) {
+        if (!Number.isFinite(amount) || amount <= 0) {
           box.hidden = true;
           return;
         }
@@ -306,6 +306,7 @@
       }
 
       function updCard(stream, price, changePercent) {
+        if (STREAMS.indexOf(stream) === -1 || !Number.isFinite(price) || price <= 0) return;
         var priceEl = $('p_' + stream);
         var kesEl = $('kes_' + stream);
         var changeEl = $('ch_' + stream);
@@ -319,7 +320,7 @@
         if (kesEl && kesRate != null) {
           kesEl.textContent = '≈ KES ' + kes(price * kesRate);
         }
-        if (changeEl && changePercent != null && !isNaN(changePercent)) {
+        if (changeEl && changePercent != null && Number.isFinite(changePercent)) {
           var dir = changePercent > 0 ? 'up' : changePercent < 0 ? 'down' : 'flat';
           changeEl.setAttribute('data-dir', dir);
           changeEl.textContent = (dir === 'up' ? '▲ ' : dir === 'down' ? '▼ ' : '') +
@@ -366,7 +367,7 @@
               if (!ticker.s) return;
               var stream = ticker.s.toUpperCase();
               if (STREAMS.indexOf(stream) === -1) return;
-              updCard(stream, parseFloat(ticker.c), parseFloat(ticker.P));
+              updCard(stream, Number(ticker.c), Number(ticker.P));
               updateAllKES();
             } catch (err) { /* ignore malformed frame */ }
           };
@@ -395,7 +396,7 @@
           var tickers = await response.json();
           tickers.forEach(function (t) {
             if (STREAMS.indexOf(t.symbol) !== -1) {
-              updCard(t.symbol, parseFloat(t.lastPrice), parseFloat(t.priceChangePercent));
+              updCard(t.symbol, Number(t.lastPrice), Number(t.priceChangePercent));
             }
           });
           if (!ws || ws.readyState !== WebSocket.OPEN) setFeed('cached', 'Cached prices (polling)');
@@ -408,7 +409,7 @@
               var single = await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol=' + symbol, { cache: 'no-store' });
               if (!single.ok) throw new Error(symbol + ' ' + single.status);
               var ticker = await single.json();
-              updCard(ticker.symbol, parseFloat(ticker.lastPrice), parseFloat(ticker.priceChangePercent));
+              updCard(ticker.symbol, Number(ticker.lastPrice), Number(ticker.priceChangePercent));
             } catch (innerErr) { /* leave this card in its pending state */ }
           }));
           updateAllKES();
