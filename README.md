@@ -1,5 +1,7 @@
 # KryptoPesa
 
+**Project category: fintech web application, not a data engineering pipeline.** The Go API is read-only, Angular provides a staged account UI, and SQL files are Supabase schema/permission migrations. There is no ETL, orchestration, lineage or backfill subsystem.
+
 Crypto-to-M-Pesa application under development. The existing static frontend remains the primary UI. A staged Angular account page at `/next/` uses a read-only Go endpoint at `/api/account`. Deposits and payouts remain disabled; identity verification remains sandbox-only.
 
 ## Reproduce the build
@@ -27,7 +29,8 @@ Tests need no production credentials. A clean fixture build can use `PUBLIC_SUPA
 
 ```sh
 go vet ./api ./cmd/... ./pkg/...
-go test -race -cover ./api ./cmd/... ./pkg/...
+go test -race -coverprofile=coverage.out ./api ./cmd/... ./pkg/...
+node scripts/check-go-coverage.cjs coverage.out
 # Export the two PUBLIC_SUPABASE_* values in your shell, then:
 go run ./cmd/server
 ```
@@ -40,7 +43,7 @@ The local API binds to `127.0.0.1:8080` by default (`LISTEN_ADDR` overrides it).
 
 Vercel reads `vercel.json`, runs `npm ci && npm ci --prefix web`, builds static and Angular assets, and deploys `api/account.go` as a Go function. Production requires the two public Supabase environment variables. Preview builds should use a separate staging project; the remediation branch currently uses non-working fixture values. That preview cannot validate real account sign-in.
 
-GitHub Actions runs frontend checks, Angular tests/build, Go vet and race tests on pushes and pull requests. It does not publish a package or submit anything for licensing. CI is secret-free.
+GitHub Actions runs frontend checks, Angular tests/build, both npm dependency audits (high severity gate), Go vet/build and race tests with a 70% statement-coverage gate on pushes and pull requests. A separate job builds the Docker image and tests the isolated API. Dependabot checks npm, Go, Actions and Docker weekly. It does not publish a package or submit anything for licensing. CI is secret-free.
 
 ## Source map
 
@@ -74,3 +77,31 @@ The root manifest overrides `compression` and `minimatch` to patched versions fo
 ## Licensing
 
 Private/proprietary (`UNLICENSED`). No rights have been transferred and no DataFactor agreement has been accepted. Passing tests does not guarantee a licensing offer or a specific review score.
+
+## Run with Docker
+
+```sh
+docker build -t kryptopesa-api .
+docker compose up --build -d
+curl -i http://127.0.0.1:8080/healthz
+# 200 {"status":"ok"}; liveness only, not upstream readiness.
+curl -i http://127.0.0.1:8080/api/account
+# 401 {"error":"unauthorized"}
+curl -i -H 'Authorization: Bearer local-test-token' http://127.0.0.1:8080/api/account
+# 200 {"username":"Local fixture","account_status":"active","kyc_status":"pending"}
+docker compose down
+```
+
+Compose requires no external accounts or credentials. It runs the real Go account handler against a small HTTP Auth/profile fixture. The mock shares the API network namespace and listens only on loopback; only API port 8080 is published, bound to localhost. The explicit `-local-upstream` development flag accepts only loopback IP origins and the fixture key. The production Vercel adapter still requires a Supabase HTTPS origin and cannot enable this flag.
+
+This environment exercises the read-only account service, not full Supabase Auth sign-up, RLS, KYC, custody or M-Pesa payouts. Those integrations remain outside this fixture. The mock implements only the two endpoints consumed by the Go API and must never be used for real credentials or financial transactions.
+
+Without Docker, run `node scripts/mock-supabase.cjs` in one terminal and `PUBLIC_SUPABASE_URL=http://127.0.0.1:8081 PUBLIC_SUPABASE_ANON_KEY=local-fixture-key go run ./cmd/server -local-upstream` in another.
+
+## Operational checks and development workflow
+
+The standalone server writes JSON structured logs using `log/slog`. Upstream events include route path, status and duration; rejected requests include a stable error code and status. Logs exclude bearer tokens, API keys, query strings, personal data, response bodies and raw upstream errors. Vercel captures the same account events through its runtime logger. `/healthz` belongs to the standalone server; it is not a new Vercel route.
+
+Run `npm ci` and `npm ci --prefix web` before the root tests: homepage DOM tests reuse the Angular workspace's locked jsdom dependency. Tests cover KYC badges, unavailable balances/deposits, invalid market prices/rates, verification policy regressions and the mock's credential/owner checks. Go coverage includes the Vercel adapter, standalone server and account package. Explicit package paths avoid accidentally treating vendored JavaScript tooling's Go fixtures in `node_modules` as application code.
+
+Keep behavior changes and their regression tests in the same focused commit. Do not create artificial history, tags or releases to inflate an assessment. `.env.example` documents optional `KP_SMOKE_ACCESS_TOKEN`, `TEST_DATABASE_URL` and `TEST_USER_ID`; these are shell-only test inputs and are never browser configuration. Production verification is read-only and skips authenticated checks unless an authorized token is supplied.
