@@ -1,7 +1,10 @@
 .git
 node_modules
-web
-.env*
+web/node_modules
+web/.angular
+web/dist
 dist
-docs
-coverage*
+.env*
+coverage
+coverage.out
+*.log

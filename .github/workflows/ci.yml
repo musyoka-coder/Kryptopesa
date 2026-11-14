@@ -30,7 +30,7 @@ jobs:
       - run: npm audit --audit-level=high --prefix web
       - run: npm run lint
       - run: npm run format:check
-      - run: npm test
+      - run: npm run test:coverage
       - run: npm test --prefix web
       - run: npm run build:all
         env:
@@ -51,6 +51,8 @@ jobs:
       - name: Verify isolated account flow
         run: |
           curl --retry 15 --retry-all-errors --retry-delay 2 -fsS http://127.0.0.1:8080/healthz
+          curl -fsS http://127.0.0.1:8080/api/health
+          curl -fsS http://127.0.0.1:8080/next/ > /dev/null
           test "$(curl -s -o /tmp/anonymous.json -w '%{http_code}' http://127.0.0.1:8080/api/account)" = 401
           curl --retry 15 --retry-all-errors --retry-delay 2 -fsS -H 'Authorization: Bearer local-test-token' http://127.0.0.1:8080/api/account | python3 -c 'import json,sys; p=json.load(sys.stdin); assert p == {"username":"Local fixture","account_status":"active","kyc_status":"pending"}'
       - if: always()

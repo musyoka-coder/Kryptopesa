@@ -35,13 +35,13 @@ node scripts/check-go-coverage.cjs coverage.out
 go run ./cmd/server
 ```
 
-The local API binds to `127.0.0.1:8080` by default (`LISTEN_ADDR` overrides it). `npm start` serves static assets only; use Vercel development or a same-origin reverse proxy for the complete frontend/API flow. Do not send bearer tokens to an unrelated API origin.
+The local API binds to `127.0.0.1:8080` by default (`LISTEN_ADDR` overrides it). `npm start` serves static assets only; the standalone Go server also serves a built dist/ on the same origin. Do not send bearer tokens to an unrelated API origin.
 
 `GET /api/account` accepts `Authorization: Bearer <access token>`. It validates the token through Supabase Auth, requires confirmed email, queries the validated user's profile using the same bearer token (preserving RLS), and requires `account_status = active`. It returns only `username`, `account_status`, and `kyc_status`. It does not accept an owner ID from the caller. Responses are never cached. Errors are generic and upstream calls have bounded durations and response sizes.
 
 ## Deployment
 
-Vercel reads `vercel.json`, runs `npm ci && npm ci --prefix web`, builds static and Angular assets, and deploys `api/account.go` as a Go function. Production requires the two public Supabase environment variables. Preview builds should use a separate staging project; the remediation branch currently uses non-working fixture values. That preview cannot validate real account sign-in.
+Vercel reads `vercel.json`, runs `npm ci && npm ci --prefix web`, builds static and Angular assets, and deploys `api/account.go` as a Go function. Production requires the two public Supabase environment variables. Preview builds should use a separate staging project; previews without those variables fail closed rather than using production credentials.
 
 GitHub Actions runs frontend checks, Angular tests/build, both npm dependency audits (high severity gate), Go vet/build and race tests with a 70% statement-coverage gate on pushes and pull requests. A separate job builds the Docker image and tests the isolated API. Dependabot checks npm, Go, Actions and Docker weekly. It does not publish a package or submit anything for licensing. CI is secret-free.
 
@@ -100,8 +100,14 @@ Without Docker, run `node scripts/mock-supabase.cjs` in one terminal and `PUBLIC
 
 ## Operational checks and development workflow
 
-The standalone server writes JSON structured logs using `log/slog`. Upstream events include route path, status and duration; rejected requests include a stable error code and status. Logs exclude bearer tokens, API keys, query strings, personal data, response bodies and raw upstream errors. Vercel captures the same account events through its runtime logger. `/healthz` belongs to the standalone server; it is not a new Vercel route.
+The standalone server writes JSON structured logs using `log/slog`. Upstream events include route path, status and duration; rejected requests include a stable error code and status. Logs exclude bearer tokens, API keys, query strings, personal data, response bodies and raw upstream errors. Vercel captures the same account events through its runtime logger. `/healthz` belongs to the standalone server. `/api/health` provides liveness on both Vercel and the standalone server. Request middleware adds generated X-Request-ID values, status/latency logs and generic panic recovery.
 
 Run `npm ci` and `npm ci --prefix web` before the root tests: homepage DOM tests reuse the Angular workspace's locked jsdom dependency. Tests cover KYC badges, unavailable balances/deposits, invalid market prices/rates, verification policy regressions and the mock's credential/owner checks. Go coverage includes the Vercel adapter, standalone server and account package. Explicit package paths avoid accidentally treating vendored JavaScript tooling's Go fixtures in `node_modules` as application code.
 
 Keep behavior changes and their regression tests in the same focused commit. Do not create artificial history, tags or releases to inflate an assessment. `.env.example` documents optional `KP_SMOKE_ACCESS_TOKEN`, `TEST_DATABASE_URL` and `TEST_USER_ID`; these are shell-only test inputs and are never browser configuration. Production verification is read-only and skips authenticated checks unless an authorized token is supplied.
+
+## Combined release and admin modules
+
+The admin page loads separate helper, chart, UI and user modules with authorization and safe-rendering regression tests. `npm run test:coverage` enforces 80% line coverage for the explicitly scoped account guard, configuration and admin helper modules, not the entire frontend.
+
+Docker now includes the built static and Angular UI alongside the API. The default `docker compose up --build` keeps the loopback Auth/profile fixture. Its static UI uses non-working fixture public configuration; it cannot sign in against that fixture. For manual staging UI sign-in use `docker compose -f compose.staging.yaml --env-file .env.local up --build` with a separate staging project's public configuration. The standalone static file server does not reproduce Vercel's response-header policies; verify those on Vercel.

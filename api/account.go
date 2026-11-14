@@ -2,12 +2,16 @@ package handler
 
 import (
 	"kryptopesa/pkg/account"
+	"kryptopesa/pkg/observability"
 	"net/http"
 	"os"
 )
 
 // Handler is the Vercel Go function entry point. No service-role credential is used.
 func Handler(w http.ResponseWriter, r *http.Request) {
+	observability.Wrap(http.HandlerFunc(serveAccount)).ServeHTTP(w, r)
+}
+func serveAccount(w http.ResponseWriter, r *http.Request) {
 	h, err := account.New(account.Config{SupabaseURL: os.Getenv("PUBLIC_SUPABASE_URL"), PublicKey: os.Getenv("PUBLIC_SUPABASE_ANON_KEY")})
 	if err != nil {
 		w.Header().Set("Cache-Control", "no-store")
