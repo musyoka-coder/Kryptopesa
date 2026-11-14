@@ -1,10 +1,17 @@
 /* Read-only HTTP checks. Never creates accounts or submits payments. */
 const assert = require("node:assert/strict");
-const base = "https://www.kryptopesa.app";
-async function request(path, options = {}) {
-  return fetch(base + path, { ...options, signal: AbortSignal.timeout(20000) });
-}
-async function main() {
+async function main({
+  fetchImpl = fetch,
+  token = process.env.KP_SMOKE_ACCESS_TOKEN,
+  log = console.log,
+} = {}) {
+  async function request(path, options = {}) {
+    return fetchImpl("https://www.kryptopesa.app" + path, {
+      ...options,
+      signal: AbortSignal.timeout(20000),
+      redirect: "error",
+    });
+  }
   for (const path of [
     "/",
     "/login.html",
@@ -52,7 +59,7 @@ async function main() {
     ) {
       assert.match(response.headers.get("cache-control"), /no-store/, path);
     }
-    console.log(`PASS ${path}: response policy`);
+    log(`PASS ${path}: response policy`);
   }
   for (const headers of [{}, { Authorization: "Bearer invalid" }]) {
     const response = await request("/api/account", { headers });
@@ -60,8 +67,7 @@ async function main() {
     assert.match(response.headers.get("cache-control"), /no-store/);
     assert.equal((await response.json()).error, "unauthorized");
   }
-  console.log("PASS /api/account: missing and invalid tokens rejected");
-  const token = process.env.KP_SMOKE_ACCESS_TOKEN;
+  log("PASS /api/account: missing and invalid tokens rejected");
   if (token) {
     const response = await request("/api/account", {
       headers: { Authorization: `Bearer ${token}` },
@@ -74,14 +80,14 @@ async function main() {
       "kyc_status",
       "username",
     ]);
-    console.log("PASS authenticated account response (personal data omitted)");
+    log("PASS authenticated account response (personal data omitted)");
   } else {
-    console.log(
-      "SKIP authenticated account: no authorized test token supplied",
-    );
+    log("SKIP authenticated account: no authorized test token supplied");
   }
 }
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+module.exports = { main };
+if (require.main === module)
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });
