@@ -1,0 +1,23 @@
+services:
+  api:
+    build: .
+    command: ["-local-upstream"]
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      PUBLIC_SUPABASE_URL: http://127.0.0.1:8081
+      PUBLIC_SUPABASE_ANON_KEY: local-fixture-key
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+  mock:
+    image: node:24-alpine
+    # Share only the API network namespace so the fixture stays loopback-only.
+    network_mode: "service:api"
+    volumes:
+      - ./scripts/mock-supabase.cjs:/app/mock-supabase.cjs:ro
+    command: ["node", "/app/mock-supabase.cjs"]
+    user: "65532:65532"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]

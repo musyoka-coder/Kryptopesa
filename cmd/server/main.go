@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"errors"
+	"flag"
 	"kryptopesa/pkg/account"
-	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
@@ -13,12 +14,19 @@ import (
 )
 
 func main() {
-	h, err := account.New(account.Config{SupabaseURL: os.Getenv("PUBLIC_SUPABASE_URL"), PublicKey: os.Getenv("PUBLIC_SUPABASE_ANON_KEY")})
-	if err != nil {
-		log.Fatal(err)
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stderr, nil)))
+	local := flag.Bool("local-upstream", false, "allow loopback-only fixture upstream (development only)")
+	flag.Parse()
+	newAccount := account.New
+	if *local {
+		newAccount = account.NewLocal
 	}
-	mux := http.NewServeMux()
-	mux.Handle("/api/account", h)
+	h, err := newAccount(account.Config{SupabaseURL: os.Getenv("PUBLIC_SUPABASE_URL"), PublicKey: os.Getenv("PUBLIC_SUPABASE_ANON_KEY")})
+	if err != nil {
+		slog.Error("server failed", "error", err)
+		os.Exit(1)
+	}
+	mux := newMux(h)
 	addr := os.Getenv("LISTEN_ADDR")
 	if addr == "" {
 		addr = "127.0.0.1:8080"
@@ -33,6 +41,19 @@ func main() {
 		_ = server.Shutdown(shutdown)
 	}()
 	if err := server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-		log.Fatal(err)
+		slog.Error("server failed", "error", err)
+		os.Exit(1)
 	}
+}
+
+// Health reports process liveness only, without consulting Supabase.
+func newMux(accountHandler http.Handler) *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("/api/account", accountHandler)
+	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Cache-Control", "no-store")
+		_, _ = w.Write([]byte(`{"status":"ok"}`))
+	})
+	return mux
 }
