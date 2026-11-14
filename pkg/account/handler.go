@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io"
+	"log/slog"
 	"net/http"
 	"net/url"
 	"strings"
@@ -41,9 +42,15 @@ func write(w http.ResponseWriter, status int, value any) {
 	_ = json.NewEncoder(w).Encode(value)
 }
 func fail(w http.ResponseWriter, status int, code string) {
+	slog.Warn("account request rejected", "status", status, "code", code)
 	write(w, status, map[string]string{"error": code})
 }
-func (h *Handler) get(ctx context.Context, path, token string, target any) (int, error) {
+func (h *Handler) get(ctx context.Context, path, token string, target any) (status int, resultErr error) {
+	start := time.Now()
+	defer func() {
+		// Never log query strings, tokens, identities, response bodies or raw errors.
+		slog.InfoContext(ctx, "account upstream request", "path", strings.SplitN(path, "?", 2)[0], "status", status, "duration_ms", time.Since(start).Milliseconds(), "failed", resultErr != nil)
+	}()
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, h.config.SupabaseURL+path, nil)
 	if err != nil {
 		return 0, err
